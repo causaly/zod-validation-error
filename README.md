@@ -6,7 +6,7 @@ Wrap zod validation errors in user-friendly readable messages.
 
 #### Features
 
-- User-friendly readable messages;
+- User-friendly readable messages, configurable via options;
 - Maintain original errors under `error.details`;
 - Extensive tests.
 
@@ -46,9 +46,36 @@ try {
 
 ## Motivation
 
-Zod errors are difficult to consume for the end-user.
+Zod errors are difficult to consume for the end-user. This library wraps Zod validation errors in user-friendly readable messages that can be exposed to the outer world, while maintaining the original errors in an array for _dev_ use.
 
-This library wraps zod validation errors in user-friendly readable messages that can be exposed to the outer world, while maintaining the original errors in an array for dev use.
+### Example
+
+#### Input (from Zod)
+
+```json
+[
+  {
+    "code": "too_small",
+    "inclusive": false,
+    "message": "Number must be greater than 0",
+    "minimum": 0,
+    "path": ["id"],
+    "type": "number"
+  },
+  {
+    "code": "invalid_string",
+    "message": "Invalid email",
+    "path": ["email"],
+    "validation": "email"
+  }
+]
+```
+
+#### Output
+
+```
+Validation error: Number must be greater than 0 at "id"; Invalid email at "email"
+```
 
 ## Contribute
 
