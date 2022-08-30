@@ -2,9 +2,6 @@ import * as zod from 'zod';
 
 import { joinPath } from './utils/joinPath';
 
-const PREFIX_COPY = 'Validation error';
-const MAX_ISSUES_IN_REASON = 10;
-
 export class ValidationError extends Error {
   details: Array<Zod.ZodIssue>;
 
@@ -19,15 +16,25 @@ export class ValidationError extends Error {
   }
 }
 
-/**
- * Converts the supplied ZodError to ValidationError.
- * @param zodError {zod.ZodError}
- * @return {ValidationError}
- */
-export function fromZodError(zodError: zod.ZodError): ValidationError {
+export function fromZodError(
+  zodError: zod.ZodError,
+  options: {
+    maxIssuesInMessage?: number;
+    issueSeparator?: string;
+    prefixSeparator?: string;
+    prefix?: string;
+  } = {}
+): ValidationError {
+  const {
+    maxIssuesInMessage = 10,
+    issueSeparator = '; ',
+    prefixSeparator = ': ',
+    prefix = 'Validation error',
+  } = options;
+
   const reason = zodError.errors
     // limit max number of issues printed in the reason section
-    .slice(0, MAX_ISSUES_IN_REASON)
+    .slice(0, maxIssuesInMessage)
     // format error message
     .map((issue) => {
       const { message, path } = issue;
@@ -39,26 +46,28 @@ export function fromZodError(zodError: zod.ZodError): ValidationError {
       return message;
     })
     // concat as string
-    .join('; ');
+    .join(issueSeparator);
 
-  const message = reason ? [PREFIX_COPY, reason].join(': ') : PREFIX_COPY;
+  const message = reason ? [prefix, reason].join(prefixSeparator) : prefix;
 
   return new ValidationError(message, {
     details: zodError.errors,
   });
 }
 
-export function toValidationError(err: unknown): ValidationError | Error {
-  if (err instanceof zod.ZodError) {
-    return fromZodError(err);
-  }
+export const toValidationError =
+  (options: Parameters<typeof fromZodError>[1] = {}) =>
+  (err: unknown): ValidationError | Error => {
+    if (err instanceof zod.ZodError) {
+      return fromZodError(err, options);
+    }
 
-  if (err instanceof Error) {
-    return err;
-  }
+    if (err instanceof Error) {
+      return err;
+    }
 
-  return new Error('Unknown error');
-}
+    return new Error('Unknown error');
+  };
 
 export function isValidationError(err: unknown): err is ValidationError {
   return err instanceof ValidationError;
