@@ -24,9 +24,6 @@
       "url": "https://github.com/jmike"
     }
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "sideEffects": false,
   "types": "./build/index.d.ts",
   "main": "./build/node/cjs/index.js",
