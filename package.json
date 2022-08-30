@@ -1,5 +1,5 @@
 {
-  "name": "@causaly/zod-validation-error",
+  "name": "zod-validation-error",
   "version": "0.1.0",
   "description": "Wrap zod validation errors in user-friendly readable messages",
   "author": "Causaly Team <front-end@causaly.com>",
