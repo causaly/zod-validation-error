@@ -2,8 +2,29 @@
   "name": "zod-validation-error",
   "version": "0.1.0",
   "description": "Wrap zod validation errors in user-friendly readable messages",
-  "author": "Causaly Team <front-end@causaly.com>",
+  "keywords": [
+    "zod",
+    "error",
+    "validation"
+  ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/causaly/zod-validation-error.git"
+  },
+  "author": {
+    "name": "Causaly Team",
+    "email": "front-end@causaly.com",
+    "url": "https://www.causaly.com"
+  },
+  "contributors": [
+    {
+      "name": "Dimitrios C. Michalakos",
+      "email": "dimitris@jmike.gr",
+      "url": "https://github.com/jmike"
+    }
+  ],
+  "sideEffects": false,
   "types": "./build/index.d.ts",
   "main": "./build/node/cjs/index.js",
   "exports": {
