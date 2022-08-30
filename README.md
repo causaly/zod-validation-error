@@ -1,22 +1,62 @@
-# Typescript-pkg-template
+# zod-validation-error
 
-Simple Typescript template to quickstart your next project
+Wrap zod validation errors in user-friendly readable messages.
 
-## Instructions
+[![Build Status](https://github.com/causaly/zod-validation-error/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/causaly/zod-validation-error/actions/workflows/ci.yml) [![npm version](https://badge.fury.io/js/zod-validation-error.svg)](https://www.npmjs.com/package/zod-validation-error)
 
-- Click the `Use this template` button
-- Configure SWC. You can find the configuration files under `/config`
-- Update the appropriate metadata in `package.json`, depending on the environments you'll use
-- Write your code under `/lib`
+#### Features
 
-## Notes
+- User-friendly readable messages;
+- Maintain original errors under `error.details`;
+- Extensive tests.
 
-The package by default exports artifacts for both browser & node environments
+## Installation
 
-## Publishing
+```bash
+npm install zod-validation-error
+```
 
-The repo is using changesets and the accompanying GitHub action to handle versioning, keeping a changelong and publishing to NPM. 
-You can read more about the changesets package [here](https://github.com/changesets/changesets).
+#### Requirements
+
+- Node.js v.14+
+
+## Quick start
+
+```typescript
+// create zod schema
+const zodSchema = zod.object({
+  id: zod.number().int().positive(),
+  email: zod.string().email(),
+});
+
+// parse some invalid value
+try {
+  zodSchema.parse({
+    id: 1,
+    email: 'foobar', // note: invalid email
+  });
+} catch (err) {
+  const validationError = fromZodError(err);
+  // the error now is readable by the user
+  // you may print it to console
+  // or return it via an API
+  console.log(validationError);
+}
+```
+
+## Motivation
+
+Zod errors are difficult to consume for the end-user.
+
+This library wraps zod validation errors in user-friendly readable messages that can be exposed to the outer world, while maintaining the original errors in an array for dev use.
+
+## Contribute
+
+Source code contributions are most welcome. Please open a PR, ensure the linter is satisfied and all tests pass.
+
+#### We are hiring
+
+Causaly is building the world's largest biomedical knowledge platform, using technologies such as TypeScript, React and Node.js. Find out more about our openings at https://apply.workable.com/causaly/.
 
 ## License
 
