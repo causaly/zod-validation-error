@@ -1,0 +1,29 @@
+{
+  "env": {
+    "targets": "last 10 Chrome versions, last 10 Firefox versions, last 10 Edge versions, last 10 ChromeAndroid versions, last 5 Safari versions, last 5 iOS versions",
+    "mode": "entry",
+    "coreJs": 3
+  },
+  "test": [".*.ts"],
+  "exclude": [".*.spec.ts", ".*.test.ts"],
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "tsx": false,
+      "dynamicImport": false,
+      "decorators": false
+    },
+    "target": "es2016",
+    "loose": false,
+    "externalHelpers": true
+  },
+  "minify": false,
+  "module": {
+    "type": "es6",
+    "strict": false,
+    "strictMode": true,
+    "lazy": false,
+    "noInterop": false,
+    "ignoreDynamic": false
+  }
+}

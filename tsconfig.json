@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "outDir": "./build",
+    "rootDir": "./lib",
+    "esModuleInterop": true
+  },
+  "include": ["lib/**/*"],
+  "exclude": ["lib/**/*.spec.ts", "lib/**/*.test.ts"]
+}

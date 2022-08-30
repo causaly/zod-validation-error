@@ -1,0 +1,78 @@
+{
+  "name": "@causaly/typescript-pkg-template",
+  "version": "0.0.0",
+  "description": "Typescript package template",
+  "author": "Causaly Team <front-end@causaly.com>",
+  "license": "UNLICENSED",
+  "private": true,
+  "sideEffects": false,
+  "types": "./build/index.d.ts",
+  "main": "./build/node/cjs/index.js",
+  "exports": {
+    ".": {
+      "node": {
+        "import": "./build/node/esm/index.js",
+        "require": "./build/node/cjs/index.js"
+      },
+      "default": "./build/browser/esm/index.js"
+    }
+  },
+  "files": [
+    "build"
+  ],
+  "engines": {
+    "node": "^14.17 || >=16.0.0"
+  },
+  "scripts": {
+    "build:node-cjs": "swc lib --config-file ./config/node-cjs.json -d build/node/cjs",
+    "build:node-esm": "swc lib --config-file ./config/node-esm.json -d build/node/esm",
+    "build:browser-esm": "swc lib --config-file ./config/browser-esm.json -d ./build/browser/esm",
+    "build": "rimraf build && concurrently \"tsc -p tsconfig.json\" \"yarn build:node-cjs\" \"yarn build:node-esm\" \"yarn build:browser-esm\"",
+    "lint": "eslint lib --ext .ts",
+    "format": "prettier --config ./.prettierrc --ignore-path .gitignore -w .",
+    "test": "jest --config jest.config.ts",
+    "coverage": "jest --config jest.config.ts --coverage",
+    "changeset": "changeset",
+    "prerelease": "yarn build && yarn test",
+    "release": "changeset publish"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --config ./.prettierrc --write"
+    ]
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.4.2",
+    "@changesets/cli": "^2.18.1",
+    "@commitlint/cli": "^15.0.0",
+    "@commitlint/config-conventional": "^15.0.0",
+    "@swc/cli": "^0.1.55",
+    "@swc/core": "^1.2.121",
+    "@types/jest": "^27.0.3",
+    "@types/node": "^17.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/parser": "^5.7.0",
+    "concurrently": "^6.5.1",
+    "eslint": "^8.4.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "4",
+    "jest": "^27.0.6",
+    "lint-staged": "^12.1.2",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.0",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.2.3"
+  },
+  "peerDependencies": {
+    "@swc/helpers": "^0.3.2"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["prettier", "@typescript-eslint", "simple-import-sort"],
+  "parser": "@typescript-eslint/parser",
+  "rules": {
+    "id-length": ["warn", { "min": 2, "exceptions": ["_", "t"] }],
+    "prettier/prettier": ["error", {}, { "usePrettierrc": true }],
+    "simple-import-sort/imports": "error",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/ban-ts-comment": "off"
+  },
+  "env": {
+    "node": true
+  },
+  "overrides": [
+    {
+      "files": ["*.test.ts", "*.spec.ts", "**/__tests__/**"],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
+}
