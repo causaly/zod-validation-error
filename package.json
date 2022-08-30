@@ -1,11 +1,9 @@
 {
-  "name": "@causaly/typescript-pkg-template",
-  "version": "0.0.0",
-  "description": "Typescript package template",
+  "name": "@causaly/zod-validation-error",
+  "version": "0.1.0",
+  "description": "Wrap zod validation errors in user-friendly readable messages",
   "author": "Causaly Team <front-end@causaly.com>",
-  "license": "UNLICENSED",
-  "private": true,
-  "sideEffects": false,
+  "license": "MIT",
   "types": "./build/index.d.ts",
   "main": "./build/node/cjs/index.js",
   "exports": {
@@ -30,7 +28,7 @@
     "build": "rimraf build && concurrently \"tsc -p tsconfig.json\" \"yarn build:node-cjs\" \"yarn build:node-esm\" \"yarn build:browser-esm\"",
     "lint": "eslint lib --ext .ts",
     "format": "prettier --config ./.prettierrc --ignore-path .gitignore -w .",
-    "test": "jest --config jest.config.ts",
+    "test": "jest --config ./config/jest.config.ts",
     "coverage": "jest --config jest.config.ts --coverage",
     "changeset": "changeset",
     "prerelease": "yarn build && yarn test",
@@ -70,9 +68,11 @@
     "prettier": "^2.2.1",
     "rimraf": "^3.0.0",
     "ts-jest": "^27.0.5",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "zod": "^3.18.0"
   },
   "peerDependencies": {
-    "@swc/helpers": "^0.3.2"
+    "@swc/helpers": "^0.3.2",
+    "zod": "^3.18.0"
   }
 }
