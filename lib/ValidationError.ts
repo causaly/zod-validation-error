@@ -40,7 +40,7 @@ export function fromZodError(
       const { message, path } = issue;
 
       if (path.length > 0) {
-        return message + ' at "' + joinPath(path) + '"';
+        return `${message} at "${joinPath(path)}"`;
       }
 
       return message;
