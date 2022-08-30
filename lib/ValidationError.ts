@@ -26,7 +26,7 @@ export function fromZodError(
   } = {}
 ): ValidationError {
   const {
-    maxIssuesInMessage = 10,
+    maxIssuesInMessage = 99, // I've got 99 problems but the b$tch ain't one
     issueSeparator = '; ',
     prefixSeparator = ': ',
     prefix = 'Validation error',
