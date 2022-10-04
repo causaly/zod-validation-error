@@ -96,7 +96,9 @@
     "zod": "^3.18.0"
   },
   "peerDependencies": {
-    "@swc/helpers": "^0.3.2",
     "zod": "^3.18.0"
+  },
+  "dependencies": {
+    "@swc/helpers": "^0.4.11"
   }
 }
