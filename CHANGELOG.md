@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 0.2.1
+
+### Patch Changes
+
+- 7f420d1: Update build and npm badges on README.md
+
 ## 0.2.0
 
 ### Minor Changes
