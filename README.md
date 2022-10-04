@@ -2,7 +2,7 @@
 
 Wrap zod validation errors in user-friendly readable messages.
 
-[![Build Status](https://github.com/causaly/zod-validation-error/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/causaly/zod-validation-error/actions/workflows/ci.yml) [![npm version](https://badge.fury.io/js/zod-validation-error.svg)](https://www.npmjs.com/package/zod-validation-error)
+[![Build Status](https://github.com/causaly/zod-validation-error/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/causaly/zod-validation-error/actions/workflows/ci.yml) [![npm version](https://img.shields.io/npm/v/zod-validation-error.svg?color=0c0)](https://www.npmjs.com/package/zod-validation-error)
 
 #### Features
 
