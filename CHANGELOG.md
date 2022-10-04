@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 0.2.0
+
+### Minor Changes
+
+- fde2f50: update dependency in package json so the user does not have to manually install it, will be installed on package install.
+
 ## 0.1.1
 
 ### Patch Changes
