@@ -34,7 +34,8 @@
     ".": {
       "node": {
         "import": "./build/node/esm/index.js",
-        "require": "./build/node/cjs/index.js"
+        "require": "./build/node/cjs/index.js",
+        "types": "./build/index.d.ts"
       },
       "default": "./build/browser/esm/index.js"
     }
