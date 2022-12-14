@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 0.2.2
+
+### Patch Changes
+
+- fa81c9b: Drop SWC; Fix ESM export
+
 ## 0.2.1
 
 ### Patch Changes
