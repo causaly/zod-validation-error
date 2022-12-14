@@ -1,4 +1,5 @@
 import * as zod from 'zod';
+import { ZodError } from 'zod';
 
 import {
   fromZodError,
@@ -13,21 +14,23 @@ describe('fromZodError()', () => {
     try {
       emailSchema.parse('foobar');
     } catch (err) {
-      const validationError = fromZodError(err);
-      expect(validationError).toBeInstanceOf(ValidationError);
-      expect(validationError.message).toMatchInlineSnapshot(
-        `"Validation error: Invalid email"`
-      );
-      expect(validationError.details).toMatchInlineSnapshot(`
-        Array [
-          Object {
+      if (err instanceof ZodError) {
+        const validationError = fromZodError(err);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Invalid email"`
+        );
+        expect(validationError.details).toMatchInlineSnapshot(`
+        [
+          {
             "code": "invalid_string",
             "message": "Invalid email",
-            "path": Array [],
+            "path": [],
             "validation": "email",
           },
         ]
       `);
+      }
     }
   });
 
@@ -43,35 +46,39 @@ describe('fromZodError()', () => {
         name: 'a',
       });
     } catch (err) {
-      const validationError = fromZodError(err);
-      expect(validationError).toBeInstanceOf(ValidationError);
-      expect(validationError.message).toMatchInlineSnapshot(
-        `"Validation error: Number must be greater than 0 at \\"id\\"; String must contain at least 2 character(s) at \\"name\\""`
-      );
-      expect(validationError.details).toMatchInlineSnapshot(`
-        Array [
-          Object {
+      if (err instanceof ZodError) {
+        const validationError = fromZodError(err);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Number must be greater than 0 at "id"; String must contain at least 2 character(s) at "name""`
+        );
+        expect(validationError.details).toMatchInlineSnapshot(`
+        [
+          {
             "code": "too_small",
+            "exact": false,
             "inclusive": false,
             "message": "Number must be greater than 0",
             "minimum": 0,
-            "path": Array [
+            "path": [
               "id",
             ],
             "type": "number",
           },
-          Object {
+          {
             "code": "too_small",
+            "exact": false,
             "inclusive": true,
             "message": "String must contain at least 2 character(s)",
             "minimum": 2,
-            "path": Array [
+            "path": [
               "name",
             ],
             "type": "string",
           },
         ]
       `);
+      }
     }
   });
 
@@ -81,42 +88,44 @@ describe('fromZodError()', () => {
     try {
       objSchema.parse([1, 'a', true, 1.23]);
     } catch (err) {
-      const validationError = fromZodError(err);
-      expect(validationError).toBeInstanceOf(ValidationError);
-      expect(validationError.message).toMatchInlineSnapshot(
-        `"Validation error: Expected number, received string at \\"[1]\\"; Expected number, received boolean at \\"[2]\\"; Expected integer, received float at \\"[3]\\""`
-      );
-      expect(validationError.details).toMatchInlineSnapshot(`
-        Array [
-          Object {
+      if (err instanceof ZodError) {
+        const validationError = fromZodError(err);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Expected number, received string at "[1]"; Expected number, received boolean at "[2]"; Expected integer, received float at "[3]""`
+        );
+        expect(validationError.details).toMatchInlineSnapshot(`
+        [
+          {
             "code": "invalid_type",
             "expected": "number",
             "message": "Expected number, received string",
-            "path": Array [
+            "path": [
               1,
             ],
             "received": "string",
           },
-          Object {
+          {
             "code": "invalid_type",
             "expected": "number",
             "message": "Expected number, received boolean",
-            "path": Array [
+            "path": [
               2,
             ],
             "received": "boolean",
           },
-          Object {
+          {
             "code": "invalid_type",
             "expected": "integer",
             "message": "Expected integer, received float",
-            "path": Array [
+            "path": [
               3,
             ],
             "received": "float",
           },
         ]
       `);
+      }
     }
   });
 
@@ -138,39 +147,42 @@ describe('fromZodError()', () => {
         },
       });
     } catch (err) {
-      const validationError = fromZodError(err);
-      expect(validationError).toBeInstanceOf(ValidationError);
-      expect(validationError.message).toMatchInlineSnapshot(
-        `"Validation error: Number must be greater than 0 at \\"id\\"; Expected number, received string at \\"arr[1]\\"; String must contain at least 2 character(s) at \\"nestedObj.name\\""`
-      );
-      expect(validationError.details).toMatchInlineSnapshot(`
-        Array [
-          Object {
+      if (err instanceof ZodError) {
+        const validationError = fromZodError(err);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Number must be greater than 0 at "id"; Expected number, received string at "arr[1]"; String must contain at least 2 character(s) at "nestedObj.name""`
+        );
+        expect(validationError.details).toMatchInlineSnapshot(`
+        [
+          {
             "code": "too_small",
+            "exact": false,
             "inclusive": false,
             "message": "Number must be greater than 0",
             "minimum": 0,
-            "path": Array [
+            "path": [
               "id",
             ],
             "type": "number",
           },
-          Object {
+          {
             "code": "invalid_type",
             "expected": "number",
             "message": "Expected number, received string",
-            "path": Array [
+            "path": [
               "arr",
               1,
             ],
             "received": "string",
           },
-          Object {
+          {
             "code": "too_small",
+            "exact": false,
             "inclusive": true,
             "message": "String must contain at least 2 character(s)",
             "minimum": 2,
-            "path": Array [
+            "path": [
               "nestedObj",
               "name",
             ],
@@ -178,6 +190,7 @@ describe('fromZodError()', () => {
           },
         ]
       `);
+      }
     }
   });
 });

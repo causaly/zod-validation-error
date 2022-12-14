@@ -24,36 +24,29 @@
       "url": "https://github.com/jmike"
     }
   ],
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
   "sideEffects": false,
-  "types": "./build/index.d.ts",
-  "main": "./build/node/cjs/index.js",
-  "exports": {
-    ".": {
-      "node": {
-        "import": "./build/node/esm/index.js",
-        "require": "./build/node/cjs/index.js"
-      },
-      "default": "./build/browser/esm/index.js"
-    }
-  },
-  "files": [
-    "build"
-  ],
   "engines": {
     "node": "^14.17 || >=16.0.0"
   },
   "scripts": {
-    "build:node-cjs": "swc lib --config-file ./config/node-cjs.json -d build/node/cjs",
-    "build:node-esm": "swc lib --config-file ./config/node-esm.json -d build/node/esm",
-    "build:browser-esm": "swc lib --config-file ./config/browser-esm.json -d ./build/browser/esm",
-    "build": "rimraf build && concurrently \"tsc -p tsconfig.json\" \"yarn build:node-cjs\" \"yarn build:node-esm\" \"yarn build:browser-esm\"",
+    "typecheck": "tsc --noEmit",
+    "build:cjs": "tsc -p ./tsconfig.build-cjs.json",
+    "build:esm": "tsc -p ./tsconfig.build-esm.json",
+    "build:types": "tsc -p ./tsconfig.build-types.json",
+    "build": "rimraf dist && concurrently \"yarn build:types\" \"yarn build:esm\" \"yarn build:cjs\"",
     "lint": "eslint lib --ext .ts",
     "format": "prettier --config ./.prettierrc --ignore-path .gitignore -w .",
-    "test": "jest --config ./config/jest.config.ts",
-    "coverage": "jest --config jest.config.ts --coverage",
+    "test": "jest",
+    "coverage": "jest --coverage",
     "changeset": "changeset",
     "prerelease": "yarn build && yarn test",
     "release": "changeset publish"
@@ -75,10 +68,8 @@
     "@changesets/cli": "^2.18.1",
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
-    "@swc/cli": "^0.1.55",
-    "@swc/core": "^1.2.121",
-    "@types/jest": "^27.0.3",
-    "@types/node": "^17.0.0",
+    "@types/jest": "^29.2.4",
+    "@types/node": "^18.11.13",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
     "concurrently": "^6.5.1",
@@ -87,18 +78,15 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "4",
-    "jest": "^27.0.6",
+    "jest": "^29.3.1",
     "lint-staged": "^12.1.2",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.0",
-    "ts-jest": "^27.0.5",
-    "typescript": "^4.2.3",
-    "zod": "^3.18.0"
+    "ts-jest": "^29.0.3",
+    "typescript": "^4.9.4",
+    "zod": "^3.20.0"
   },
   "peerDependencies": {
     "zod": "^3.18.0"
-  },
-  "dependencies": {
-    "@swc/helpers": "^0.4.11"
   }
 }

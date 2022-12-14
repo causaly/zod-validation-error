@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "emitDeclarationOnly": true,
-    "declaration": true,
-    "outDir": "./build",
-    "rootDir": "./lib",
-    "esModuleInterop": true
+    "target": "esnext",
+    "lib": ["esnext", "dom"],
+    "moduleResolution": "node",
+    "strict": true,
+    "declaration": false,
+    "removeComments": true,
+    "esModuleInterop": true,
   },
-  "include": ["lib/**/*"],
-  "exclude": ["lib/**/*.spec.ts", "lib/**/*.test.ts"]
+  "include": ["./lib/**/*.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
 }
