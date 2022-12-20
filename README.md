@@ -90,7 +90,7 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 
 `isValidationError` is based on an `instanceof` comparison, whereas `isValidationErrorLike` is using a heuristics-based approach.
 
-> In most cases, it is recommended to use `isValidationErrorLike` to avoid multiple-version inconsistencies. For instance, it's possible that a dependency is using an older `zod-validation-error` version as a sub-dependency. In such case, the `instanceof` comparison will yield invalid results because the prototype is different with every module.
+> In most cases, it is recommended to use `isValidationErrorLike` to avoid multiple-version inconsistencies. For instance, it's possible that a dependency is using an older `zod-validation-error` version internally. In such case, the `instanceof` comparison will yield invalid results because module deduplication does not apply at npm/yarn level and the prototype is different.
 
 #### Example
 
