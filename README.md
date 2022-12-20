@@ -77,6 +77,33 @@ Zod errors are difficult to consume for the end-user. This library wraps Zod val
 Validation error: Number must be greater than 0 at "id"; Invalid email at "email"
 ```
 
+## Guides and concepts
+
+### Type-guards
+
+`zod-validation-error` exposes two type-guard utilities that are used to indicate whether the supplied argument is a `ValidationError`.
+
+1. `isValidationError(err: unknown): err is ValidationError`
+2. `isValidationErrorLike(err: unknown): err is ValidationError`
+
+##### What is the difference?
+
+`isValidationError` is based on an `instanceof` comparison, whereas `isValidationErrorLike` is using a heuristics-based approach.
+
+> In most cases, it is recommended to use `isValidationErrorLike` to avoid multiple-version inconsistencies. For instance, it's possible that a dependency is using an older `zod-validation-error` version as a sub-dependency. In such case, the `instanceof` comparison will yield invalid results because the prototype is different with every module.
+
+#### Example
+
+```typescript
+import { ValidationError, isValidationErrorLike } from 'zod-validation-error';
+
+const err = new ValidationError('foobar', { details: [] });
+isValidationErrorLike(err); // returns true
+
+const invalidErr = new Error('foobar');
+isValidationErrorLike(err); // returns false
+```
+
 ## Contribute
 
 Source code contributions are most welcome. Please open a PR, ensure the linter is satisfied and all tests pass.
