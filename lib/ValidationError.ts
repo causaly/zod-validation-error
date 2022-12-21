@@ -4,6 +4,7 @@ import { joinPath } from './utils/joinPath';
 
 export class ValidationError extends Error {
   details: Array<Zod.ZodIssue>;
+  type: 'ZodValidationError';
 
   constructor(
     message: string,
@@ -13,6 +14,7 @@ export class ValidationError extends Error {
   ) {
     super(message);
     this.details = options.details;
+    this.type = 'ZodValidationError';
   }
 }
 
@@ -71,4 +73,10 @@ export const toValidationError =
 
 export function isValidationError(err: unknown): err is ValidationError {
   return err instanceof ValidationError;
+}
+
+export function isValidationErrorLike(err: unknown): err is ValidationError {
+  return (
+    err instanceof Error && 'type' in err && err.type === 'ZodValidationError'
+  );
 }
