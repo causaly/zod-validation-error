@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 0.3.0
+
+### Minor Changes
+
+- 59ad8df: Expose isValidationErrorLike type-guard
+
 ## 0.2.2
 
 ### Patch Changes
