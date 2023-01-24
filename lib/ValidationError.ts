@@ -53,7 +53,7 @@ export function fromZodError(
   const {
     maxIssuesInMessage = 99, // I've got 99 problems but the b$tch ain't one
     issueSeparator = '; ',
-    unionSeparator = ', or: ',
+    unionSeparator = ', or ',
     prefixSeparator = ': ',
     prefix = 'Validation error',
   } = options;

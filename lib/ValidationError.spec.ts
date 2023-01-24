@@ -195,67 +195,25 @@ describe('fromZodError()', () => {
     }
   });
 
-  test('handles nested zod.object() schema errors', () => {
+  test('schema.parse() path param to be part of error message', () => {
     const objSchema = zod.object({
-      id: zod.number().int().positive(),
-      arr: zod.array(zod.number().int()),
-      nestedObj: zod.object({
-        name: zod.string().min(2),
-      }),
+      status: zod.literal('success'),
     });
 
     try {
-      objSchema.parse({
-        id: -1,
-        arr: [1, 'a'],
-        nestedObj: {
-          name: 'a',
-        },
-      });
+      objSchema.parse(
+        {},
+        {
+          path: ['custom-path'],
+        }
+      );
     } catch (err) {
       if (err instanceof ZodError) {
         const validationError = fromZodError(err);
         expect(validationError).toBeInstanceOf(ValidationError);
         expect(validationError.message).toMatchInlineSnapshot(
-          `"Validation error: Number must be greater than 0 at "id"; Expected number, received string at "arr[1]"; String must contain at least 2 character(s) at "nestedObj.name""`
+          `"Validation error: Invalid literal value, expected "success" at "custom-path.status""`
         );
-        expect(validationError.details).toMatchInlineSnapshot(`
-                  [
-                    {
-                      "code": "too_small",
-                      "exact": false,
-                      "inclusive": false,
-                      "message": "Number must be greater than 0",
-                      "minimum": 0,
-                      "path": [
-                        "id",
-                      ],
-                      "type": "number",
-                    },
-                    {
-                      "code": "invalid_type",
-                      "expected": "number",
-                      "message": "Expected number, received string",
-                      "path": [
-                        "arr",
-                        1,
-                      ],
-                      "received": "string",
-                    },
-                    {
-                      "code": "too_small",
-                      "exact": false,
-                      "inclusive": true,
-                      "message": "String must contain at least 2 character(s)",
-                      "minimum": 2,
-                      "path": [
-                        "nestedObj",
-                        "name",
-                      ],
-                      "type": "string",
-                    },
-                  ]
-              `);
       }
     }
   });
@@ -275,68 +233,37 @@ describe('fromZodError()', () => {
     const objSchema = success.or(error);
 
     try {
-      objSchema.parse(
-        {},
-        {
-          path: ['responce-schema'],
-        }
-      );
+      objSchema.parse({});
     } catch (err) {
       if (err instanceof ZodError) {
         const validationError = fromZodError(err);
         expect(validationError).toBeInstanceOf(ValidationError);
         expect(validationError.message).toMatchInlineSnapshot(
-          `"Validation error: Invalid literal value, expected "success" at "responce-schema.status"; Required at "responce-schema.data", or: Invalid literal value, expected "error" at "responce-schema.status""`
+          `"Validation error: Invalid literal value, expected "success" at "status"; Required at "data", or Invalid literal value, expected "error" at "status""`
         );
-        expect({
-          details: validationError.details,
-        }).toMatchInlineSnapshot(`
-          {
-            "details": [
-              {
-                "code": "invalid_union",
-                "message": "Invalid input",
-                "path": [
-                  "responce-schema",
-                ],
-                "unionErrors": [
-                  [ZodError: [
-            {
-              "code": "invalid_literal",
-              "expected": "success",
-              "path": [
-                "responce-schema",
-                "status"
-              ],
-              "message": "Invalid literal value, expected \\"success\\""
-            },
-            {
-              "code": "invalid_type",
-              "expected": "object",
-              "received": "undefined",
-              "path": [
-                "responce-schema",
-                "data"
-              ],
-              "message": "Required"
-            }
-          ]],
-                  [ZodError: [
-            {
-              "code": "invalid_literal",
-              "expected": "error",
-              "path": [
-                "responce-schema",
-                "status"
-              ],
-              "message": "Invalid literal value, expected \\"error\\""
-            }
-          ]],
-                ],
-              },
-            ],
-          }
-        `);
+      }
+    }
+  });
+
+  test('handles zod.and() schema errors', () => {
+    const part1 = zod.object({
+      prop1: zod.literal('value1'),
+    });
+    const part2 = zod.object({
+      prop2: zod.literal('value2'),
+    });
+
+    const objSchema = part1.and(part2);
+
+    try {
+      objSchema.parse({});
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const validationError = fromZodError(err);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Invalid literal value, expected "value1" at "prop1"; Invalid literal value, expected "value2" at "prop2""`
+        );
       }
     }
   });
