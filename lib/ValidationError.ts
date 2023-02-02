@@ -18,11 +18,34 @@ export class ValidationError extends Error {
   }
 }
 
+function fromZodIssue(
+  issue: zod.ZodIssue,
+  issueSeparator: string,
+  unionSeparator: string
+): string {
+  if (issue.code === 'invalid_union') {
+    return issue.unionErrors
+      .map((zodError) =>
+        zodError.issues
+          .map((issue) => fromZodIssue(issue, issueSeparator, unionSeparator))
+          .join(issueSeparator)
+      )
+      .join(unionSeparator);
+  }
+
+  if (issue.path.length > 0) {
+    return `${issue.message} at "${joinPath(issue.path)}"`;
+  }
+
+  return issue.message;
+}
+
 export function fromZodError(
   zodError: zod.ZodError,
   options: {
     maxIssuesInMessage?: number;
     issueSeparator?: string;
+    unionSeparator?: string;
     prefixSeparator?: string;
     prefix?: string;
   } = {}
@@ -30,6 +53,7 @@ export function fromZodError(
   const {
     maxIssuesInMessage = 99, // I've got 99 problems but the b$tch ain't one
     issueSeparator = '; ',
+    unionSeparator = ', or ',
     prefixSeparator = ': ',
     prefix = 'Validation error',
   } = options;
@@ -38,15 +62,7 @@ export function fromZodError(
     // limit max number of issues printed in the reason section
     .slice(0, maxIssuesInMessage)
     // format error message
-    .map((issue) => {
-      const { message, path } = issue;
-
-      if (path.length > 0) {
-        return `${message} at "${joinPath(path)}"`;
-      }
-
-      return message;
-    })
+    .map((issue) => fromZodIssue(issue, issueSeparator, unionSeparator))
     // concat as string
     .join(issueSeparator);
 

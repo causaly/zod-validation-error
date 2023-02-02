@@ -194,6 +194,79 @@ describe('fromZodError()', () => {
       }
     }
   });
+
+  test('schema.parse() path param to be part of error message', () => {
+    const objSchema = zod.object({
+      status: zod.literal('success'),
+    });
+
+    try {
+      objSchema.parse(
+        {},
+        {
+          path: ['custom-path'],
+        }
+      );
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const validationError = fromZodError(err);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Invalid literal value, expected "success" at "custom-path.status""`
+        );
+      }
+    }
+  });
+
+  test('handles zod.or() schema errors', () => {
+    const success = zod.object({
+      status: zod.literal('success'),
+      data: zod.object({
+        id: zod.string(),
+      }),
+    });
+
+    const error = zod.object({
+      status: zod.literal('error'),
+    });
+
+    const objSchema = success.or(error);
+
+    try {
+      objSchema.parse({});
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const validationError = fromZodError(err);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Invalid literal value, expected "success" at "status"; Required at "data", or Invalid literal value, expected "error" at "status""`
+        );
+      }
+    }
+  });
+
+  test('handles zod.and() schema errors', () => {
+    const part1 = zod.object({
+      prop1: zod.literal('value1'),
+    });
+    const part2 = zod.object({
+      prop2: zod.literal('value2'),
+    });
+
+    const objSchema = part1.and(part2);
+
+    try {
+      objSchema.parse({});
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const validationError = fromZodError(err);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Invalid literal value, expected "value1" at "prop1"; Invalid literal value, expected "value2" at "prop2""`
+        );
+      }
+    }
+  });
 });
 
 describe('isValidationError()', () => {
