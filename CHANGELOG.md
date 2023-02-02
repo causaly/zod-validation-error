@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 0.3.1
+
+### Patch Changes
+
+- 9c4c4ec: Make union errors more detailed
+
 ## 0.3.0
 
 ### Minor Changes
