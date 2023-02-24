@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 0.3.2
+
+### Patch Changes
+
+- a2e5322: Ensure union errors do not output duplicate messages
+
 ## 0.3.1
 
 ### Patch Changes
