@@ -214,6 +214,19 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Invalid literal value, expected "success" at "custom-path.status""`
         );
+        expect(validationError.details).toMatchInlineSnapshot(`
+          [
+            {
+              "code": "invalid_literal",
+              "expected": "success",
+              "message": "Invalid literal value, expected "success"",
+              "path": [
+                "custom-path",
+                "status",
+              ],
+            },
+          ]
+        `);
       }
     }
   });
@@ -241,6 +254,99 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Invalid literal value, expected "success" at "status"; Required at "data", or Invalid literal value, expected "error" at "status""`
         );
+        expect(validationError.details).toMatchInlineSnapshot(`
+          [
+            {
+              "code": "invalid_union",
+              "message": "Invalid input",
+              "path": [],
+              "unionErrors": [
+                [ZodError: [
+            {
+              "code": "invalid_literal",
+              "expected": "success",
+              "path": [
+                "status"
+              ],
+              "message": "Invalid literal value, expected \\"success\\""
+            },
+            {
+              "code": "invalid_type",
+              "expected": "object",
+              "received": "undefined",
+              "path": [
+                "data"
+              ],
+              "message": "Required"
+            }
+          ]],
+                [ZodError: [
+            {
+              "code": "invalid_literal",
+              "expected": "error",
+              "path": [
+                "status"
+              ],
+              "message": "Invalid literal value, expected \\"error\\""
+            }
+          ]],
+              ],
+            },
+          ]
+        `);
+      }
+    }
+  });
+
+  test('handles zod.or() schema duplicate errors', () => {
+    const objSchema = zod.object({
+      terms: zod.array(zod.string()).or(zod.string()),
+    });
+
+    try {
+      objSchema.parse({});
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const validationError = fromZodError(err);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Required at "terms""`
+        );
+        expect(validationError.details).toMatchInlineSnapshot(`
+          [
+            {
+              "code": "invalid_union",
+              "message": "Invalid input",
+              "path": [
+                "terms",
+              ],
+              "unionErrors": [
+                [ZodError: [
+            {
+              "code": "invalid_type",
+              "expected": "array",
+              "received": "undefined",
+              "path": [
+                "terms"
+              ],
+              "message": "Required"
+            }
+          ]],
+                [ZodError: [
+            {
+              "code": "invalid_type",
+              "expected": "string",
+              "received": "undefined",
+              "path": [
+                "terms"
+              ],
+              "message": "Required"
+            }
+          ]],
+              ],
+            },
+          ]
+        `);
       }
     }
   });
@@ -264,6 +370,26 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Invalid literal value, expected "value1" at "prop1"; Invalid literal value, expected "value2" at "prop2""`
         );
+        expect(validationError.details).toMatchInlineSnapshot(`
+          [
+            {
+              "code": "invalid_literal",
+              "expected": "value1",
+              "message": "Invalid literal value, expected "value1"",
+              "path": [
+                "prop1",
+              ],
+            },
+            {
+              "code": "invalid_literal",
+              "expected": "value2",
+              "message": "Invalid literal value, expected "value2"",
+              "path": [
+                "prop2",
+              ],
+            },
+          ]
+        `);
       }
     }
   });
