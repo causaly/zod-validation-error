@@ -25,11 +25,17 @@ function fromZodIssue(
 ): string {
   if (issue.code === 'invalid_union') {
     return issue.unionErrors
-      .map((zodError) =>
-        zodError.issues
+      .reduce<string[]>((acc, zodError) => {
+        const newIssues = zodError.issues
           .map((issue) => fromZodIssue(issue, issueSeparator, unionSeparator))
-          .join(issueSeparator)
-      )
+          .join(issueSeparator);
+
+        if (!acc.includes(newIssues)) {
+          acc.push(newIssues);
+        }
+
+        return acc;
+      }, [])
       .join(unionSeparator);
   }
 
