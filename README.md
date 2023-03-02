@@ -23,6 +23,9 @@ npm install zod-validation-error
 ## Quick start
 
 ```typescript
+import { z as zod } from 'zod';
+import { fromZodError } from 'zod-validation-error';
+
 // create zod schema
 const zodSchema = zod.object({
   id: zod.number().int().positive(),
@@ -77,20 +80,49 @@ Zod errors are difficult to consume for the end-user. This library wraps Zod val
 Validation error: Number must be greater than 0 at "id"; Invalid email at "email"
 ```
 
-## Guides and concepts
+## API
 
-### Type-guards
+### `ValidationError(message, details)`
 
-`zod-validation-error` exposes two type-guard utilities that are used to indicate whether the supplied argument is a `ValidationError`.
+Main `ValidationError` class, extending native JavaScript `Error`.
 
-1. `isValidationError(err: unknown): err is ValidationError`
-2. `isValidationErrorLike(err: unknown): err is ValidationError`
+#### Arguments
 
-##### What is the difference?
+- `message` - _string_; error message (required)
+- `details` - _Array<Zod.ZodIssue>_; error details (optional)
 
-`isValidationError` is based on an `instanceof` comparison, whereas `isValidationErrorLike` is using a heuristics-based approach.
+#### Example
 
-> In most cases, it is recommended to use `isValidationErrorLike` to avoid multiple-version inconsistencies. For instance, it's possible that a dependency is using an older `zod-validation-error` version internally. In such case, the `instanceof` comparison will yield invalid results because module deduplication does not apply at npm/yarn level and the prototype is different.
+```typescript
+const { ValidationError } = require('zod-validation-error');
+
+const error = new ValidationError('foobar');
+console.log(error instanceof Error); // prints true
+```
+
+### `isValidationError(error)`
+
+A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) utility function, based on `instanceof` comparison.
+
+#### Example
+
+```typescript
+import { ValidationError, isValidationError } from 'zod-validation-error';
+
+const err = new ValidationError('foobar', { details: [] });
+isValidationError(err); // returns true
+
+const invalidErr = new Error('foobar');
+isValidationError(err); // returns false
+```
+
+### `isValidationErrorLike(error)`
+
+A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) utility function, based on heuristics comparison.
+
+Why do we need heuristics if we have `instanceof` comparison? Because of multi-version inconsistencies. For instance, it's possible that a dependency is using an older `zod-validation-error` version internally. In such case, the `instanceof` comparison will yield invalid results because module deduplication does not apply at npm/yarn level and the prototype is different.
+
+In most cases, it is safer to use `isValidationErrorLike` than `isValidationError`.
 
 #### Example
 
@@ -102,6 +134,103 @@ isValidationErrorLike(err); // returns true
 
 const invalidErr = new Error('foobar');
 isValidationErrorLike(err); // returns false
+```
+
+### `fromZodError(zodError, options)`
+
+Converts zod error to `ValidationError`.
+
+#### Arguments
+
+- `zodError` - _zod.ZodError_; a ZodError instance (required)
+- `options` - _Object_; formatting options (optional)
+  - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to `99`)
+  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to `;`)
+  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to `, or`)
+  - `prefix` - _string_; prefix in user-friendly message (optional, defaults to `Validation error`)
+  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to `: `)
+
+### `toValidationError(options) => (error) => ValidationError`
+
+A curried version of `fromZodError` meant to be used for FP (Functional Programming).
+
+#### Example using fp-ts
+
+```typescript
+import * as Either from 'fp-ts/Either';
+import { z as zod } from 'zod';
+import { toValidationError } from 'zod-validation-error';
+
+// create zod schema
+const zodSchema = zod
+  .object({
+    id: zod.number().int().positive(),
+    email: zod.string().email(),
+  })
+  .brand<'MySchema'>();
+
+export type MySchema = zod.infer<typeof schema>;
+
+export function parse(
+  value: zod.input<typeof schema>
+): Either.Either<Error, MySchema> {
+  return Either.tryCatch(() => schema.parse(value), toValidationError());
+}
+```
+
+## FAQ
+
+### How to distinguish between errors
+
+Use the `isValidationErrorLike` type guard.
+
+#### Example
+
+Scenario: Distinguish between `ValidationError` VS generic `Error` in order to respond with 400 VS 500 HTTP status code respectively.
+
+```typescript
+import * as Either from 'fp-ts/Either';
+import { z as zod } from 'zod';
+import { isValidationErrorLike } from 'zod-validation-error';
+
+try {
+  func(); // throws Error - or - ValidationError
+} catch (err) {
+  if (isValidationErrorLike(err)) {
+    return 400; // Bad Data (this is a client error)
+  }
+
+  return 500; // Server Error
+}
+```
+
+### How to use `ValidationError` outside `zod`
+
+It's possible to implement custom validation logic outside `zod` and throw a `ValidationError`.
+
+#### Example
+
+```typescript
+import { ValidationError } from 'zod-validation-error';
+import { Buffer } from 'node:buffer';
+
+function parseBuffer(buf: unknown): Buffer {
+  if (!Buffer.isBuffer(buf)) {
+    throw new ValidationError('Invalid argument; expected buffer');
+  }
+
+  return buf;
+}
+```
+
+### CommonJS Support
+
+`zod-validation-error` supports CommonJS out-of-the-box. All you need to do is import it using `require`, as you would with any other node module.
+
+#### Example
+
+```typescript
+const { ValidationError } = require('zod-validation-error');
 ```
 
 ## Contribute
