@@ -6,14 +6,9 @@ export class ValidationError extends Error {
   details: Array<Zod.ZodIssue>;
   name: 'ZodValidationError';
 
-  constructor(
-    message: string,
-    options?: {
-      details: Array<Zod.ZodIssue>;
-    }
-  ) {
+  constructor(message: string, details: Array<Zod.ZodIssue> | undefined = []) {
     super(message);
-    this.details = options?.details ?? [];
+    this.details = details;
     this.name = 'ZodValidationError';
   }
 
@@ -78,9 +73,7 @@ export function fromZodError(
 
   const message = reason ? [prefix, reason].join(prefixSeparator) : prefix;
 
-  return new ValidationError(message, {
-    details: zodError.errors,
-  });
+  return new ValidationError(message, zodError.errors);
 }
 
 export const toValidationError =

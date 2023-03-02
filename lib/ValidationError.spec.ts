@@ -397,9 +397,7 @@ describe('fromZodError()', () => {
 
 describe('isValidationError()', () => {
   test('returns true when argument is instance of ValidationError', () => {
-    expect(
-      isValidationError(new ValidationError('foobar', { details: [] }))
-    ).toEqual(true);
+    expect(isValidationError(new ValidationError('foobar'))).toEqual(true);
   });
 
   test('returns false when argument is plain Error', () => {
@@ -419,9 +417,7 @@ describe('isValidationError()', () => {
 
 describe('isValidationErrorLike()', () => {
   test('returns true when argument is an actual instance of ValidationError', () => {
-    expect(
-      isValidationErrorLike(new ValidationError('foobar', { details: [] }))
-    ).toEqual(true);
+    expect(isValidationErrorLike(new ValidationError('foobar'))).toEqual(true);
   });
 
   test('returns true when argument resembles a ValidationError', () => {
@@ -448,25 +444,23 @@ describe('isValidationErrorLike()', () => {
 
 describe('ValidationError', () => {
   describe('constructor', () => {
-    test('accepts message', () => {
-      expect(
-        () => new ValidationError('Invalid email coyote@acme')
-      ).not.toThrow();
-    });
-
     test('accepts message with details', () => {
       expect(
         () =>
-          new ValidationError('Invalid email coyote@acme', {
-            details: [
-              {
-                code: 'invalid_string',
-                message: 'Invalid email',
-                path: [],
-                validation: 'email',
-              },
-            ],
-          })
+          new ValidationError('Invalid email coyote@acme', [
+            {
+              code: 'invalid_string',
+              message: 'Invalid email',
+              path: [],
+              validation: 'email',
+            },
+          ])
+      ).not.toThrow();
+    });
+
+    test('treats details as optional', () => {
+      expect(
+        () => new ValidationError('Invalid email coyote@acme')
       ).not.toThrow();
     });
   });
