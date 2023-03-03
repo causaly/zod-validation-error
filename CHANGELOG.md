@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 1.0.0
+
+### Major Changes
+
+- 90b2f83: Update ZodValidationError to behave more like a native Error constructor. Make options argument optional. Add name property and define toString() method.
+
 ## 0.3.2
 
 ### Patch Changes
