@@ -82,7 +82,13 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 
 ## API
 
-### `ValidationError(message[, details])`
+- [ValidationError(message[, details])](#validationerror)
+- [isValidationError(error)](#isvalidationerror)
+- [isValidationErrorLike(error)](#isvalidationerrorlike)
+- [fromZodError(zodError[, options])](#fromzoderror)
+- [toValidationError([options])](#tovalidationerror)
+
+### <a name="validationerror" href="validationerror">#</a>ValidationError(message[, details])
 
 Main `ValidationError` class, extending native JavaScript `Error`.
 
@@ -100,7 +106,7 @@ const error = new ValidationError('foobar');
 console.log(error instanceof Error); // prints true
 ```
 
-### `isValidationError(error)`
+### <a name="isvalidationerror" href="isvalidationerror">#</a>isValidationError(error)
 
 A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) utility function, based on `instanceof` comparison.
 
@@ -116,7 +122,7 @@ const invalidErr = new Error('foobar');
 isValidationError(err); // returns false
 ```
 
-### `isValidationErrorLike(error)`
+### <a name="isvalidationerrorlike" href="isvalidationerrorlike">#</a>isValidationErrorLike(error)
 
 A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) utility function, based on heuristics comparison.
 
@@ -136,7 +142,7 @@ const invalidErr = new Error('foobar');
 isValidationErrorLike(err); // returns false
 ```
 
-### `fromZodError(zodError[, options])`
+### <a name="fromzoderror" href="fromzoderror">#</a>fromZodError(zodError[, options])
 
 Converts zod error to `ValidationError`.
 
@@ -150,7 +156,7 @@ Converts zod error to `ValidationError`.
   - `prefix` - _string_; prefix in user-friendly message (optional, defaults to `Validation error`)
   - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to `: `)
 
-### `toValidationError([options]) => (error) => ValidationError`
+### <a name="tovalidationerror" href="tovalidationerror">#</a>toValidationError([options]) => (error) => ValidationError
 
 A curried version of `fromZodError` meant to be used for FP (Functional Programming).
 
@@ -223,9 +229,9 @@ function parseBuffer(buf: unknown): Buffer {
 }
 ```
 
-### CommonJS Support
+### Does `zod-validation-error` support CommonJS
 
-`zod-validation-error` supports CommonJS out-of-the-box. All you need to do is import it using `require`, as you would with any other node module.
+Yes, `zod-validation-error` supports CommonJS out-of-the-box. All you need to do is import it using `require`.
 
 #### Example
 
