@@ -445,23 +445,29 @@ describe('isValidationErrorLike()', () => {
 describe('ValidationError', () => {
   describe('constructor', () => {
     test('accepts message with details', () => {
-      expect(
-        () =>
-          new ValidationError('Invalid email coyote@acme', [
-            {
-              code: 'invalid_string',
-              message: 'Invalid email',
-              path: [],
-              validation: 'email',
-            },
-          ])
-      ).not.toThrow();
+      const err = new ValidationError('Invalid email coyote@acme', [
+        {
+          code: 'invalid_string',
+          message: 'Invalid email',
+          path: [],
+          validation: 'email',
+        },
+      ]);
+      expect(err.details).toMatchInlineSnapshot(`
+        [
+          {
+            "code": "invalid_string",
+            "message": "Invalid email",
+            "path": [],
+            "validation": "email",
+          },
+        ]
+      `);
     });
 
     test('treats details as optional', () => {
-      expect(
-        () => new ValidationError('Invalid email coyote@acme')
-      ).not.toThrow();
+      const err = new ValidationError('Invalid email coyote@acme');
+      expect(err.details).toStrictEqual([]);
     });
   });
 

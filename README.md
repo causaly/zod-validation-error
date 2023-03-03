@@ -82,7 +82,7 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 
 ## API
 
-### `ValidationError(message, details)`
+### `ValidationError(message[, details])`
 
 Main `ValidationError` class, extending native JavaScript `Error`.
 
@@ -136,7 +136,7 @@ const invalidErr = new Error('foobar');
 isValidationErrorLike(err); // returns false
 ```
 
-### `fromZodError(zodError, options)`
+### `fromZodError(zodError[, options])`
 
 Converts zod error to `ValidationError`.
 
@@ -150,7 +150,7 @@ Converts zod error to `ValidationError`.
   - `prefix` - _string_; prefix in user-friendly message (optional, defaults to `Validation error`)
   - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to `: `)
 
-### `toValidationError(options) => (error) => ValidationError`
+### `toValidationError([options]) => (error) => ValidationError`
 
 A curried version of `fromZodError` meant to be used for FP (Functional Programming).
 
