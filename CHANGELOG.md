@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 1.0.1
+
+### Patch Changes
+
+- b868741: Fix broken links in API docs
+
 ## 1.0.0
 
 ### Major Changes
