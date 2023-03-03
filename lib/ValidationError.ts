@@ -4,17 +4,16 @@ import { joinPath } from './utils/joinPath';
 
 export class ValidationError extends Error {
   details: Array<Zod.ZodIssue>;
-  type: 'ZodValidationError';
+  name: 'ZodValidationError';
 
-  constructor(
-    message: string,
-    options: {
-      details: Array<Zod.ZodIssue>;
-    }
-  ) {
+  constructor(message: string, details: Array<Zod.ZodIssue> | undefined = []) {
     super(message);
-    this.details = options.details;
-    this.type = 'ZodValidationError';
+    this.details = details;
+    this.name = 'ZodValidationError';
+  }
+
+  toString(): string {
+    return this.message;
   }
 }
 
@@ -74,9 +73,7 @@ export function fromZodError(
 
   const message = reason ? [prefix, reason].join(prefixSeparator) : prefix;
 
-  return new ValidationError(message, {
-    details: zodError.errors,
-  });
+  return new ValidationError(message, zodError.errors);
 }
 
 export const toValidationError =
@@ -98,7 +95,5 @@ export function isValidationError(err: unknown): err is ValidationError {
 }
 
 export function isValidationErrorLike(err: unknown): err is ValidationError {
-  return (
-    err instanceof Error && 'type' in err && err.type === 'ZodValidationError'
-  );
+  return err instanceof Error && err.name === 'ZodValidationError';
 }
