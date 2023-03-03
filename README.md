@@ -86,9 +86,9 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 - [isValidationError(error)](#isvalidationerror)
 - [isValidationErrorLike(error)](#isvalidationerrorlike)
 - [fromZodError(zodError[, options])](#fromzoderror)
-- [toValidationError([options])](#tovalidationerror)
+- [toValidationError([options]) => (error) => ValidationError](#tovalidationerror)
 
-### <a name="validationerror" href="validationerror">#</a>ValidationError(message[, details])
+### ValidationError
 
 Main `ValidationError` class, extending native JavaScript `Error`.
 
@@ -106,9 +106,13 @@ const error = new ValidationError('foobar');
 console.log(error instanceof Error); // prints true
 ```
 
-### <a name="isvalidationerror" href="isvalidationerror">#</a>isValidationError(error)
+### isValidationError
 
 A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) utility function, based on `instanceof` comparison.
+
+#### Arguments
+
+- `error` - error instance (required)
 
 #### Example
 
@@ -122,13 +126,17 @@ const invalidErr = new Error('foobar');
 isValidationError(err); // returns false
 ```
 
-### <a name="isvalidationerrorlike" href="isvalidationerrorlike">#</a>isValidationErrorLike(error)
+### isValidationErrorLike
 
 A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) utility function, based on heuristics comparison.
 
 Why do we need heuristics if we have `instanceof` comparison? Because of multi-version inconsistencies. For instance, it's possible that a dependency is using an older `zod-validation-error` version internally. In such case, the `instanceof` comparison will yield invalid results because module deduplication does not apply at npm/yarn level and the prototype is different.
 
 In most cases, it is safer to use `isValidationErrorLike` than `isValidationError`.
+
+#### Arguments
+
+- `error` - error instance (required)
 
 #### Example
 
@@ -142,7 +150,7 @@ const invalidErr = new Error('foobar');
 isValidationErrorLike(err); // returns false
 ```
 
-### <a name="fromzoderror" href="fromzoderror">#</a>fromZodError(zodError[, options])
+### fromZodError
 
 Converts zod error to `ValidationError`.
 
@@ -156,7 +164,7 @@ Converts zod error to `ValidationError`.
   - `prefix` - _string_; prefix in user-friendly message (optional, defaults to `Validation error`)
   - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to `: `)
 
-### <a name="tovalidationerror" href="tovalidationerror">#</a>toValidationError([options]) => (error) => ValidationError
+### toValidationError
 
 A curried version of `fromZodError` meant to be used for FP (Functional Programming).
 
