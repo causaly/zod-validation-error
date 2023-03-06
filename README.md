@@ -166,7 +166,7 @@ Converts zod error to `ValidationError`.
 
 ### toValidationError
 
-A curried version of `fromZodError` meant to be used for FP (Functional Programming). note it first takes the options object if needed and returns a function that converts the `zodError` to a `ValidationError` object
+A curried version of `fromZodError` meant to be used for FP (Functional Programming). Note it first takes the options object if needed and returns a function that converts the `zodError` to a `ValidationError` object
 
 ```js
 toValidationError(options) => (zodError) => ValidationError
