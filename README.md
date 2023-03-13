@@ -185,13 +185,13 @@ const zodSchema = zod
     id: zod.number().int().positive(),
     email: zod.string().email(),
   })
-  .brand<'MySchema'>();
+  .brand<'User'>();
 
-export type MySchema = zod.infer<typeof schema>;
+export type User = zod.infer<typeof zodSchema>;
 
 export function parse(
-  value: zod.input<typeof schema>
-): Either.Either<Error, MySchema> {
+  value: zod.input<typeof zodSchema>
+): Either.Either<Error, User> {
   return Either.tryCatch(() => schema.parse(value), toValidationError());
 }
 ```
