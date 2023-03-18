@@ -393,6 +393,50 @@ describe('fromZodError()', () => {
       }
     }
   });
+
+  test('handles special characters in property name', () => {
+    const schema = zod.object({
+      '.': zod.string(),
+      './*': zod.string(),
+    });
+
+    try {
+      schema.parse({
+        '.': 123,
+        './*': false,
+      });
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const validationError = fromZodError(err);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Expected string, received number at "["."]"; Expected string, received boolean at "["./*"]""`
+        );
+        expect(validationError.details).toMatchInlineSnapshot(`
+          [
+            {
+              "code": "invalid_type",
+              "expected": "string",
+              "message": "Expected string, received number",
+              "path": [
+                ".",
+              ],
+              "received": "number",
+            },
+            {
+              "code": "invalid_type",
+              "expected": "string",
+              "message": "Expected string, received boolean",
+              "path": [
+                "./*",
+              ],
+              "received": "boolean",
+            },
+          ]
+        `);
+      }
+    }
+  });
 });
 
 describe('isValidationError()', () => {
