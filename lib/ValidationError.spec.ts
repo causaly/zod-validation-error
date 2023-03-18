@@ -10,10 +10,10 @@ import {
 
 describe('fromZodError()', () => {
   test('handles zod.string() schema errors', () => {
-    const emailSchema = zod.string().email();
+    const schema = zod.string().email();
 
     try {
-      emailSchema.parse('foobar');
+      schema.parse('foobar');
     } catch (err) {
       if (err instanceof ZodError) {
         const validationError = fromZodError(err);
@@ -36,13 +36,13 @@ describe('fromZodError()', () => {
   });
 
   test('handles zod.object() schema errors', () => {
-    const objSchema = zod.object({
+    const schema = zod.object({
       id: zod.number().int().positive(),
       name: zod.string().min(2),
     });
 
     try {
-      objSchema.parse({
+      schema.parse({
         id: -1,
         name: 'a',
       });
@@ -84,10 +84,10 @@ describe('fromZodError()', () => {
   });
 
   test('handles zod.array() schema errors', () => {
-    const objSchema = zod.array(zod.number().int());
+    const schema = zod.array(zod.number().int());
 
     try {
-      objSchema.parse([1, 'a', true, 1.23]);
+      schema.parse([1, 'a', true, 1.23]);
     } catch (err) {
       if (err instanceof ZodError) {
         const validationError = fromZodError(err);
@@ -131,7 +131,7 @@ describe('fromZodError()', () => {
   });
 
   test('handles nested zod.object() schema errors', () => {
-    const objSchema = zod.object({
+    const schema = zod.object({
       id: zod.number().int().positive(),
       arr: zod.array(zod.number().int()),
       nestedObj: zod.object({
@@ -140,7 +140,7 @@ describe('fromZodError()', () => {
     });
 
     try {
-      objSchema.parse({
+      schema.parse({
         id: -1,
         arr: [1, 'a'],
         nestedObj: {
@@ -196,12 +196,12 @@ describe('fromZodError()', () => {
   });
 
   test('schema.parse() path param to be part of error message', () => {
-    const objSchema = zod.object({
+    const schema = zod.object({
       status: zod.literal('success'),
     });
 
     try {
-      objSchema.parse(
+      schema.parse(
         {},
         {
           path: ['custom-path'],
@@ -243,10 +243,10 @@ describe('fromZodError()', () => {
       status: zod.literal('error'),
     });
 
-    const objSchema = success.or(error);
+    const schema = success.or(error);
 
     try {
-      objSchema.parse({});
+      schema.parse({});
     } catch (err) {
       if (err instanceof ZodError) {
         const validationError = fromZodError(err);
@@ -299,12 +299,12 @@ describe('fromZodError()', () => {
   });
 
   test('handles zod.or() schema duplicate errors', () => {
-    const objSchema = zod.object({
+    const schema = zod.object({
       terms: zod.array(zod.string()).or(zod.string()),
     });
 
     try {
-      objSchema.parse({});
+      schema.parse({});
     } catch (err) {
       if (err instanceof ZodError) {
         const validationError = fromZodError(err);
@@ -359,10 +359,10 @@ describe('fromZodError()', () => {
       prop2: zod.literal('value2'),
     });
 
-    const objSchema = part1.and(part2);
+    const schema = part1.and(part2);
 
     try {
-      objSchema.parse({});
+      schema.parse({});
     } catch (err) {
       if (err instanceof ZodError) {
         const validationError = fromZodError(err);
