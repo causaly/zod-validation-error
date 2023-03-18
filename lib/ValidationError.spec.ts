@@ -93,7 +93,7 @@ describe('fromZodError()', () => {
         const validationError = fromZodError(err);
         expect(validationError).toBeInstanceOf(ValidationError);
         expect(validationError.message).toMatchInlineSnapshot(
-          `"Validation error: Expected number, received string at "[1]"; Expected number, received boolean at "[2]"; Expected integer, received float at "[3]""`
+          `"Validation error: Expected number, received string at index 1; Expected number, received boolean at index 2; Expected integer, received float at index 3"`
         );
         expect(validationError.details).toMatchInlineSnapshot(`
                   [
@@ -410,7 +410,7 @@ describe('fromZodError()', () => {
         const validationError = fromZodError(err);
         expect(validationError).toBeInstanceOf(ValidationError);
         expect(validationError.message).toMatchInlineSnapshot(
-          `"Validation error: Expected string, received number at "["."]"; Expected string, received boolean at "["./*"]""`
+          `"Validation error: Expected string, received number at "."; Expected string, received boolean at "./*""`
         );
         expect(validationError.details).toMatchInlineSnapshot(`
           [

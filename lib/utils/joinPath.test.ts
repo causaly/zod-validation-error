@@ -1,10 +1,6 @@
 import { joinPath } from './joinPath';
 
 describe('joinPath()', () => {
-  test('handles empty path', () => {
-    expect(joinPath([])).toEqual('');
-  });
-
   test('handles flat object path', () => {
     expect(joinPath(['a'])).toEqual('a');
   });
@@ -22,7 +18,7 @@ describe('joinPath()', () => {
   });
 
   test('handles numeric index', () => {
-    expect(joinPath([0])).toEqual('[0]');
+    expect(joinPath([0])).toEqual('0');
   });
 
   test('handles nested object path with numeric indices', () => {

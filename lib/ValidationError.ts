@@ -1,6 +1,7 @@
 import * as zod from 'zod';
 
 import { joinPath } from './utils/joinPath';
+import { isNonEmptyArray } from './utils/NonEmptyArray';
 
 export class ValidationError extends Error {
   details: Array<Zod.ZodIssue>;
@@ -38,7 +39,16 @@ function fromZodIssue(
       .join(unionSeparator);
   }
 
-  if (issue.path.length > 0) {
+  if (isNonEmptyArray(issue.path)) {
+    // handle array indices
+    if (issue.path.length === 1) {
+      const identifier = issue.path[0];
+
+      if (typeof identifier === 'number') {
+        return `${issue.message} at index ${identifier}`;
+      }
+    }
+
     return `${issue.message} at "${joinPath(issue.path)}"`;
   }
 
