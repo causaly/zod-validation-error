@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 1.1.0
+
+### Minor Changes
+
+- b693f52: Handle unicode and special-character identifiers
+
 ## 1.0.1
 
 ### Patch Changes
