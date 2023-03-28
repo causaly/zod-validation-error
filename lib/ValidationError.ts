@@ -55,15 +55,20 @@ function fromZodIssue(
   return issue.message;
 }
 
+export type ErrorFromZodError = zod.ZodError;
+export type OptionsFromZodError =
+  | {
+      maxIssuesInMessage?: number;
+      issueSeparator?: string;
+      unionSeparator?: string;
+      prefixSeparator?: string;
+      prefix?: string;
+    }
+  | undefined;
+
 export function fromZodError(
-  zodError: zod.ZodError,
-  options: {
-    maxIssuesInMessage?: number;
-    issueSeparator?: string;
-    unionSeparator?: string;
-    prefixSeparator?: string;
-    prefix?: string;
-  } = {}
+  zodError: ErrorFromZodError,
+  options: OptionsFromZodError = {}
 ): ValidationError {
   const {
     maxIssuesInMessage = 99, // I've got 99 problems but the b$tch ain't one
