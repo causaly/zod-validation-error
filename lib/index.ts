@@ -6,4 +6,7 @@ export {
   fromZodError,
 } from './ValidationError';
 
-export type { ErrorFromZodError, OptionsFromZodError } from './ValidationError';
+export type {
+  FromZodErrorZodError,
+  FromZodErrorOptions,
+} from './ValidationError';
