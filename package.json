@@ -35,20 +35,20 @@
   },
   "sideEffects": false,
   "engines": {
-    "node": "^14.17 || >=16.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build:cjs": "tsc -p ./tsconfig.build-cjs.json",
     "build:esm": "tsc -p ./tsconfig.build-esm.json",
     "build:types": "tsc -p ./tsconfig.build-types.json",
-    "build": "rimraf dist && concurrently \"yarn build:types\" \"yarn build:esm\" \"yarn build:cjs\"",
+    "build": "rimraf dist && concurrently \"npm run build:types\" \"npm run build:esm\" \"npm run build:cjs\"",
     "lint": "eslint lib --ext .ts",
     "format": "prettier --config ./.prettierrc --ignore-path .gitignore -w .",
     "test": "jest",
     "coverage": "jest --coverage",
     "changeset": "changeset",
-    "prerelease": "yarn build && yarn test",
+    "prerelease": "npm run build && npm run test",
     "release": "changeset publish"
   },
   "husky": {

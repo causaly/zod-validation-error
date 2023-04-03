@@ -30,10 +30,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - uses: actions/cache@v2
-        id: yarn-cache
+        id: npm-cache
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
 
       - uses: actions/cache@v2
         with:
@@ -41,11 +41,11 @@ jobs:
           key: ${{ runner.os }}-build-${{ github.sha }}
 
       - name: Install dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn --ignore-scripts --frozen-lockfile
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci --ignore-scripts
 
       - name: Build artifacts
-        run: yarn build
+        run: npm run build
 
   test_unit:
     name: test:unit
@@ -62,10 +62,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - uses: actions/cache@v2
-        id: yarn-cache
+        id: npm-cache
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
 
       - uses: actions/cache@v2
         with:
@@ -73,4 +73,4 @@ jobs:
           key: ${{ runner.os }}-build-${{ github.sha }}
 
       - name: Run tests
-        run: yarn test
+        run: npm run test
