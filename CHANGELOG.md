@@ -1,8 +1,8 @@
 # @causaly/zod-validation-error
 
-## 2.0.0
+## 1.2.0
 
-### Major Changes
+### Minor Changes
 
 - f3aa0b2: Better handling for single-item paths
 
