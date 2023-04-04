@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 1.2.1
+
+### Patch Changes
+
+- 449477d: Switch to using npm instead of yarn. Update node requirement to v.16+
+
 ## 1.2.0
 
 ### Minor Changes
