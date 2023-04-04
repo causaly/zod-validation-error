@@ -15,15 +15,13 @@ jobs:
           # This makes action fetch all Git history so that Changesets can generate changelogs with the correct commits
           fetch-depth: 0
 
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version-file: '.nvmrc'
 
       - name: Install Dependencies
         run: npm ci
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v1
