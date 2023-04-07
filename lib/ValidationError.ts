@@ -55,7 +55,7 @@ function fromZodIssue(
   return issue.message;
 }
 
-export type FromZodErrorZodError = zod.ZodError;
+export type ZodError = zod.ZodError;
 export type FromZodErrorOptions = {
   maxIssuesInMessage?: number;
   issueSeparator?: string;
@@ -65,7 +65,7 @@ export type FromZodErrorOptions = {
 };
 
 export function fromZodError(
-  zodError: FromZodErrorZodError,
+  zodError: ZodError,
   options: FromZodErrorOptions = {}
 ): ValidationError {
   const {
