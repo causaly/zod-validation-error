@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 1.3.0
+
+### Minor Changes
+
+- 8ccae09: Added exports of types for parameters of fromZodError function
+
 ## 1.2.1
 
 ### Patch Changes
