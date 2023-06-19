@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 1.3.1
+
+### Patch Changes
+
+- 218da5f: fix: casing typo of how zod namespace was referenced
+
 ## 1.3.0
 
 ### Minor Changes
