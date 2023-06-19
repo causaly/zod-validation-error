@@ -95,7 +95,7 @@ Main `ValidationError` class, extending native JavaScript `Error`.
 #### Arguments
 
 - `message` - _string_; error message (required)
-- `details` - _Array<Zod.ZodIssue>_; error details (optional)
+- `details` - _Array<zod.ZodIssue>_; error details (optional)
 
 #### Example
 

@@ -4,10 +4,10 @@ import { joinPath } from './utils/joinPath';
 import { isNonEmptyArray } from './utils/NonEmptyArray';
 
 export class ValidationError extends Error {
-  details: Array<Zod.ZodIssue>;
+  details: Array<zod.ZodIssue>;
   name: 'ZodValidationError';
 
-  constructor(message: string, details: Array<Zod.ZodIssue> | undefined = []) {
+  constructor(message: string, details: Array<zod.ZodIssue> | undefined = []) {
     super(message);
     this.details = details;
     this.name = 'ZodValidationError';
