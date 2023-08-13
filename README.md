@@ -85,6 +85,7 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 - [ValidationError(message[, details])](#validationerror)
 - [isValidationError(error)](#isvalidationerror)
 - [isValidationErrorLike(error)](#isvalidationerrorlike)
+- [fromZodIssue(zodIssue[, options])](#fromzodissue)
 - [fromZodError(zodError[, options])](#fromzoderror)
 - [toValidationError([options]) => (error) => ValidationError](#tovalidationerror)
 
@@ -130,7 +131,7 @@ isValidationError(err); // returns false
 
 A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) utility function, based on heuristics comparison.
 
-Why do we need heuristics if we have `instanceof` comparison? Because of multi-version inconsistencies. For instance, it's possible that a dependency is using an older `zod-validation-error` version internally. In such case, the `instanceof` comparison will yield invalid results because module deduplication does not apply at npm/yarn level and the prototype is different.
+_Why do we need heuristics if we have `instanceof` comparison?_ Because of multi-version inconsistencies. For instance, it's possible that a dependency is using an older `zod-validation-error` version internally. In such case, the `instanceof` comparison will yield invalid results because module deduplication does not apply at npm/yarn level and the prototype is different.
 
 In most cases, it is safer to use `isValidationErrorLike` than `isValidationError`.
 
@@ -150,19 +151,34 @@ const invalidErr = new Error('foobar');
 isValidationErrorLike(err); // returns false
 ```
 
+### fromZodIssue
+
+Converts a single zod issue to `ValidationError`.
+
+#### Arguments
+
+- `zodIssue` - _zod.ZodIssue_; a ZodIssue instance (required)
+- `options` - _Object_; formatting options (optional)
+  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
+  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
+  - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
+  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
+
 ### fromZodError
 
 Converts zod error to `ValidationError`.
+
+_Why is the difference between `ZodError` and `ZodIssue`?_ A `ZodError` is a collection of 1 or more `ZodIssue` instances. It's what you get when you call `zodSchema.parse()`.
 
 #### Arguments
 
 - `zodError` - _zod.ZodError_; a ZodError instance (required)
 - `options` - _Object_; formatting options (optional)
-  - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to `99`)
-  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to `;`)
-  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to `, or`)
-  - `prefix` - _string_; prefix in user-friendly message (optional, defaults to `Validation error`)
-  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to `: `)
+  - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
+  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
+  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
+  - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
+  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
 
 ### toValidationError
 

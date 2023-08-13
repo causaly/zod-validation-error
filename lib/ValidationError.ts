@@ -3,6 +3,15 @@ import * as zod from 'zod';
 import { joinPath } from './utils/joinPath';
 import { isNonEmptyArray } from './utils/NonEmptyArray';
 
+const MAX_ISSUES_IN_MESSAGE = 99; // I've got 99 problems but the b$tch ain't one
+const ISSUE_SEPARATOR = '; ';
+const UNION_SEPARATOR = ', or ';
+const PREFIX = 'Validation error';
+const PREFIX_SEPARATOR = ': ';
+
+export type ZodError = zod.ZodError;
+export type ZodIssue = zod.ZodIssue;
+
 export class ValidationError extends Error {
   details: Array<zod.ZodIssue>;
   name: 'ZodValidationError';
@@ -18,8 +27,8 @@ export class ValidationError extends Error {
   }
 }
 
-function fromZodIssue(
-  issue: zod.ZodIssue,
+function getMessageFromZodIssue(
+  issue: ZodIssue,
   issueSeparator: string,
   unionSeparator: string
 ): string {
@@ -27,7 +36,9 @@ function fromZodIssue(
     return issue.unionErrors
       .reduce<string[]>((acc, zodError) => {
         const newIssues = zodError.issues
-          .map((issue) => fromZodIssue(issue, issueSeparator, unionSeparator))
+          .map((issue) =>
+            getMessageFromZodIssue(issue, issueSeparator, unionSeparator)
+          )
           .join(issueSeparator);
 
         if (!acc.includes(newIssues)) {
@@ -55,13 +66,54 @@ function fromZodIssue(
   return issue.message;
 }
 
-export type ZodError = zod.ZodError;
-export type FromZodErrorOptions = {
-  maxIssuesInMessage?: number;
+function conditionallyPrefixMessage(
+  reason: string,
+  prefix: string | null,
+  prefixSeparator: string
+): string {
+  if (prefix !== null) {
+    if (reason.length > 0) {
+      return [prefix, reason].join(prefixSeparator);
+    }
+
+    return prefix;
+  }
+
+  if (reason.length > 0) {
+    return reason;
+  }
+
+  // if both reason and prefix are empty, return default prefix
+  // to avoid having an empty error message
+  return PREFIX;
+}
+
+export type FromZodIssueOptions = {
   issueSeparator?: string;
   unionSeparator?: string;
+  prefix?: string | null;
   prefixSeparator?: string;
-  prefix?: string;
+};
+
+export function fromZodIssue(
+  issue: ZodIssue,
+  options: FromZodIssueOptions = {}
+): ValidationError {
+  const {
+    issueSeparator = ISSUE_SEPARATOR,
+    unionSeparator = UNION_SEPARATOR,
+    prefixSeparator = PREFIX_SEPARATOR,
+    prefix = PREFIX,
+  } = options;
+
+  const reason = getMessageFromZodIssue(issue, issueSeparator, unionSeparator);
+  const message = conditionallyPrefixMessage(reason, prefix, prefixSeparator);
+
+  return new ValidationError(message, [issue]);
+}
+
+export type FromZodErrorOptions = FromZodIssueOptions & {
+  maxIssuesInMessage?: number;
 };
 
 export function fromZodError(
@@ -69,22 +121,24 @@ export function fromZodError(
   options: FromZodErrorOptions = {}
 ): ValidationError {
   const {
-    maxIssuesInMessage = 99, // I've got 99 problems but the b$tch ain't one
-    issueSeparator = '; ',
-    unionSeparator = ', or ',
-    prefixSeparator = ': ',
-    prefix = 'Validation error',
+    maxIssuesInMessage = MAX_ISSUES_IN_MESSAGE,
+    issueSeparator = ISSUE_SEPARATOR,
+    unionSeparator = UNION_SEPARATOR,
+    prefixSeparator = PREFIX_SEPARATOR,
+    prefix = PREFIX,
   } = options;
 
   const reason = zodError.errors
     // limit max number of issues printed in the reason section
     .slice(0, maxIssuesInMessage)
     // format error message
-    .map((issue) => fromZodIssue(issue, issueSeparator, unionSeparator))
+    .map((issue) =>
+      getMessageFromZodIssue(issue, issueSeparator, unionSeparator)
+    )
     // concat as string
     .join(issueSeparator);
 
-  const message = reason ? [prefix, reason].join(prefixSeparator) : prefix;
+  const message = conditionallyPrefixMessage(reason, prefix, prefixSeparator);
 
   return new ValidationError(message, zodError.errors);
 }
