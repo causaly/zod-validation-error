@@ -4,6 +4,9 @@ export {
   isValidationError,
   isValidationErrorLike,
   fromZodError,
+  fromZodIssue,
+  type ZodError,
+  type ZodIssue,
+  type FromZodErrorOptions,
+  type FromZodIssueOptions,
 } from './ValidationError';
-
-export type { ZodError, FromZodErrorOptions } from './ValidationError';

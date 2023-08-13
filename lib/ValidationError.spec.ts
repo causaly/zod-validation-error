@@ -3,10 +3,39 @@ import { ZodError } from 'zod';
 
 import {
   fromZodError,
+  fromZodIssue,
   isValidationError,
   isValidationErrorLike,
   ValidationError,
 } from './ValidationError';
+
+describe('fromZodIssue()', () => {
+  test('handles zod.string() schema errors', () => {
+    const schema = zod.string().email();
+
+    try {
+      schema.parse('foobar');
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const validationError = fromZodIssue(err.issues[0]);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Invalid email"`
+        );
+        expect(validationError.details).toMatchInlineSnapshot(`
+                  [
+                    {
+                      "code": "invalid_string",
+                      "message": "Invalid email",
+                      "path": [],
+                      "validation": "email",
+                    },
+                  ]
+              `);
+      }
+    }
+  });
+});
 
 describe('fromZodError()', () => {
   test('handles zod.string() schema errors', () => {
