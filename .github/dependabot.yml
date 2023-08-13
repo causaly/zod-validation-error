@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+      time: '06:00'
+      timezone: 'Europe/London'
+    versioning-strategy: 'increase-if-necessary'
+    commit-message:
+      prefix: 'chore'
+    labels:
+      - 'dependencies'
+    open-pull-requests-limit: 3
+    pull-request-branch-name:
+      separator: '-'
+    reviewers:
+      - 'jmike'
+      - 'nikoskalogridis'
+    target-branch: 'main'
