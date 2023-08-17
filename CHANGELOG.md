@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 1.4.0
+
+### Minor Changes
+
+- 8893d16: Expose fromZodIssue method
+
 ## 1.3.1
 
 ### Patch Changes
