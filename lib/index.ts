@@ -9,4 +9,5 @@ export {
   type ZodIssue,
   type FromZodErrorOptions,
   type FromZodIssueOptions,
+  errorMap,
 } from './ValidationError';
