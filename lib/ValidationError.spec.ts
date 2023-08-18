@@ -253,6 +253,7 @@ describe('fromZodError()', () => {
                 "custom-path",
                 "status",
               ],
+              "received": undefined,
             },
           ]
         `);
@@ -408,6 +409,7 @@ describe('fromZodError()', () => {
               "path": [
                 "prop1",
               ],
+              "received": undefined,
             },
             {
               "code": "invalid_literal",
@@ -416,6 +418,7 @@ describe('fromZodError()', () => {
               "path": [
                 "prop2",
               ],
+              "received": undefined,
             },
           ]
         `);
