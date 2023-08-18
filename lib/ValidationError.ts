@@ -164,3 +164,16 @@ export function isValidationError(err: unknown): err is ValidationError {
 export function isValidationErrorLike(err: unknown): err is ValidationError {
   return err instanceof Error && err.name === 'ZodValidationError';
 }
+
+export const errorMap: zod.ZodErrorMap = (issue, ctx) => {
+  const error = fromZodIssue({
+    ...issue,
+    // fallback to the default error message
+    // when issue does not have a message
+    message: issue.message ?? ctx.defaultError,
+  });
+
+  return {
+    message: error.message,
+  };
+};

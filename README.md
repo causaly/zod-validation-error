@@ -83,6 +83,7 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 ## API
 
 - [ValidationError(message[, details])](#validationerror)
+- [errorMap](#errormap)
 - [isValidationError(error)](#isvalidationerror)
 - [isValidationErrorLike(error)](#isvalidationerrorlike)
 - [fromZodIssue(zodIssue[, options])](#fromzodissue)
@@ -105,6 +106,19 @@ const { ValidationError } = require('zod-validation-error');
 
 const error = new ValidationError('foobar');
 console.log(error instanceof Error); // prints true
+```
+
+### errorMap
+
+A custom error map to use with zod's `setErrorMap` method and get user-friendly messages automatically.
+
+#### Example
+
+```typescript
+import { z as zod } from 'zod';
+import { errorMap } from 'zod-validation-error';
+
+zod.setErrorMap(errorMap);
 ```
 
 ### isValidationError
@@ -255,6 +269,55 @@ function parseBuffer(buf: unknown): Buffer {
 
   return buf;
 }
+```
+
+### How to use `ValidationError` with custom "error map"
+
+Zod supports customizing error messages by providing a custom "error map". You may combine this with `zod-validation-error` to produce user-friendly messages.
+
+#### Example 1: produce user-friendly error messages using the `errorMap` property
+
+If all you need is to produce user-friendly error messages you may use the `errorMap` property.
+
+```typescript
+import { z as zod } from 'zod';
+import { errorMap } from 'zod-validation-error';
+
+zod.setErrorMap(errorMap);
+```
+
+#### Example 2: extra customization using `fromZodIssue`
+
+If you need to customize some error code, you may use the `fromZodIssue` function.
+
+```typescript
+import { z as zod } from 'zod';
+import { fromZodIssue } from 'zod-validation-error';
+
+const customErrorMap: zod.ZodErrorMap = (issue, ctx) => {
+  switch (issue.code) {
+    case ZodIssueCode.invalid_type: {
+      return {
+        message:
+          'Custom error message of your preference for invalid_type errors',
+      };
+    }
+    default: {
+      const validationError = fromZodIssue({
+        ...issue,
+        // fallback to the default error message
+        // when issue does not have a message
+        message: issue.message ?? ctx.defaultError,
+      });
+
+      return {
+        message: validationError.message,
+      };
+    }
+  }
+};
+
+zod.setErrorMap(customErrorMap);
 ```
 
 ### Does `zod-validation-error` support CommonJS
