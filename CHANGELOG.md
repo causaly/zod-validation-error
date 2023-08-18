@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 1.5.0
+
+### Minor Changes
+
+- 82b7739: Expose errorMap property to use with zod.setErrorMap() method
+
 ## 1.4.0
 
 ### Minor Changes
