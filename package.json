@@ -49,13 +49,8 @@
     "coverage": "jest --coverage",
     "changeset": "changeset",
     "prerelease": "npm run build && npm run test",
-    "release": "changeset publish"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
-    }
+    "release": "changeset publish",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
