@@ -66,7 +66,7 @@
     "@types/jest": "^29.2.4",
     "@types/node": "^20.5.0",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "@typescript-eslint/parser": "^5.59.11",
+    "@typescript-eslint/parser": "^6.4.1",
     "concurrently": "^8.2.0",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^9.0.0",
