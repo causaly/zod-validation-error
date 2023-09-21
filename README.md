@@ -19,6 +19,7 @@ npm install zod-validation-error
 #### Requirements
 
 - Node.js v.16+
+- TypeScript v.4.5+
 
 ## Quick start
 
