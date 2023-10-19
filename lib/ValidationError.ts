@@ -145,16 +145,16 @@ export function fromZodError(
 
 export const toValidationError =
   (options: Parameters<typeof fromZodError>[1] = {}) =>
-  (err: unknown): ValidationError | Error => {
+  (err: unknown): ValidationError => {
     if (err instanceof zod.ZodError) {
       return fromZodError(err, options);
     }
 
     if (err instanceof Error) {
-      return err;
+      return new ValidationError(err.message);
     }
 
-    return new Error('Unknown error');
+    return new ValidationError('Unknown error');
   };
 
 export function isValidationError(err: unknown): err is ValidationError {
