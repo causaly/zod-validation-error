@@ -1,5 +1,13 @@
 # @causaly/zod-validation-error
 
+## 2.0.0
+
+### Major Changes
+
+- b199ca1: Update `toValidationError()` to return only `ValidationError` instances
+
+  This change only affects users of `toValidationError()`. The method was previously returning `Error | ValidationError` and now returns only `ValidationError`.
+
 ## 1.5.0
 
 ### Minor Changes
