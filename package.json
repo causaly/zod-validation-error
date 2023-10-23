@@ -62,7 +62,7 @@
     "@changesets/changelog-github": "^0.4.2",
     "@changesets/cli": "^2.18.1",
     "@commitlint/cli": "^18.0.0",
-    "@commitlint/config-conventional": "^17.7.0",
+    "@commitlint/config-conventional": "^18.0.0",
     "@types/jest": "^29.2.4",
     "@types/node": "^20.5.0",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
