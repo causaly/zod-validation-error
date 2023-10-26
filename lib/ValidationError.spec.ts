@@ -35,6 +35,26 @@ describe('fromZodIssue()', () => {
       }
     }
   });
+
+  test('respects `includePath` prop when set to `false`', () => {
+    const schema = zod.object({
+      name: zod.string().min(3, '"Name" must be at least 3 characters'),
+    });
+
+    try {
+      schema.parse({ name: 'jo' });
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const validationError = fromZodIssue(err.issues[0], {
+          includePath: false,
+        });
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: "Name" must be at least 3 characters"`
+        );
+      }
+    }
+  });
 });
 
 describe('fromZodError()', () => {
@@ -466,6 +486,24 @@ describe('fromZodError()', () => {
             },
           ]
         `);
+      }
+    }
+  });
+
+  test('respects `includePath` prop when set to `false`', () => {
+    const schema = zod.object({
+      name: zod.string().min(3, '"Name" must be at least 3 characters'),
+    });
+
+    try {
+      schema.parse({ name: 'jo' });
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const validationError = fromZodError(err, { includePath: false });
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: "Name" must be at least 3 characters"`
+        );
       }
     }
   });
