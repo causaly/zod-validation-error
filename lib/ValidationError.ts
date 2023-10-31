@@ -27,17 +27,25 @@ export class ValidationError extends Error {
   }
 }
 
-function getMessageFromZodIssue(
-  issue: ZodIssue,
-  issueSeparator: string,
-  unionSeparator: string
-): string {
+function getMessageFromZodIssue(props: {
+  issue: ZodIssue;
+  issueSeparator: string;
+  unionSeparator: string;
+  includePath: boolean;
+}): string {
+  const { issue, issueSeparator, unionSeparator, includePath } = props;
+
   if (issue.code === 'invalid_union') {
     return issue.unionErrors
       .reduce<string[]>((acc, zodError) => {
         const newIssues = zodError.issues
           .map((issue) =>
-            getMessageFromZodIssue(issue, issueSeparator, unionSeparator)
+            getMessageFromZodIssue({
+              issue,
+              issueSeparator,
+              unionSeparator,
+              includePath,
+            })
           )
           .join(issueSeparator);
 
@@ -50,7 +58,7 @@ function getMessageFromZodIssue(
       .join(unionSeparator);
   }
 
-  if (isNonEmptyArray(issue.path)) {
+  if (includePath && isNonEmptyArray(issue.path)) {
     // handle array indices
     if (issue.path.length === 1) {
       const identifier = issue.path[0];
@@ -93,6 +101,7 @@ export type FromZodIssueOptions = {
   unionSeparator?: string;
   prefix?: string | null;
   prefixSeparator?: string;
+  includePath?: boolean;
 };
 
 export function fromZodIssue(
@@ -104,9 +113,15 @@ export function fromZodIssue(
     unionSeparator = UNION_SEPARATOR,
     prefixSeparator = PREFIX_SEPARATOR,
     prefix = PREFIX,
+    includePath = true,
   } = options;
 
-  const reason = getMessageFromZodIssue(issue, issueSeparator, unionSeparator);
+  const reason = getMessageFromZodIssue({
+    issue,
+    issueSeparator,
+    unionSeparator,
+    includePath,
+  });
   const message = conditionallyPrefixMessage(reason, prefix, prefixSeparator);
 
   return new ValidationError(message, [issue]);
@@ -126,6 +141,7 @@ export function fromZodError(
     unionSeparator = UNION_SEPARATOR,
     prefixSeparator = PREFIX_SEPARATOR,
     prefix = PREFIX,
+    includePath = true,
   } = options;
 
   const reason = zodError.errors
@@ -133,7 +149,12 @@ export function fromZodError(
     .slice(0, maxIssuesInMessage)
     // format error message
     .map((issue) =>
-      getMessageFromZodIssue(issue, issueSeparator, unionSeparator)
+      getMessageFromZodIssue({
+        issue,
+        issueSeparator,
+        unionSeparator,
+        includePath,
+      })
     )
     // concat as string
     .join(issueSeparator);

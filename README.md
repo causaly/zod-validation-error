@@ -178,6 +178,7 @@ Converts a single zod issue to `ValidationError`.
   - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
   - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
   - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
+  - `includePath` - _boolean_; used to provide control on whether to include the erroneous property name suffix or not (optional, defaults to `true`).
 
 ### fromZodError
 
@@ -194,6 +195,7 @@ _Why is the difference between `ZodError` and `ZodIssue`?_ A `ZodError` is a col
   - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
   - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
   - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
+  - `includePath` - _boolean_; used to provide control on whether to include the erroneous property name suffix or not (optional, defaults to `true`).
 
 ### toValidationError
 
