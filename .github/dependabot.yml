@@ -7,6 +7,11 @@ updates:
       time: '06:00'
       timezone: 'Europe/London'
     versioning-strategy: 'increase-if-necessary'
+    ignore:
+      # for all deps
+      - dependency-name: "*"
+        # ...ignore major updates
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: 'chore'
     labels:
