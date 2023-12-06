@@ -45,6 +45,8 @@ try {
   // you may print it to console
   // or return it via an API
   console.log(validationError);
+  // and in case you want to get the actual error message
+  console.log(validationError.message);
 }
 ```
 
