@@ -21,5 +21,5 @@ updates:
       separator: '-'
     reviewers:
       - 'jmike'
-      - 'libekonst'
-    target-branch: 'master'
+      - 'nikoskalogridis'
+    target-branch: 'main'
