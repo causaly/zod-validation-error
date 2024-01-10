@@ -9,7 +9,7 @@ describe('ValidationError', () => {
 
       const err = new ValidationError(message);
       expect(err.message).toBe(message);
-      expect(err.issues).toEqual([]);
+      expect(err.details).toEqual([]);
     });
 
     test('accepts message with cause', () => {
@@ -19,7 +19,7 @@ describe('ValidationError', () => {
         cause: new Error('foobar'),
       });
       expect(err.message).toBe(message);
-      expect(err.issues).toEqual([]);
+      expect(err.details).toEqual([]);
     });
 
     test('accepts ZodError as cause', () => {
@@ -37,7 +37,7 @@ describe('ValidationError', () => {
         cause: new zod.ZodError(issues),
       });
       expect(err.message).toBe(message);
-      expect(err.issues).toEqual(issues);
+      expect(err.details).toEqual(issues);
     });
   });
 

@@ -17,7 +17,7 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Invalid email"`
         );
-        expect(validationError.issues).toMatchInlineSnapshot(`
+        expect(validationError.details).toMatchInlineSnapshot(`
             [
               {
                 "code": "invalid_string",
@@ -49,7 +49,7 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Number must be greater than 0 at "id"; String must contain at least 2 character(s) at "name""`
         );
-        expect(validationError.issues).toMatchInlineSnapshot(`
+        expect(validationError.details).toMatchInlineSnapshot(`
           [
             {
               "code": "too_small",
@@ -91,7 +91,7 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Expected number, received string at index 1; Expected number, received boolean at index 2; Expected integer, received float at index 3"`
         );
-        expect(validationError.issues).toMatchInlineSnapshot(`
+        expect(validationError.details).toMatchInlineSnapshot(`
             [
               {
                 "code": "invalid_type",
@@ -150,7 +150,7 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Number must be greater than 0 at "id"; Expected number, received string at "arr[1]"; String must contain at least 2 character(s) at "nestedObj.name""`
         );
-        expect(validationError.issues).toMatchInlineSnapshot(`
+        expect(validationError.details).toMatchInlineSnapshot(`
             [
               {
                 "code": "too_small",
@@ -210,7 +210,7 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Invalid literal value, expected "success" at "custom-path.status""`
         );
-        expect(validationError.issues).toMatchInlineSnapshot(`
+        expect(validationError.details).toMatchInlineSnapshot(`
           [
             {
               "code": "invalid_literal",
@@ -251,7 +251,7 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Invalid literal value, expected "success" at "status"; Required at "data", or Invalid literal value, expected "error" at "status""`
         );
-        expect(validationError.issues).toMatchInlineSnapshot(`
+        expect(validationError.details).toMatchInlineSnapshot(`
           [
             {
               "code": "invalid_union",
@@ -309,7 +309,7 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Required at "terms""`
         );
-        expect(validationError.issues).toMatchInlineSnapshot(`
+        expect(validationError.details).toMatchInlineSnapshot(`
           [
             {
               "code": "invalid_union",
@@ -367,7 +367,7 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Invalid literal value, expected "value1" at "prop1"; Invalid literal value, expected "value2" at "prop2""`
         );
-        expect(validationError.issues).toMatchInlineSnapshot(`
+        expect(validationError.details).toMatchInlineSnapshot(`
           [
             {
               "code": "invalid_literal",
@@ -411,7 +411,7 @@ describe('fromZodError()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Expected string, received number at "."; Expected string, received boolean at "./*""`
         );
-        expect(validationError.issues).toMatchInlineSnapshot(`
+        expect(validationError.details).toMatchInlineSnapshot(`
           [
             {
               "code": "invalid_type",
