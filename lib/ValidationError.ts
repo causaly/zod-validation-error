@@ -2,12 +2,12 @@ import * as zod from 'zod';
 
 export class ValidationError extends Error {
   name: 'ZodValidationError';
-  issues: Array<zod.ZodIssue>;
+  details: Array<zod.ZodIssue>;
 
   constructor(message?: string, options?: ErrorOptions) {
     super(message, options);
     this.name = 'ZodValidationError';
-    this.issues = getIssuesFromErrorOptions(options);
+    this.details = getIssuesFromErrorOptions(options);
   }
 
   toString(): string {

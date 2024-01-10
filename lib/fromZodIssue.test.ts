@@ -16,7 +16,7 @@ describe('fromZodIssue()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Invalid email"`
         );
-        expect(validationError.issues).toMatchInlineSnapshot(`
+        expect(validationError.details).toMatchInlineSnapshot(`
             [
               {
                 "code": "invalid_string",

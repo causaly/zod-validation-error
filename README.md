@@ -7,7 +7,7 @@ Wrap zod validation errors in user-friendly readable messages.
 #### Features
 
 - User-friendly readable messages, configurable via options;
-- Maintain original issues under `error.issues`;
+- Maintain original issues under `error.details`;
 - Extensive tests.
 
 ## Installation
@@ -129,7 +129,7 @@ const error = new ValidationError('foobar', {
   ]),
 });
 
-console.log(error.issues); // prints issues from zod error
+console.log(error.details); // prints issues from zod error
 ```
 
 ### errorMap
