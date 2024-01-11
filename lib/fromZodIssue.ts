@@ -6,6 +6,7 @@ import {
   PREFIX_SEPARATOR,
   UNION_SEPARATOR,
 } from './config';
+import { prefixMessage } from './prefixMessage';
 import { joinPath } from './utils/joinPath';
 import { isNonEmptyArray } from './utils/NonEmptyArray';
 import { ValidationError } from './ValidationError';
@@ -59,28 +60,6 @@ export function getMessageFromZodIssue(props: {
   return issue.message;
 }
 
-export function conditionallyPrefixMessage(
-  reason: string,
-  prefix: string | null,
-  prefixSeparator: string
-): string {
-  if (prefix !== null) {
-    if (reason.length > 0) {
-      return [prefix, reason].join(prefixSeparator);
-    }
-
-    return prefix;
-  }
-
-  if (reason.length > 0) {
-    return reason;
-  }
-
-  // if both reason and prefix are empty, return default prefix
-  // to avoid having an empty error message
-  return PREFIX;
-}
-
 export type FromZodIssueOptions = {
   issueSeparator?: string;
   unionSeparator?: string;
@@ -107,7 +86,7 @@ export function fromZodIssue(
     unionSeparator,
     includePath,
   });
-  const message = conditionallyPrefixMessage(reason, prefix, prefixSeparator);
+  const message = prefixMessage(reason, prefix, prefixSeparator);
 
   return new ValidationError(message, { cause: new zod.ZodError([issue]) });
 }
