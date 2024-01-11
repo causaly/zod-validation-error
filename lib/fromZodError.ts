@@ -7,11 +7,8 @@ import {
   PREFIX_SEPARATOR,
   UNION_SEPARATOR,
 } from './config';
-import {
-  conditionallyPrefixMessage,
-  FromZodIssueOptions,
-  getMessageFromZodIssue,
-} from './fromZodIssue';
+import { FromZodIssueOptions, getMessageFromZodIssue } from './fromZodIssue';
+import { prefixMessage } from './prefixMessage';
 import { ValidationError } from './ValidationError';
 
 export type ZodError = zod.ZodError;
@@ -53,7 +50,7 @@ export function fromZodError(
           // concat as string
           .join(issueSeparator);
 
-  const message = conditionallyPrefixMessage(reason, prefix, prefixSeparator);
+  const message = prefixMessage(reason, prefix, prefixSeparator);
 
   return new ValidationError(message, { cause: zodError });
 }
