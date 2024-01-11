@@ -100,8 +100,8 @@ Main `ValidationError` class, extending native JavaScript `Error`.
 #### Arguments
 
 - `message` - _string_; error message (required)
-- `options` - _ErrorOptions_; error options - see [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/Error#options) for further info (optional)
-  - `options.cause` - _ZodError_; original zod error or any other error (optional)
+- `options` - _ErrorOptions_; error options as per [JavaScript definition](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/Error#options) (optional)
+  - `options.cause` - _any_; can be used to hold the original zod error (optional)
 
 #### Example 1: construct new ValidationError with `message`
 
