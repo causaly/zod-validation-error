@@ -359,6 +359,18 @@ const customErrorMap: zod.ZodErrorMap = (issue, ctx) => {
 zod.setErrorMap(customErrorMap);
 ```
 
+### How to use `zod-validation-error` with `react-hook-form`?
+
+```typescript
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { errorMap } from 'zod-validation-error';
+
+useForm({
+  resolver: zodResolver(schema, { errorMap }),
+});
+```
+
 ### Does `zod-validation-error` support CommonJS
 
 Yes, `zod-validation-error` supports CommonJS out-of-the-box. All you need to do is import it using `require`.
