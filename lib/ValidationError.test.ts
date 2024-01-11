@@ -9,16 +9,19 @@ describe('ValidationError', () => {
 
       const err = new ValidationError(message);
       expect(err.message).toBe(message);
+      // @ts-ignore
+      expect(err.cause).toBeUndefined();
       expect(err.details).toEqual([]);
     });
 
     test('accepts message with cause', () => {
       const message = 'Invalid email coyote@acme';
+      const cause = new Error('foobar');
 
-      const err = new ValidationError(message, {
-        cause: new Error('foobar'),
-      });
+      const err = new ValidationError(message, { cause });
       expect(err.message).toBe(message);
+      // @ts-ignore
+      expect(err.cause).toEqual(cause);
       expect(err.details).toEqual([]);
     });
 
@@ -32,11 +35,14 @@ describe('ValidationError', () => {
           validation: 'email',
         },
       ];
+      const cause = new zod.ZodError(issues);
 
       const err = new ValidationError(message, {
-        cause: new zod.ZodError(issues),
+        cause,
       });
       expect(err.message).toBe(message);
+      // @ts-ignore
+      expect(err.cause).toEqual(cause);
       expect(err.details).toEqual(issues);
     });
   });
