@@ -41,12 +41,11 @@ try {
   });
 } catch (err) {
   const validationError = fromZodError(err);
-  // the error now is readable by the user
+  // the error is now readable by the user
   // you may print it to console
-  // or return it via an API
-  console.log(validationError);
-  // and in case you want to get the actual error message
   console.log(validationError.toString());
+  // or return it as an actual error
+  return validationError;
 }
 ```
 

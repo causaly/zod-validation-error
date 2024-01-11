@@ -7,9 +7,7 @@ describe('isValidationErrorLike()', () => {
   });
 
   test('returns true when argument resembles a ValidationError', () => {
-    const err = new Error('foobar');
-    err.name = 'ZodValidationError'; // force ZodValidationError
-
+    const err = new ValidationError('foobar');
     expect(isValidationErrorLike(err)).toEqual(true);
   });
 
