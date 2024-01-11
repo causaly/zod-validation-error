@@ -33,7 +33,7 @@ export function fromZodError(
     includePath = true,
   } = options;
 
-  const zodIssues = zodError.errors || [];
+  const zodIssues = zodError.errors;
 
   const reason =
     zodIssues.length === 0
