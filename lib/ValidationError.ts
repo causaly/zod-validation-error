@@ -1,5 +1,12 @@
 import * as zod from 'zod';
 
+// make zod-validation-error compatible with
+// earlier to es2022 typescript configurations
+// @see https://github.com/causaly/zod-validation-error/issues/226
+export interface ErrorOptions {
+  cause?: unknown;
+}
+
 export class ValidationError extends Error {
   name: 'ZodValidationError';
   details: Array<zod.ZodIssue>;

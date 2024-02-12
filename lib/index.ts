@@ -1,4 +1,4 @@
-export { ValidationError } from './ValidationError';
+export { ValidationError, type ErrorOptions } from './ValidationError';
 export { isValidationError } from './isValidationError';
 export { isValidationErrorLike } from './isValidationErrorLike';
 export { errorMap } from './errorMap';
