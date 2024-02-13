@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 3.0.2
+
+### Patch Changes
+
+- 24b773c: Revert package.json exports causing dependant projects to fail
+
 ## 3.0.1
 
 ### Patch Changes
