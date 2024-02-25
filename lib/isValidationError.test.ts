@@ -1,5 +1,5 @@
-import { isValidationError } from './isValidationError';
-import { ValidationError } from './ValidationError';
+import { isValidationError } from './isValidationError.ts';
+import { ValidationError } from './ValidationError.ts';
 
 describe('isValidationError()', () => {
   test('returns true when argument is instance of ValidationError', () => {

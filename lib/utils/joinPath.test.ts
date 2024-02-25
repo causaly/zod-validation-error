@@ -1,4 +1,4 @@
-import { joinPath } from './joinPath';
+import { joinPath } from './joinPath.ts';
 
 describe('joinPath()', () => {
   test('handles flat object path', () => {

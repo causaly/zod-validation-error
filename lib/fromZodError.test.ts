@@ -1,8 +1,8 @@
 import * as zod from 'zod';
 import { ZodError } from 'zod';
 
-import { fromZodError } from './fromZodError';
-import { ValidationError } from './ValidationError';
+import { fromZodError } from './fromZodError.ts';
+import { ValidationError } from './ValidationError.ts';
 
 describe('fromZodError()', () => {
   test('handles zod.string() schema errors', () => {

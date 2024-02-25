@@ -1,13 +1,23 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["esnext", "dom"],
+    "lib": [
+      "esnext",
+      "dom"
+    ],
     "moduleResolution": "node",
     "strict": true,
-    "declaration": false,
+    "declaration": true,
     "removeComments": true,
     "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": true
   },
-  "include": ["./lib/**/*.ts"],
-  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
+  "include": [
+    "./lib/**/*.ts"
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ],
 }

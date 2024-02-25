@@ -1,15 +1,15 @@
-export { ValidationError, type ErrorOptions } from './ValidationError';
-export { isValidationError } from './isValidationError';
-export { isValidationErrorLike } from './isValidationErrorLike';
-export { errorMap } from './errorMap';
+export { ValidationError, type ErrorOptions } from './ValidationError.ts';
+export { isValidationError } from './isValidationError.ts';
+export { isValidationErrorLike } from './isValidationErrorLike.ts';
+export { errorMap } from './errorMap.ts';
 export {
   fromZodIssue,
   type FromZodIssueOptions,
   type ZodIssue,
-} from './fromZodIssue';
+} from './fromZodIssue.ts';
 export {
   fromZodError,
   type FromZodErrorOptions,
   type ZodError,
-} from './fromZodError';
-export { toValidationError } from './toValidationError';
+} from './fromZodError.ts';
+export { toValidationError } from './toValidationError.ts';

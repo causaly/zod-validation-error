@@ -1,7 +1,7 @@
 import * as zod from 'zod';
 
-import { fromZodError } from './fromZodError';
-import { ValidationError } from './ValidationError';
+import { fromZodError } from './fromZodError.ts';
+import { ValidationError } from './ValidationError.ts';
 
 export const toValidationError =
   (options: Parameters<typeof fromZodError>[1] = {}) =>
