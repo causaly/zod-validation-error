@@ -13,15 +13,19 @@
     "url": "git://github.com/causaly/zod-validation-error.git"
   },
   "author": {
-    "name": "Causaly Team",
-    "email": "front-end@causaly.com",
-    "url": "https://www.causaly.com"
+    "name": "Dimitrios C. Michalakos",
+    "email": "dimitris@jmike.gr",
+    "url": "https://github.com/jmike"
   },
   "contributors": [
     {
-      "name": "Dimitrios C. Michalakos",
-      "email": "dimitris@jmike.gr",
-      "url": "https://github.com/jmike"
+      "name": "Thanos Karagiannis",
+      "email": "hey@maestros.io",
+      "url": "https://github.com/thanoskrg"
+    },
+    {
+      "name": "Nikos Kalogridis",
+      "url": "https://github.com/nikoskalogridis"
     }
   ],
   "main": "./dist/index.js",
