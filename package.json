@@ -24,9 +24,16 @@
       "url": "https://github.com/jmike"
     }
   ],
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -39,10 +46,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build:cjs": "tsc -p ./tsconfig.build-cjs.json",
-    "build:esm": "tsc -p ./tsconfig.build-esm.json",
-    "build:types": "tsc -p ./tsconfig.build-types.json",
-    "build": "rimraf dist && concurrently \"npm run build:types\" \"npm run build:esm\" \"npm run build:cjs\"",
+    "build": "tsup --config ./tsup.config.ts",
     "lint": "eslint lib --ext .ts",
     "format": "prettier --config ./.prettierrc --ignore-path .gitignore -w .",
     "test": "jest",
@@ -78,6 +82,7 @@
     "prettier": "^2.8.8",
     "rimraf": "^5.0.1",
     "ts-jest": "^29.0.3",
+    "tsup": "^8.0.2",
     "typescript": "^5.1.6",
     "zod": "^3.20.0"
   },
