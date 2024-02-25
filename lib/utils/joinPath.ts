@@ -1,4 +1,4 @@
-import { NonEmptyArray } from './NonEmptyArray';
+import type { NonEmptyArray } from './NonEmptyArray.ts';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers

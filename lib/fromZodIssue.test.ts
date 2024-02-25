@@ -1,7 +1,7 @@
 import * as zod from 'zod';
 
-import { fromZodIssue } from './fromZodIssue';
-import { ValidationError } from './ValidationError';
+import { fromZodIssue } from './fromZodIssue.ts';
+import { ValidationError } from './ValidationError.ts';
 
 describe('fromZodIssue()', () => {
   test('handles zod.string() schema errors', () => {

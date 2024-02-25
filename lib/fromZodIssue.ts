@@ -5,11 +5,11 @@ import {
   PREFIX,
   PREFIX_SEPARATOR,
   UNION_SEPARATOR,
-} from './config';
-import { prefixMessage } from './prefixMessage';
-import { joinPath } from './utils/joinPath';
-import { isNonEmptyArray } from './utils/NonEmptyArray';
-import { ValidationError } from './ValidationError';
+} from './config.ts';
+import { prefixMessage } from './prefixMessage.ts';
+import { joinPath } from './utils/joinPath.ts';
+import { isNonEmptyArray } from './utils/NonEmptyArray.ts';
+import { ValidationError } from './ValidationError.ts';
 
 export type ZodIssue = zod.ZodIssue;
 

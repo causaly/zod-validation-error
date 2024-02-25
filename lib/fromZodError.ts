@@ -1,15 +1,15 @@
-import * as zod from 'zod';
-
 import {
   ISSUE_SEPARATOR,
   MAX_ISSUES_IN_MESSAGE,
   PREFIX,
   PREFIX_SEPARATOR,
   UNION_SEPARATOR,
-} from './config';
-import { FromZodIssueOptions, getMessageFromZodIssue } from './fromZodIssue';
-import { prefixMessage } from './prefixMessage';
-import { ValidationError } from './ValidationError';
+} from './config.ts';
+import { getMessageFromZodIssue } from './fromZodIssue.ts';
+import { prefixMessage } from './prefixMessage.ts';
+import { ValidationError } from './ValidationError.ts';
+import type { FromZodIssueOptions } from './fromZodIssue.ts';
+import type * as zod from 'zod';
 
 export type ZodError = zod.ZodError;
 
