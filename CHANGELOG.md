@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 3.1.0
+
+### Minor Changes
+
+- 2f1ef27: Bundle distributable files and re-instantiate exports definition in package.json to help bundlers (e.g. rollup) identify the right module to use.
+
 ## 3.0.2
 
 ### Patch Changes
