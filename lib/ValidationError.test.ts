@@ -1,5 +1,4 @@
 import * as zod from 'zod';
-
 import { ValidationError } from './ValidationError.ts';
 
 describe('ValidationError', () => {
