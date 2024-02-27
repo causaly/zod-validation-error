@@ -1,10 +1,10 @@
 # @causaly/zod-validation-error
 
-## 3.1.0
+## 3.0.3
 
-### Minor Changes
+### Patch Changes
 
-- 2f1ef27: Bundle distributable files and re-instantiate exports definition in package.json to help bundlers (e.g. rollup) identify the right module to use.
+- 2f1ef27: Bundle code as a single index.js (cjs) or index.mjs (esm) file. Restore exports configuration in package.json.
 
 ## 3.0.2
 
