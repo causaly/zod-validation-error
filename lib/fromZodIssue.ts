@@ -44,6 +44,34 @@ export function getMessageFromZodIssue(props: {
       .join(unionSeparator);
   }
 
+  if (issue.code === 'invalid_arguments') {
+    return [
+      issue.message,
+      ...issue.argumentsError.issues.map((issue) =>
+        getMessageFromZodIssue({
+          issue,
+          issueSeparator,
+          unionSeparator,
+          includePath,
+        })
+      ),
+    ].join(issueSeparator);
+  }
+
+  if (issue.code === 'invalid_return_type') {
+    return [
+      issue.message,
+      ...issue.returnTypeError.issues.map((issue) =>
+        getMessageFromZodIssue({
+          issue,
+          issueSeparator,
+          unionSeparator,
+          includePath,
+        })
+      ),
+    ].join(issueSeparator);
+  }
+
   if (includePath && isNonEmptyArray(issue.path)) {
     // handle array indices
     if (issue.path.length === 1) {
