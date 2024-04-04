@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 3.1.0
+
+### Minor Changes
+
+- 3f5e391: Better error messages for zod.function() types
+
 ## 3.0.3
 
 ### Patch Changes
