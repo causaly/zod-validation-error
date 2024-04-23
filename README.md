@@ -25,7 +25,7 @@ npm install zod-validation-error
 
 ```typescript
 import { z as zod } from 'zod';
-import { fromZodError } from 'zod-validation-error';
+import { fromError } from 'zod-validation-error';
 
 // create zod schema
 const zodSchema = zod.object({
@@ -40,7 +40,7 @@ try {
     email: 'foobar', // note: invalid email
   });
 } catch (err) {
-  const validationError = fromZodError(err);
+  const validationError = fromError(err);
   // the error is now readable by the user
   // you may print it to console
   console.log(validationError.toString());
@@ -90,6 +90,7 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 - [isValidationErrorLike(error)](#isvalidationerrorlike)
 - [fromZodIssue(zodIssue[, options])](#fromzodissue)
 - [fromZodError(zodError[, options])](#fromzoderror)
+- [fromError(error[, options])](#fromerror)
 - [toValidationError([options]) => (error) => ValidationError](#tovalidationerror)
 
 ### ValidationError
@@ -212,6 +213,23 @@ _Why is the difference between `ZodError` and `ZodIssue`?_ A `ZodError` is a col
 #### Arguments
 
 - `zodError` - _zod.ZodError_; a ZodError instance (required)
+- `options` - _Object_; formatting options (optional)
+  - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
+  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
+  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
+  - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
+  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
+  - `includePath` - _boolean_; used to provide control on whether to include the erroneous property name suffix or not (optional, defaults to `true`).
+
+### fromError
+
+Converts an error to `ValidationError`.
+
+_Why is the difference between `fromError` and `fromZodError`?_ The `fromError` is a less strict version of `fromZodError` that can accept an unknown error and attempt to convert it to a `ValidationError`.
+
+#### Arguments
+
+- `error` - _unknown_; an error (required)
 - `options` - _Object_; formatting options (optional)
   - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
   - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")

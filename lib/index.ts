@@ -2,6 +2,7 @@ export { ValidationError, type ErrorOptions } from './ValidationError.ts';
 export { isValidationError } from './isValidationError.ts';
 export { isValidationErrorLike } from './isValidationErrorLike.ts';
 export { errorMap } from './errorMap.ts';
+export { fromError } from './fromError.ts';
 export {
   fromZodIssue,
   type FromZodIssueOptions,
