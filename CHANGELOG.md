@@ -1,5 +1,12 @@
 # @causaly/zod-validation-error
 
+## 3.2.0
+
+### Minor Changes
+
+- 6b4e8a0: Introduce `fromError` API which is a less strict version of `fromZodError`
+- 35a28c6: Add runtime check in `fromZodError` and throw dev-friendly `TypeError` suggesting usage of `fromError` instead
+
 ## 3.1.0
 
 ### Minor Changes
