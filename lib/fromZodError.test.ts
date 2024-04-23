@@ -465,7 +465,7 @@ describe('fromZodError()', () => {
       expect(err).toBeInstanceOf(TypeError);
       // @ts-expect-error
       expect(err.message).toMatchInlineSnapshot(
-        `"In order to use "fromZodError" the input should be of "ZodError" instance. Otherwise consider using the less strict "fromError""`
+        `"Invalid zodError param; expected instance of ZodError. Did you mean to use the "fromError" method instead?"`
       );
     }
   });

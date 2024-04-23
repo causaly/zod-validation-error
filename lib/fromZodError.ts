@@ -24,7 +24,7 @@ export function fromZodError(
 ): ValidationError {
   if (!(zodError instanceof zod.ZodError)) {
     throw new TypeError(
-      `In order to use "${fromZodError.name}" the input should be of "ZodError" instance. Otherwise consider using the less strict "${fromError.name}"`
+      `Invalid zodError param; expected instance of ZodError. Did you mean to use the "${fromError.name}" method instead?`
     );
   }
 
