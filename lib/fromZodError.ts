@@ -1,3 +1,4 @@
+import * as zod from 'zod';
 import {
   ISSUE_SEPARATOR,
   MAX_ISSUES_IN_MESSAGE,
@@ -8,8 +9,8 @@ import {
 import { getMessageFromZodIssue } from './fromZodIssue.ts';
 import { prefixMessage } from './prefixMessage.ts';
 import { ValidationError } from './ValidationError.ts';
+import { fromError } from './fromError.ts';
 import type { FromZodIssueOptions } from './fromZodIssue.ts';
-import type * as zod from 'zod';
 
 export type ZodError = zod.ZodError;
 
@@ -21,6 +22,12 @@ export function fromZodError(
   zodError: ZodError,
   options: FromZodErrorOptions = {}
 ): ValidationError {
+  if (!(zodError instanceof zod.ZodError)) {
+    throw new TypeError(
+      `In order to use "${fromZodError.name}" the input should be of "ZodError" instance. Otherwise consider using the less strict "${fromError.name}"`
+    );
+  }
+
   const {
     maxIssuesInMessage = MAX_ISSUES_IN_MESSAGE,
     issueSeparator = ISSUE_SEPARATOR,
