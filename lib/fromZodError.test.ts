@@ -454,4 +454,19 @@ describe('fromZodError()', () => {
       }
     }
   });
+
+  test('throws a dev-friendly TypeError on invalid input', () => {
+    const input = new Error("I wish I was a ZodError, but I'm not");
+
+    try {
+      // @ts-expect-error
+      fromZodError(input);
+    } catch (err) {
+      expect(err).toBeInstanceOf(TypeError);
+      // @ts-expect-error
+      expect(err.message).toMatchInlineSnapshot(
+        `"Invalid zodError param; expected instance of ZodError. Did you mean to use the "fromError" method instead?"`
+      );
+    }
+  });
 });
