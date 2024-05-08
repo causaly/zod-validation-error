@@ -1,6 +1,7 @@
 export { ValidationError, type ErrorOptions } from './ValidationError.ts';
 export { isValidationError } from './isValidationError.ts';
 export { isValidationErrorLike } from './isValidationErrorLike.ts';
+export { isZodErrorLike } from './isZodErrorLike.ts';
 export { errorMap } from './errorMap.ts';
 export { fromError } from './fromError.ts';
 export {

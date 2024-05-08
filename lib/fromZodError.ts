@@ -1,4 +1,3 @@
-import * as zod from 'zod';
 import {
   ISSUE_SEPARATOR,
   MAX_ISSUES_IN_MESSAGE,
@@ -10,6 +9,8 @@ import { getMessageFromZodIssue } from './fromZodIssue.ts';
 import { prefixMessage } from './prefixMessage.ts';
 import { ValidationError } from './ValidationError.ts';
 import { fromError } from './fromError.ts';
+import { isZodErrorLike } from './isZodErrorLike.ts';
+import type * as zod from 'zod';
 import type { FromZodIssueOptions } from './fromZodIssue.ts';
 
 export type ZodError = zod.ZodError;
@@ -22,12 +23,22 @@ export function fromZodError(
   zodError: ZodError,
   options: FromZodErrorOptions = {}
 ): ValidationError {
-  if (!(zodError instanceof zod.ZodError)) {
+  // perform runtime check to ensure the input is a ZodError
+  // why? because people have been historically using this function incorrectly
+  // and then complain on github that it doesn't work
+  if (!isZodErrorLike(zodError)) {
     throw new TypeError(
       `Invalid zodError param; expected instance of ZodError. Did you mean to use the "${fromError.name}" method instead?`
     );
   }
 
+  return fromZodErrorWithoutRuntimeCheck(zodError, options);
+}
+
+export function fromZodErrorWithoutRuntimeCheck(
+  zodError: ZodError,
+  options: FromZodErrorOptions = {}
+): ValidationError {
   const {
     maxIssuesInMessage = MAX_ISSUES_IN_MESSAGE,
     issueSeparator = ISSUE_SEPARATOR,

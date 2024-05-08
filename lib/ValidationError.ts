@@ -1,4 +1,5 @@
-import * as zod from 'zod';
+import { isZodErrorLike } from './isZodErrorLike.ts';
+import type * as zod from 'zod';
 
 // make zod-validation-error compatible with
 // earlier to es2022 typescript configurations
@@ -28,7 +29,7 @@ function getIssuesFromErrorOptions(
   if (options) {
     const cause = options.cause;
 
-    if (cause instanceof zod.ZodError) {
+    if (isZodErrorLike(cause)) {
       return cause.issues;
     }
   }
