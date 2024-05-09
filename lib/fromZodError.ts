@@ -25,7 +25,6 @@ export function fromZodError(
 ): ValidationError {
   // perform runtime check to ensure the input is a ZodError
   // why? because people have been historically using this function incorrectly
-  // and then complain on github that it doesn't work
   if (!isZodErrorLike(zodError)) {
     throw new TypeError(
       `Invalid zodError param; expected instance of ZodError. Did you mean to use the "${fromError.name}" method instead?`
