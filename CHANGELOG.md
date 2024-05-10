@@ -1,5 +1,13 @@
 # @causaly/zod-validation-error
 
+## 3.3.0
+
+### Minor Changes
+
+- 66f5b5d: Match `ZodError` via heuristics instead of relying on `instanceof`.
+
+  _Why?_ Because we want to ensure that zod-validation-error works smoothly even when multiple versions of zod have been installed in the same project.
+
 ## 3.2.0
 
 ### Minor Changes
