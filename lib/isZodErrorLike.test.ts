@@ -31,18 +31,51 @@ describe('isZodErrorLike()', () => {
     expect(isZodErrorLike(err)).toEqual(true);
   });
 
-  test('returns false when argument is generic Error', () => {
-    expect(isZodErrorLike(new Error('foobar'))).toEqual(false);
+  test('returns false when argument resembles a ZodError but does not have issues', () => {
+    const err = new CustomZodError('foobar');
+    // @ts-expect-error
+    err.issues = undefined;
+
+    expect(isZodErrorLike(err)).toEqual(false);
   });
 
-  test('returns false when argument is not an Error instance', () => {
-    expect(isZodErrorLike('foobar')).toEqual(false);
-    expect(isZodErrorLike(123)).toEqual(false);
-    expect(
-      isZodErrorLike({
-        name: 'ZodError',
-        issues: [],
-      })
-    ).toEqual(false);
+  test('returns false when argument resembles a ZodError but has the wrong name', () => {
+    const err = new CustomZodError('foobar');
+    err.name = 'foobar';
+
+    expect(isZodErrorLike(err)).toEqual(false);
+  });
+
+  test('returns false when argument is generic Error', () => {
+    const err = new Error('foobar');
+
+    expect(isZodErrorLike(err)).toEqual(false);
+  });
+
+  test('returns false when argument is string', () => {
+    const err = 'error message';
+
+    expect(isZodErrorLike(err)).toEqual(false);
+  });
+
+  test('returns false when argument is number', () => {
+    const err = 123;
+
+    expect(isZodErrorLike(err)).toEqual(false);
+  });
+
+  test('returns false when argument is object', () => {
+    const err = {};
+
+    expect(isZodErrorLike(err)).toEqual(false);
+  });
+
+  test('returns false when argument is object, even if it carries the same props as an actual ZodError', () => {
+    const err = {
+      name: 'ZodError',
+      issues: [],
+    };
+
+    expect(isZodErrorLike(err)).toEqual(false);
   });
 });
