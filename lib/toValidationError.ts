@@ -1,13 +1,15 @@
-import * as zod from 'zod';
-
-import { fromZodError } from './fromZodError.ts';
 import { ValidationError } from './ValidationError.ts';
+import { isZodErrorLike } from './isZodErrorLike.ts';
+import {
+  fromZodErrorWithoutRuntimeCheck,
+  type fromZodError,
+} from './fromZodError.ts';
 
 export const toValidationError =
   (options: Parameters<typeof fromZodError>[1] = {}) =>
   (err: unknown): ValidationError => {
-    if (err instanceof zod.ZodError) {
-      return fromZodError(err, options);
+    if (isZodErrorLike(err)) {
+      return fromZodErrorWithoutRuntimeCheck(err, options);
     }
 
     if (err instanceof Error) {

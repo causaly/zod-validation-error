@@ -2,6 +2,7 @@ import * as zod from 'zod';
 
 import { fromZodIssue } from './fromZodIssue.ts';
 import { ValidationError } from './ValidationError.ts';
+import { isZodErrorLike } from './isZodErrorLike.ts';
 
 describe('fromZodIssue()', () => {
   test('handles zod.string() schema errors', () => {
@@ -10,7 +11,7 @@ describe('fromZodIssue()', () => {
     try {
       schema.parse('foobar');
     } catch (err) {
-      if (err instanceof zod.ZodError) {
+      if (isZodErrorLike(err)) {
         const validationError = fromZodIssue(err.issues[0]);
         expect(validationError).toBeInstanceOf(ValidationError);
         expect(validationError.message).toMatchInlineSnapshot(
@@ -40,7 +41,7 @@ describe('fromZodIssue()', () => {
       // @ts-expect-error Intentionally wrong to exercise runtime checking
       fn('foo');
     } catch (err) {
-      if (err instanceof zod.ZodError) {
+      if (isZodErrorLike(err)) {
         const validationError = fromZodIssue(err.issues[0]);
         expect(validationError).toBeInstanceOf(ValidationError);
         expect(validationError.message).toMatchInlineSnapshot(
@@ -80,7 +81,7 @@ describe('fromZodIssue()', () => {
     try {
       fn();
     } catch (err) {
-      if (err instanceof zod.ZodError) {
+      if (isZodErrorLike(err)) {
         const validationError = fromZodIssue(err.issues[0]);
         expect(validationError).toBeInstanceOf(ValidationError);
         expect(validationError.message).toMatchInlineSnapshot(
@@ -116,7 +117,7 @@ describe('fromZodIssue()', () => {
     try {
       schema.parse({ name: 'jo' });
     } catch (err) {
-      if (err instanceof zod.ZodError) {
+      if (isZodErrorLike(err)) {
         const validationError = fromZodIssue(err.issues[0], {
           includePath: false,
         });
