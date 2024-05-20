@@ -6,7 +6,7 @@ import {
   UNION_SEPARATOR,
 } from './config.ts';
 import { getMessageFromZodIssue } from './fromZodIssue.ts';
-import { prefixMessage } from './prefixMessage.ts';
+import { prefixMessage } from './utils/prefixMessage.ts';
 import { ValidationError } from './ValidationError.ts';
 import { fromError } from './fromError.ts';
 import { isZodErrorLike } from './isZodErrorLike.ts';

@@ -1,4 +1,4 @@
-import { PREFIX } from './config.ts';
+import { PREFIX } from '../config.ts';
 
 export function prefixMessage(
   message: string,

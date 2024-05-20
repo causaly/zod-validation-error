@@ -6,7 +6,7 @@ import {
   PREFIX_SEPARATOR,
   UNION_SEPARATOR,
 } from './config.ts';
-import { prefixMessage } from './prefixMessage.ts';
+import { prefixMessage } from './utils/prefixMessage.ts';
 import { joinPath } from './utils/joinPath.ts';
 import { isNonEmptyArray } from './utils/NonEmptyArray.ts';
 import { ValidationError } from './ValidationError.ts';
