@@ -1,3 +1,4 @@
+import { escapeDoubleQuotes } from './escapeDoubleQuotes.ts';
 import type { NonEmptyArray } from './NonEmptyArray.ts';
 
 /**
@@ -18,7 +19,7 @@ export function joinPath(path: NonEmptyArray<string | number>): string {
 
     // handle quoted values
     if (item.includes('"')) {
-      return acc + '["' + escapeQuotes(item) + '"]';
+      return acc + '["' + escapeDoubleQuotes(item) + '"]';
     }
 
     // handle special characters
@@ -30,8 +31,4 @@ export function joinPath(path: NonEmptyArray<string | number>): string {
     const separator = acc.length === 0 ? '' : '.';
     return acc + separator + item;
   }, '');
-}
-
-function escapeQuotes(str: string): string {
-  return str.replace(/"/g, '\\"');
 }
