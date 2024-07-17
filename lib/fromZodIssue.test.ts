@@ -5,7 +5,7 @@ import { ValidationError } from './ValidationError.ts';
 import { isZodErrorLike } from './isZodErrorLike.ts';
 
 describe('fromZodIssue()', () => {
-  test('handles zod.string() schema errors', () => {
+  test('handles zod.string().email() schema errors', () => {
     const schema = zod.string().email();
 
     try {
@@ -26,6 +26,32 @@ describe('fromZodIssue()', () => {
                 "validation": "email",
               },
             ]
+        `);
+      }
+    }
+  });
+
+  test('handles zod.string().regex() with custom message schema errors', () => {
+    const schema = zod.string().regex(/foo/, 'Custom error message');
+
+    try {
+      schema.parse('bar');
+    } catch (err) {
+      if (isZodErrorLike(err)) {
+        const validationError = fromZodIssue(err.issues[0]);
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Custom error message"`
+        );
+        expect(validationError.details).toMatchInlineSnapshot(`
+          [
+            {
+              "code": "invalid_string",
+              "message": "Custom error message",
+              "path": [],
+              "validation": "regex",
+            },
+          ]
         `);
       }
     }

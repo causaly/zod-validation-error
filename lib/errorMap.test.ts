@@ -3,7 +3,7 @@ import * as zod from 'zod';
 import { makeErrorMap } from './errorMap.ts';
 
 describe('makeErrorMap()', () => {
-  test('maps invalid_enum_value issue', () => {
+  test('handles invalid_enum_value issue', () => {
     const schema = zod.enum(['foo', 'bar']);
 
     try {
@@ -131,6 +131,176 @@ describe('makeErrorMap()', () => {
             "received": "string",
             "path": [],
             "message": "Invalid type - expected number, received string"
+          }
+        ]]
+      `);
+    }
+  });
+
+  test('handles invalid_string issue with email validation', () => {
+    const schema = zod.string().email();
+
+    try {
+      schema.parse('abc', { errorMap: makeErrorMap() });
+    } catch (err) {
+      expect(err).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "validation": "email",
+            "code": "invalid_string",
+            "message": "Invalid string - does not match email validation",
+            "path": []
+          }
+        ]]
+      `);
+    }
+  });
+
+  test('handles invalid_string issue with endsWith validation', () => {
+    const schema = zod.string().endsWith('xyz');
+
+    try {
+      schema.parse('abc def', { errorMap: makeErrorMap() });
+    } catch (err) {
+      expect(err).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "invalid_string",
+            "validation": {
+              "endsWith": "xyz"
+            },
+            "message": "Invalid string - does not end with \\"xyz\\"",
+            "path": []
+          }
+        ]]
+      `);
+    }
+  });
+
+  test('handles invalid_string issue with startsWith validation', () => {
+    const schema = zod.string().startsWith('abc');
+
+    try {
+      schema.parse('def xyz', { errorMap: makeErrorMap() });
+    } catch (err) {
+      expect(err).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "invalid_string",
+            "validation": {
+              "startsWith": "abc"
+            },
+            "message": "Invalid string - does not start with \\"abc\\"",
+            "path": []
+          }
+        ]]
+      `);
+    }
+  });
+
+  test('handles invalid_string issue with includes validation', () => {
+    const schema = zod.string().includes('def');
+
+    try {
+      schema.parse('abc xyz', { errorMap: makeErrorMap() });
+    } catch (err) {
+      expect(err).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "invalid_string",
+            "validation": {
+              "includes": "def"
+            },
+            "message": "Invalid string - does not include \\"def\\"",
+            "path": []
+          }
+        ]]
+      `);
+    }
+  });
+
+  test('handles too_big issue', () => {
+    const schema = zod.string().max(2);
+
+    try {
+      schema.parse('abc', { errorMap: makeErrorMap() });
+    } catch (err) {
+      expect(err).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "too_big",
+            "maximum": 2,
+            "type": "string",
+            "inclusive": true,
+            "exact": false,
+            "message": "Invalid string - must contain at most 2 character(s)",
+            "path": []
+          }
+        ]]
+      `);
+    }
+  });
+
+  test('handles too_big issue with exact length', () => {
+    const schema = zod.string().length(2);
+
+    try {
+      schema.parse('abc', { errorMap: makeErrorMap() });
+    } catch (err) {
+      expect(err).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "too_big",
+            "maximum": 2,
+            "type": "string",
+            "inclusive": true,
+            "exact": true,
+            "message": "Invalid string - must contain exactly 2 character(s)",
+            "path": []
+          }
+        ]]
+      `);
+    }
+  });
+
+  test('handles too_small issue', () => {
+    const schema = zod.string().min(4);
+
+    try {
+      schema.parse('abc', { errorMap: makeErrorMap() });
+    } catch (err) {
+      expect(err).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "too_small",
+            "minimum": 4,
+            "type": "string",
+            "inclusive": true,
+            "exact": false,
+            "message": "Invalid string - must contain at least 4 character(s)",
+            "path": []
+          }
+        ]]
+      `);
+    }
+  });
+
+  test('handles too_small issue with exact length', () => {
+    const schema = zod.string().length(4);
+
+    try {
+      schema.parse('abc', { errorMap: makeErrorMap() });
+    } catch (err) {
+      expect(err).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "too_small",
+            "minimum": 4,
+            "type": "string",
+            "inclusive": true,
+            "exact": true,
+            "message": "Invalid string - must contain exactly 4 character(s)",
+            "path": []
           }
         ]]
       `);

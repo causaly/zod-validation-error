@@ -48,6 +48,12 @@ function mapIssue(
       return mapInvalidTypeIssue(issue, options);
     case 'invalid_union':
       return mapInvalidUnionIssue(issue, options);
+    case 'invalid_string':
+      return mapInvalidStringIssue(issue, options);
+    case 'too_big':
+      return mapTooBigIssue(issue, options);
+    case 'too_small':
+      return mapTooSmallIssue(issue, options);
     default:
       return { message: options.defaultError };
   }
@@ -67,6 +73,67 @@ function mapInvalidLiteralIssue(
   return {
     message: `Invalid literal value${atPath} - expected ${expected}, received ${received}`,
   };
+}
+
+// that's what she said...
+function mapTooBigIssue(
+  issue: zod.ZodTooBigIssue,
+  options: {
+    includePath: boolean;
+  }
+): { message: string } {
+  const atPath = getPathOrEmptyString(issue, options);
+  const atMostOrExactly = issue.exact ? 'exactly' : 'at most';
+
+  return {
+    message: `Invalid string${atPath} - must contain ${atMostOrExactly} ${issue.maximum} character(s)`,
+  };
+}
+
+function mapTooSmallIssue(
+  issue: zod.ZodTooSmallIssue,
+  options: {
+    includePath: boolean;
+  }
+): { message: string } {
+  const atPath = getPathOrEmptyString(issue, options);
+  const atLeastOrExactly = issue.exact ? 'exactly' : 'at least';
+
+  return {
+    message: `Invalid string${atPath} - must contain ${atLeastOrExactly} ${issue.minimum} character(s)`,
+  };
+}
+
+function mapInvalidStringIssue(
+  issue: zod.ZodInvalidStringIssue,
+  options: {
+    includePath: boolean;
+  }
+): { message: string } {
+  const validation = issue.validation;
+  const atPath = getPathOrEmptyString(issue, options);
+
+  return {
+    message: `Invalid string${atPath} - ${
+      issue.message ?? formatStringValidation(validation)
+    }`,
+  };
+}
+
+function formatStringValidation(validation: zod.StringValidation): string {
+  if (typeof validation === 'string') {
+    return `does not match ${validation} validation`;
+  }
+
+  if ('startsWith' in validation) {
+    return `does not start with "${validation.startsWith}"`;
+  }
+
+  if ('endsWith' in validation) {
+    return `does not end with "${validation.endsWith}"`;
+  }
+
+  return `does not include "${validation.includes}"`;
 }
 
 function mapInvalidEnumValueIssue(
