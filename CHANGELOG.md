@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 3.3.1
+
+### Patch Changes
+
+- 42bc4fe: Test Version Packages fix
+
 ## 3.3.0
 
 ### Minor Changes
