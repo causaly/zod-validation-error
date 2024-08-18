@@ -2,11 +2,11 @@ import { ValidationError } from './ValidationError.ts';
 import { isZodErrorLike } from './isZodErrorLike.ts';
 import {
   fromZodErrorWithoutRuntimeCheck,
-  type fromZodError,
+  type FromZodErrorOptions,
 } from './fromZodError.ts';
 
 export const toValidationError =
-  (options: Parameters<typeof fromZodError>[1] = {}) =>
+  (options: FromZodErrorOptions = {}) =>
   (err: unknown): ValidationError => {
     if (isZodErrorLike(err)) {
       return fromZodErrorWithoutRuntimeCheck(err, options);
