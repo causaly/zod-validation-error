@@ -1,3 +1,4 @@
+import * as zod from 'zod';
 import { type NonEmptyArray, isNonEmptyArray } from './utils/NonEmptyArray.ts';
 import { joinPath } from './utils/joinPath.ts';
 import {
@@ -7,7 +8,6 @@ import {
   PREFIX_SEPARATOR,
   UNION_SEPARATOR,
 } from './config.ts';
-import type * as zod from 'zod';
 
 export type ZodIssue = zod.ZodIssue;
 
@@ -61,7 +61,7 @@ function getMessageFromZodIssue(props: {
 }): string {
   const { issue, issueSeparator, unionSeparator, includePath } = props;
 
-  if (issue.code === 'invalid_union') {
+  if (issue.code === zod.ZodIssueCode.invalid_union) {
     return issue.unionErrors
       .reduce<string[]>((acc, zodError) => {
         const newIssues = zodError.issues
@@ -84,7 +84,7 @@ function getMessageFromZodIssue(props: {
       .join(unionSeparator);
   }
 
-  if (issue.code === 'invalid_arguments') {
+  if (issue.code === zod.ZodIssueCode.invalid_arguments) {
     return [
       issue.message,
       ...issue.argumentsError.issues.map((issue) =>
@@ -98,7 +98,7 @@ function getMessageFromZodIssue(props: {
     ].join(issueSeparator);
   }
 
-  if (issue.code === 'invalid_return_type') {
+  if (issue.code === zod.ZodIssueCode.invalid_return_type) {
     return [
       issue.message,
       ...issue.returnTypeError.issues.map((issue) =>
