@@ -85,6 +85,7 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 ## API
 
 - [ValidationError(message[, options])](#validationerror)
+- [createMessageBuilder(props)](#createMessageBuilder)
 - [errorMap](#errormap)
 - [isValidationError(error)](#isvalidationerror)
 - [isValidationErrorLike(error)](#isvalidationerrorlike)
@@ -130,6 +131,36 @@ const error = new ValidationError('foobar', {
 });
 
 console.log(error.details); // prints issues from zod error
+```
+
+### createMessageBuilder
+
+Creates zod-validation-error's default `MessageBuilder`, which is used to produce user-friendly error messages.
+
+Meant to be passed as an option to [fromError](#fromerror), [fromZodIssue](#fromzodissue), [fromZodError](#fromzoderror) or [toValidationError](#tovalidationerror).
+
+You may read more on the concept of the `MessageBuilder` further [below](#MessageBuilder).
+
+#### Arguments
+
+- `props` - _Object_; formatting options (optional)
+  - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
+  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
+  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
+  - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
+  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
+  - `includePath` - _boolean_; used to provide control on whether to include the erroneous property name suffix or not (optional, defaults to `true`).
+
+#### Example
+
+```typescript
+import { z as zod } from 'zod';
+import { createMessageBuilder } from 'zod-validation-error';
+
+const messageBuilder = createMessageBuilder({
+  includePath: false,
+  maxIssuesInMessage: 3
+});
 ```
 
 ### errorMap
@@ -200,12 +231,21 @@ _What is the difference between `fromError` and `fromZodError`?_ The `fromError`
 
 - `error` - _unknown_; an error (required)
 - `options` - _Object_; formatting options (optional)
+  - `messageBuilder` - _MessageBuilder_; a function that accepts an array of `zod.ZodIssue` objects and returns a user-friendly error message in the form of a `string` (optional).
+
+#### Notes
+
+Alternatively, you may pass the following `options` instead of a `messageBuilder`.
+
+- `options` - _Object_; formatting options (optional)
   - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
   - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
   - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
   - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
   - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
   - `includePath` - _boolean_; used to provide control on whether to include the erroneous property name suffix or not (optional, defaults to `true`).
+
+They will be passed as arguments to the [createMessageBuilder](#createMessageBuilder) function. The only reason they exist is to provide backwards-compatibility with older versions of `zod-validation-error`. They should however be considered deprecated and may be removed in the future.
 
 ### fromZodIssue
 
@@ -215,11 +255,20 @@ Converts a single zod issue to `ValidationError`.
 
 - `zodIssue` - _zod.ZodIssue_; a ZodIssue instance (required)
 - `options` - _Object_; formatting options (optional)
+  - `messageBuilder` - _MessageBuilder_; a function that accepts an array of `zod.ZodIssue` objects and returns a user-friendly error message in the form of a `string` (optional).
+
+#### Notes
+
+Alternatively, you may pass the following `options` instead of a `messageBuilder`.
+
+- `options` - _Object_; formatting options (optional)
   - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
   - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
   - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
   - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
   - `includePath` - _boolean_; used to provide control on whether to include the erroneous property name suffix or not (optional, defaults to `true`).
+
+They will be passed as arguments to the [createMessageBuilder](#createMessageBuilder) function. The only reason they exist is to provide backwards-compatibility with older versions of `zod-validation-error`. They should however be considered deprecated and may be removed in the future.
 
 ### fromZodError
 
@@ -231,12 +280,21 @@ _Why is the difference between `ZodError` and `ZodIssue`?_ A `ZodError` is a col
 
 - `zodError` - _zod.ZodError_; a ZodError instance (required)
 - `options` - _Object_; formatting options (optional)
-  - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
+  - `messageBuilder` - _MessageBuilder_; a function that accepts an array of `zod.ZodIssue` objects and returns a user-friendly error message in the form of a `string` (optional).
+
+#### Notes
+
+Alternatively, you may pass the following `options` instead of a `messageBuilder`.
+
+- `options` - _Object_; formatting options (optional)
+user-friendly message (optional, defaults to 99)
   - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
   - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
   - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
   - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
   - `includePath` - _boolean_; used to provide control on whether to include the erroneous property name suffix or not (optional, defaults to `true`).
+
+They will be passed as arguments to the [createMessageBuilder](#createMessageBuilder) function. The only reason they exist is to provide backwards-compatibility with older versions of `zod-validation-error`. They should however be considered deprecated and may be removed in the future.
 
 ### toValidationError
 
@@ -268,6 +326,56 @@ export function parse(
 ): Either.Either<ValidationError, User> {
   return Either.tryCatch(() => schema.parse(value), toValidationError());
 }
+```
+
+## MessageBuilder
+
+`zod-validation-error` can be configured with a custom `MessageBuilder` function in order to produce case-specific error messages.
+
+#### Example
+
+For instance, one might want to print the error messages to the console and color any `invalid_string` error with yellow.
+
+```typescript
+import { z as zod } from 'zod';
+import { type MessageBuilder, fromError } from 'zod-validation-error';
+import chalk from 'chalk';
+
+// create custom MessageBuilder
+const myMessageBuilder: MessageBuilder = (issues) => {
+  return issues
+    // format error message
+    .map((issue) => {
+      if (issue.code === zod.ZodIssueCode.invalid_string) {
+        return chalk.yellow(issue.message);
+      }
+
+      return issue.message;
+    })
+    // join as string with new-line character
+    .join('\n');
+}
+
+// create zod schema
+const zodSchema = zod.object({
+  id: zod.number().int().positive(),
+  email: zod.string().email(),
+});
+
+// parse some invalid value
+try {
+  zodSchema.parse({
+    id: 1,
+    email: 'foobar', // note: invalid string
+  });
+} catch (err) {
+  const validationError = fromError(err, {
+    messageBuilder: myMessageBuilder
+  });
+  // the error is now displayed with red letters
+  console.log(validationError.toString());
+}
+
 ```
 
 ## FAQ
