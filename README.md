@@ -168,11 +168,11 @@ isValidationError(err); // returns false
 
 ### isValidationErrorLike
 
-A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) utility function, based on heuristics comparison.
+A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) utility function, based on _heuristics_ comparison.
 
-_Why do we need heuristics if we have `instanceof` comparison?_ Because of multi-version inconsistencies. For instance, it's possible that a dependency is using an older `zod-validation-error` version internally. In such case, the `instanceof` comparison will yield invalid results because module deduplication does not apply at npm/yarn level and the prototype is different.
+_Why do we need heuristics since we can use a simple `instanceof` comparison?_ Because of multi-version inconsistencies. For instance, it's possible that a dependency is using an older `zod-validation-error` version internally. In such case, the `instanceof` comparison will yield invalid results because module deduplication does not apply at npm/yarn level and the prototype is different.
 
-In most cases, it is safer to use `isValidationErrorLike` than `isValidationError`.
+tl;dr if you are uncertain then it is preferable to use `isValidationErrorLike` instead of `isValidationError`.
 
 #### Arguments
 
@@ -194,7 +194,7 @@ isValidationErrorLike(err); // returns false
 
 Converts an error to `ValidationError`.
 
-_Why is the difference between `fromError` and `fromZodError`?_ The `fromError` is a less strict version of `fromZodError` that can accept an unknown error and attempt to convert it to a `ValidationError`.
+_What is the difference between `fromError` and `fromZodError`?_ The `fromError` function is a less strict version of `fromZodError`. It can accept an unknown error and attempt to convert it to a `ValidationError`.
 
 #### Arguments
 
