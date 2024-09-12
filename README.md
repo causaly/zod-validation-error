@@ -154,7 +154,6 @@ You may read more on the concept of the `MessageBuilder` further [below](#Messag
 #### Example
 
 ```typescript
-import { z as zod } from 'zod';
 import { createMessageBuilder } from 'zod-validation-error';
 
 const messageBuilder = createMessageBuilder({
@@ -334,7 +333,7 @@ export function parse(
 
 #### Example
 
-For instance, one might want to print the error messages to the console and color any `invalid_string` error with yellow.
+For instance, one may want to print `invalid_string` errors to the console in red color.
 
 ```typescript
 import { z as zod } from 'zod';
@@ -347,7 +346,7 @@ const myMessageBuilder: MessageBuilder = (issues) => {
     // format error message
     .map((issue) => {
       if (issue.code === zod.ZodIssueCode.invalid_string) {
-        return chalk.yellow(issue.message);
+        return chalk.red(issue.message);
       }
 
       return issue.message;
@@ -366,7 +365,7 @@ const zodSchema = zod.object({
 try {
   zodSchema.parse({
     id: 1,
-    email: 'foobar', // note: invalid string
+    email: 'foobar', // note: invalid email value
   });
 } catch (err) {
   const validationError = fromError(err, {
