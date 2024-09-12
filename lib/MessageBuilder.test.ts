@@ -4,7 +4,7 @@ import { createMessageBuilder } from './MessageBuilder.ts';
 import { isZodErrorLike } from './isZodErrorLike.ts';
 import { isNonEmptyArray } from './utils/NonEmptyArray.ts';
 
-describe('messageBuilder', () => {
+describe('MessageBuilder', () => {
   test('handles zod.string() schema errors', () => {
     const schema = zod.string().email();
 
