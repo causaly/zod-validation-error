@@ -89,6 +89,7 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 - [errorMap](#errormap)
 - [isValidationError(error)](#isvalidationerror)
 - [isValidationErrorLike(error)](#isvalidationerrorlike)
+- [isZodErrorLike(error)](#iszoderrorlike)
 - [fromError(error[, options])](#fromerror)
 - [fromZodIssue(zodIssue[, options])](#fromzodissue)
 - [fromZodError(zodError[, options])](#fromzoderror)
@@ -218,6 +219,39 @@ isValidationErrorLike(err); // returns true
 
 const invalidErr = new Error('foobar');
 isValidationErrorLike(err); // returns false
+```
+
+### isZodErrorLike
+
+A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) utility function, based on _heuristics_ comparison.
+
+_Why do we need heuristics since we can use a simple `instanceof` comparison?_ Because of multi-version inconsistencies. For instance, it's possible that a dependency is using an older `zod` version internally. In such case, the `instanceof` comparison will yield invalid results because module deduplication does not apply at npm/yarn level and the prototype is different.
+
+#### Arguments
+
+- `error` - error instance (required)
+
+#### Example
+
+```typescript
+import { z as zod } from 'zod';
+import { ValidationError, isZodErrorLike } from 'zod-validation-error';
+
+const zodValidationErr = new ValidationError('foobar');
+isZodErrorLike(zodValidationErr); // returns false
+
+const genericErr = new Error('foobar');
+isZodErrorLike(genericErr); // returns false
+
+const zodErr = new zod.ZodError([
+  {
+    code: zod.ZodIssueCode.custom,
+    path: [],
+    message: 'foobar',
+    fatal: true,
+  },
+]);
+isZodErrorLike(zodErr); // returns true
 ```
 
 ### fromError
