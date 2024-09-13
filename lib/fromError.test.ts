@@ -24,6 +24,26 @@ describe('fromError()', () => {
     );
   });
 
+  test('handles other ecmascript-native errors, such as ReferenceError', () => {
+    const error = new ReferenceError('Something went wrong');
+
+    const validationError = fromError(error);
+
+    expect(validationError).toMatchInlineSnapshot(
+      `[ZodValidationError: Something went wrong]`
+    );
+  });
+
+  test('handles other ecmascript-native errors, such as TypeError', () => {
+    const error = new TypeError('Something went wrong');
+
+    const validationError = fromError(error);
+
+    expect(validationError).toMatchInlineSnapshot(
+      `[ZodValidationError: Something went wrong]`
+    );
+  });
+
   test('handles a random input', () => {
     const error = 'I am pretending to be an error';
 
