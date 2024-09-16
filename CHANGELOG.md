@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 3.4.0
+
+### Minor Changes
+
+- 3a7928c: Customize error messages using a MessageBuilder.
+
 ## 3.3.1
 
 ### Patch Changes
