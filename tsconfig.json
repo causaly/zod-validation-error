@@ -11,7 +11,10 @@
     "removeComments": true,
     "esModuleInterop": true,
     "allowImportingTsExtensions": true,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "types": [
+      "vitest/globals"
+    ],
   },
   "include": [
     "./lib/**/*.ts"
