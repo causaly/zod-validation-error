@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 3.4.1
+
+### Patch Changes
+
+- 94d5f3b: Bump zod to v.3.24.4 in package.json as dev + peer dependency
+
 ## 3.4.0
 
 ### Minor Changes
