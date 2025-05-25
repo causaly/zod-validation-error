@@ -5,33 +5,48 @@ import type { NonEmptyArray } from './NonEmptyArray.ts';
  */
 const identifierRegex = /[$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*/u;
 
-export function joinPath(path: NonEmptyArray<string | number>): string {
+export function joinPath(path: NonEmptyArray<PropertyKey>): string {
   if (path.length === 1) {
-    return path[0].toString();
+    let propertyKey = path[0];
+
+    if (typeof propertyKey === 'symbol') {
+      propertyKey = stringifySymbol(propertyKey);
+    }
+
+    return propertyKey.toString() || '""';
   }
 
-  return path.reduce<string>((acc, item) => {
+  return path.reduce<string>((acc, propertyKey) => {
     // handle numeric indices
-    if (typeof item === 'number') {
-      return acc + '[' + item.toString() + ']';
+    if (typeof propertyKey === 'number') {
+      return acc + '[' + propertyKey.toString() + ']';
+    }
+
+    // handle symbols
+    if (typeof propertyKey === 'symbol') {
+      propertyKey = stringifySymbol(propertyKey);
     }
 
     // handle quoted values
-    if (item.includes('"')) {
-      return acc + '["' + escapeQuotes(item) + '"]';
+    if (propertyKey.includes('"')) {
+      return acc + '["' + escapeQuotes(propertyKey) + '"]';
     }
 
     // handle special characters
-    if (!identifierRegex.test(item)) {
-      return acc + '["' + item + '"]';
+    if (!identifierRegex.test(propertyKey)) {
+      return acc + '["' + propertyKey + '"]';
     }
 
     // handle normal values
     const separator = acc.length === 0 ? '' : '.';
-    return acc + separator + item;
+    return acc + separator + propertyKey;
   }, '');
 }
 
 function escapeQuotes(str: string): string {
   return str.replace(/"/g, '\\"');
+}
+
+function stringifySymbol(symbol: symbol): string {
+  return symbol.description ?? '';
 }
