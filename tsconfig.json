@@ -1,22 +1,17 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [
-      "esnext",
-      "dom"
-    ],
-    "moduleResolution": "node",
+    "lib": ["esnext", "dom"],
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
     "strict": true,
     "declaration": true,
     "removeComments": true,
     "esModuleInterop": true,
     "allowImportingTsExtensions": true,
     "emitDeclarationOnly": true,
-    "types": [
-      "vitest/globals"
-    ],
+    "erasableSyntaxOnly": true,
+    "types": ["vitest/globals"]
   },
-  "include": [
-    "./lib/**/*.ts"
-  ]
+  "include": ["./lib/**/*.ts"]
 }
