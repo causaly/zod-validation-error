@@ -21,4 +21,10 @@ export const issueParsers: Record<
   invalid_format: parseInvalidStringFormatIssue,
   invalid_value: parseInvalidValue,
   invalid_element: parseInvalidElement,
+  // TODO: implement these parsers:
+  // unrecognized_keys: undefined,
+  // invalid_key: undefined,
+  // not_multiple_of: undefined,
+  // custom: undefined,
+  // invalid_union: undefined,
 };
