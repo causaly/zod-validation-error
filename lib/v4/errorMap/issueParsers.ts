@@ -5,6 +5,7 @@ import { parseInvalidValue } from './invalidValue.ts';
 import { parseNotMultipleOf } from './notMultipleOf.ts';
 import { parseTooBigIssue } from './tooBig.ts';
 import { parseTooSmallIssue } from './tooSmall.ts';
+import { parseUnrecognizedKeysIssue } from './unrecognizedKeys.ts';
 import type {
   IssueType,
   ErrorMapOptions,
@@ -23,8 +24,8 @@ export const issueParsers: Record<
   invalid_value: parseInvalidValue,
   invalid_element: parseInvalidElement,
   not_multiple_of: parseNotMultipleOf,
+  unrecognized_keys: parseUnrecognizedKeysIssue,
   // TODO: implement these parsers:
-  // unrecognized_keys: undefined,
   // invalid_key: undefined,
   // custom: undefined,
   // invalid_union: undefined,

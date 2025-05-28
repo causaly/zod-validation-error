@@ -53,9 +53,13 @@ function toString(ast: AbstractSyntaxTree, options: ErrorMapOptions): string {
     buf.push(errorDetails.prefix ?? `; `);
     if (ast.expectation) {
       buf.push(ast.expectation);
+
+      if (ast.realization) {
+        buf.push(`, `);
+      }
     }
     if (ast.realization) {
-      buf.push(', ', ast.realization);
+      buf.push(ast.realization);
     }
     buf.push(errorDetails.suffix ?? '');
   }
