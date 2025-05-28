@@ -1,12 +1,12 @@
 import { joinValues } from '../../utils/joinValues.ts';
 import { stringifyValue } from '../../utils/stringify.ts';
-import type { AbstractSyntaxTree, IssueParseOptions } from './types.ts';
+import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
 export function parseInvalidValue(
   issue: zod.$ZodIssueInvalidValue,
   options: Pick<
-    IssueParseOptions,
+    ErrorMapOptions,
     | 'valuesSeparator'
     | 'wrapStringValuesInQuote'
     | 'maxValuesToDisplay'

@@ -7,14 +7,14 @@ import { parseTooBigIssue } from './tooBig.ts';
 import { parseTooSmallIssue } from './tooSmall.ts';
 import type {
   IssueType,
+  ErrorMapOptions,
   AbstractSyntaxTree,
-  IssueParseOptions,
 } from './types.ts';
 
 export const issueParsers: Record<
   IssueType,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (issue: any, options: IssueParseOptions) => AbstractSyntaxTree
+  (issue: any, options: ErrorMapOptions) => AbstractSyntaxTree
 > = {
   invalid_type: parseInvalidTypeIssue,
   too_big: parseTooBigIssue,
@@ -26,7 +26,6 @@ export const issueParsers: Record<
   // TODO: implement these parsers:
   // unrecognized_keys: undefined,
   // invalid_key: undefined,
-
   // custom: undefined,
   // invalid_union: undefined,
 };
