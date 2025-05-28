@@ -1,3 +1,4 @@
+import { parseInvalidElement } from './invalidElement.ts';
 import { parseInvalidStringFormatIssue } from './invalidStringFormat.ts';
 import { parseInvalidTypeIssue } from './invalidType.ts';
 import { parseInvalidValue } from './invalidValue.ts';
@@ -19,4 +20,5 @@ export const issueParsers: Record<
   too_small: parseTooSmallIssue,
   invalid_format: parseInvalidStringFormatIssue,
   invalid_value: parseInvalidValue,
+  invalid_element: parseInvalidElement,
 };
