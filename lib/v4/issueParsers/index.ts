@@ -2,6 +2,7 @@ import { parseInvalidElement } from './invalidElement.ts';
 import { parseInvalidStringFormatIssue } from './invalidStringFormat.ts';
 import { parseInvalidTypeIssue } from './invalidType.ts';
 import { parseInvalidValue } from './invalidValue.ts';
+import { parseNotMultipleOf } from './notMultipleOf.ts';
 import { parseTooBigIssue } from './tooBig.ts';
 import { parseTooSmallIssue } from './tooSmall.ts';
 import type {
@@ -21,10 +22,11 @@ export const issueParsers: Record<
   invalid_format: parseInvalidStringFormatIssue,
   invalid_value: parseInvalidValue,
   invalid_element: parseInvalidElement,
+  not_multiple_of: parseNotMultipleOf,
   // TODO: implement these parsers:
   // unrecognized_keys: undefined,
   // invalid_key: undefined,
-  // not_multiple_of: undefined,
+
   // custom: undefined,
   // invalid_union: undefined,
 };
