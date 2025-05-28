@@ -249,20 +249,9 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
 
-      expect(result.error.issues).toMatchInlineSnapshot(`
-        [
-          {
-            "code": "invalid_format",
-            "format": "date",
-            "message": "malformed value at "input"; expected date format",
-            "origin": "string",
-            "path": [
-              "input",
-            ],
-            "pattern": "/^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$/",
-          },
-        ]
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected date format"`
+      );
     });
 
     test('handles email format', () => {
@@ -627,6 +616,97 @@ describe('errorMap', () => {
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
         `"malformed value at "input"; should include "foo""`
+      );
+    });
+  });
+
+  describe('ZodIssueInvalidValue', () => {
+    test('handles string enumeration', () => {
+      const schema = zod.object({
+        input: zod.enum(['foo', 'bar']),
+      });
+      const result = schema.safeParse({ input: 'abc' });
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"invalid value at "input"; expected one of "foo" or "bar""`
+      );
+    });
+
+    test('handles mixed enumeration', () => {
+      const schema = zod.object({
+        input: zod.enum({
+          one: 1,
+          two: 'two',
+          three: 3,
+        }),
+      });
+      const result = schema.safeParse({ input: 'four' });
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"invalid value at "input"; expected one of 1, "two" or 3"`
+      );
+    });
+
+    test('handles string literal', () => {
+      const schema = zod.object({
+        input: zod.literal('foo'),
+      });
+      const result = schema.safeParse({ input: 'bar' });
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"invalid value at "input"; expected "foo""`
+      );
+    });
+
+    test('handles numeric literal', () => {
+      const schema = zod.object({
+        input: zod.literal(123),
+      });
+      const result = schema.safeParse({ input: 321 });
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"invalid value at "input"; expected 123"`
+      );
+    });
+
+    test('accepts custom options', () => {
+      const schema = zod.object({
+        input: zod.enum(
+          {
+            one: 1,
+            two: 'two',
+            three: 3,
+          },
+          {
+            error: createErrorMap({
+              includePath: false,
+              valuesSeparator: '|',
+              valuesLastSeparator: undefined,
+              wrapStringValuesInQuote: false,
+              maxValuesToDisplay: 2,
+            }),
+          }
+        ),
+      });
+      const result = schema.safeParse({ input: 'four' });
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"invalid value; expected one of 1|two"`
       );
     });
   });

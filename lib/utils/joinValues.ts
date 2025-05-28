@@ -1,4 +1,4 @@
-import { stringifyPrimitive } from './stringify.ts';
+import { stringifyValue } from './stringify.ts';
 import type { Primitive } from 'zod';
 
 export type JoinValuesOptions = {
@@ -29,11 +29,9 @@ export function joinValues(
       }
     }
 
-    if (typeof value === 'string' && options.wrapStringsInQuote) {
-      str += `"${value}"`;
-    } else {
-      str += stringifyPrimitive(value);
-    }
+    str += stringifyValue(value, {
+      wrapStringsInQuote: options.wrapStringsInQuote,
+    });
   }
 
   return str;
