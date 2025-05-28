@@ -1,5 +1,7 @@
 import { joinPath } from '../utils/joinPath.ts';
+import { joinValues } from '../utils/joinValues.ts';
 import { isNonEmptyArray } from '../utils/NonEmptyArray.ts';
+import { stringifyValue } from '../utils/stringify.ts';
 import type * as zod from 'zod/v4/core';
 
 export type IssueType = NonNullable<zod.$ZodIssue['code']>;
@@ -12,33 +14,50 @@ type AbstractSyntaxTree = {
   realization?: string;
 };
 
-// invalid type: expectation, realization
-
 export type ErrorMapOptions = {
-  includePath?: boolean;
-  displayInvalidFormatDetails?: boolean;
+  includePath: boolean;
+  displayInvalidFormatDetails: boolean;
+  valuesSeparator: string;
+  valuesLastSeparator: string | undefined;
+  wrapStringValuesInQuote: boolean;
+  maxValuesToDisplay: number;
   errorDetails?: {
     disabled?: boolean;
     prefix?: string;
     suffix?: string;
   };
-  unionSeparator?: string;
+};
+
+export const defaultErrorMapOptions: ErrorMapOptions = {
+  includePath: true,
+  displayInvalidFormatDetails: false,
+  valuesSeparator: ', ',
+  valuesLastSeparator: ' or ',
+  wrapStringValuesInQuote: true,
+  maxValuesToDisplay: 5,
 };
 
 const issueParsers: Record<
   IssueType,
-  // @eslint-disable @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (issue: any, options: ErrorMapOptions) => AbstractSyntaxTree
 > = {
   invalid_type: parseInvalidTypeIssue,
   too_big: parseTooBigIssue,
   too_small: parseTooSmallIssue,
   invalid_format: parseInvalidStringFormatIssue,
+  invalid_value: parseInvalidValue,
 };
 
 export function createErrorMap(
-  options: ErrorMapOptions = {}
+  options: Partial<ErrorMapOptions> = {}
 ): zod.$ZodErrorMap<zod.$ZodIssue> {
+  // fill-in default options
+  const refinedOptions = {
+    ...defaultErrorMapOptions,
+    ...options,
+  };
+
   const errorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
     if (issue.code === undefined) {
       // TODO: handle this case
@@ -46,8 +65,8 @@ export function createErrorMap(
     }
 
     const parseFunc = issueParsers[issue.code];
-    const ast = parseFunc(issue, options);
-    return toString(ast, options);
+    const ast = parseFunc(issue, refinedOptions);
+    return toString(ast, refinedOptions);
   };
 
   return errorMap;
@@ -80,7 +99,6 @@ function toString(ast: AbstractSyntaxTree, options: ErrorMapOptions): string {
   return buf.join('');
 }
 
-// | z.core.$ZodIssueInvalidStringFormat
 //   | z.core.$ZodIssueNotMultipleOf
 //   | z.core.$ZodIssueUnrecognizedKeys
 //   | z.core.$ZodIssueInvalidValue
@@ -416,6 +434,43 @@ function parseStringInvalidJWT(
       options.displayInvalidFormatDetails && issue.algorithm
         ? `expected jwt (${issue.algorithm}) format`
         : `expected jwt format`,
+  };
+}
+
+function parseInvalidValue(
+  issue: zod.$ZodIssueInvalidValue,
+  options: Pick<
+    ErrorMapOptions,
+    | 'valuesSeparator'
+    | 'wrapStringValuesInQuote'
+    | 'maxValuesToDisplay'
+    | 'valuesLastSeparator'
+  >
+): AbstractSyntaxTree {
+  let expectation: string | undefined;
+
+  if (issue.values.length === 0) {
+    expectation = undefined;
+  } else if (issue.values.length === 1) {
+    const valueStr = stringifyValue(issue.values[0], {
+      wrapStringsInQuote: true,
+    });
+    expectation = `expected ${valueStr}`;
+  } else {
+    const valuesStr = joinValues(issue.values, {
+      separator: options.valuesSeparator,
+      lastSeparator: options.valuesLastSeparator,
+      wrapStringsInQuote: options.wrapStringValuesInQuote,
+      maxValuesToDisplay: options.maxValuesToDisplay,
+    });
+    expectation = `expected one of ${valuesStr}`;
+  }
+
+  return {
+    type: issue.code,
+    path: issue.path,
+    claim: 'invalid value',
+    expectation: expectation,
   };
 }
 
