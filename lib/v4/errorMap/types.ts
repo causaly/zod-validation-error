@@ -10,10 +10,16 @@ export type AbstractSyntaxTree = {
   realization?: string;
 };
 
-export type IssueParseOptions = {
+export type ErrorMapOptions = {
   displayInvalidFormatDetails: boolean;
   valuesSeparator: string;
   valuesLastSeparator: string | undefined;
   wrapStringValuesInQuote: boolean;
   maxValuesToDisplay: number;
+  includePath: boolean;
+  errorDetails?: {
+    disabled?: boolean;
+    prefix?: string;
+    suffix?: string;
+  };
 };

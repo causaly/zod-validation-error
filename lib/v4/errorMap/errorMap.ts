@@ -1,20 +1,8 @@
-import { joinPath } from '../utils/joinPath.ts';
-import { isNonEmptyArray } from '../utils/NonEmptyArray.ts';
-import { issueParsers } from './issueParsers/index.ts';
-import type {
-  AbstractSyntaxTree,
-  IssueParseOptions,
-} from './issueParsers/types.ts';
+import { joinPath } from '../../utils/joinPath.ts';
+import { isNonEmptyArray } from '../../utils/NonEmptyArray.ts';
+import { issueParsers } from './issueParsers.ts';
 import type * as zod from 'zod/v4/core';
-
-export type ErrorMapOptions = IssueParseOptions & {
-  includePath: boolean;
-  errorDetails?: {
-    disabled?: boolean;
-    prefix?: string;
-    suffix?: string;
-  };
-};
+import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 
 export const defaultErrorMapOptions: ErrorMapOptions = {
   includePath: true,

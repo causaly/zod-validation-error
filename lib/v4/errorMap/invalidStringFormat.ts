@@ -1,9 +1,9 @@
-import type { AbstractSyntaxTree, IssueParseOptions } from './types.ts';
+import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
 export function parseInvalidStringFormatIssue(
   issue: zod.$ZodIssueInvalidStringFormat,
-  options: Pick<IssueParseOptions, 'displayInvalidFormatDetails'> = {
+  options: Pick<ErrorMapOptions, 'displayInvalidFormatDetails'> = {
     displayInvalidFormatDetails: false,
   }
 ): AbstractSyntaxTree {
@@ -95,7 +95,7 @@ function isZodIssueStringInvalidRegex(
 }
 function parseStringInvalidRegex(
   issue: zod.$ZodIssueStringInvalidRegex,
-  options: Pick<IssueParseOptions, 'displayInvalidFormatDetails'> = {
+  options: Pick<ErrorMapOptions, 'displayInvalidFormatDetails'> = {
     displayInvalidFormatDetails: false,
   }
 ): AbstractSyntaxTree {
@@ -115,7 +115,7 @@ function isZodIssueStringInvalidJWT(
 }
 function parseStringInvalidJWT(
   issue: zod.$ZodIssueStringInvalidJWT,
-  options: Pick<IssueParseOptions, 'displayInvalidFormatDetails'> = {
+  options: Pick<ErrorMapOptions, 'displayInvalidFormatDetails'> = {
     displayInvalidFormatDetails: false,
   }
 ): AbstractSyntaxTree {
