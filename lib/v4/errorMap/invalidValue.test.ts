@@ -8,7 +8,7 @@ zod.config({
   }),
 });
 
-describe('invalid_value issue parser', () => {
+describe('parseInvalidValueIssue', () => {
   test('handles string enumeration', () => {
     const schema = zod.object({
       input: zod.enum(['foo', 'bar']),

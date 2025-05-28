@@ -1,8 +1,8 @@
-import { parseInvalidElement } from './invalidElement.ts';
+import { parseInvalidElementIssue } from './invalidElement.ts';
 import { parseInvalidStringFormatIssue } from './invalidStringFormat.ts';
 import { parseInvalidTypeIssue } from './invalidType.ts';
-import { parseInvalidValue } from './invalidValue.ts';
-import { parseNotMultipleOf } from './notMultipleOf.ts';
+import { parseInvalidValueIssue } from './invalidValue.ts';
+import { parseNotMultipleOfIssue } from './notMultipleOf.ts';
 import { parseTooBigIssue } from './tooBig.ts';
 import { parseTooSmallIssue } from './tooSmall.ts';
 import { parseUnrecognizedKeysIssue } from './unrecognizedKeys.ts';
@@ -21,9 +21,9 @@ export const issueParsers: Record<
   too_big: parseTooBigIssue,
   too_small: parseTooSmallIssue,
   invalid_format: parseInvalidStringFormatIssue,
-  invalid_value: parseInvalidValue,
-  invalid_element: parseInvalidElement,
-  not_multiple_of: parseNotMultipleOf,
+  invalid_value: parseInvalidValueIssue,
+  invalid_element: parseInvalidElementIssue,
+  not_multiple_of: parseNotMultipleOfIssue,
   unrecognized_keys: parseUnrecognizedKeysIssue,
   // TODO: implement these parsers:
   // invalid_key: undefined,

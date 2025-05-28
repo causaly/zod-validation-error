@@ -8,7 +8,7 @@ zod.config({
   }),
 });
 
-describe('too_small issue parser', () => {
+describe('parseTooSmallIssue', () => {
   test('handles string input', () => {
     const schema = zod.string().min(5);
     const result = schema.safeParse('abc');

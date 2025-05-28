@@ -3,7 +3,7 @@ import { stringifyValue } from '../../utils/stringify.ts';
 import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
-export function parseInvalidValue(
+export function parseInvalidValueIssue(
   issue: zod.$ZodIssueInvalidValue,
   options: Pick<
     ErrorMapOptions,

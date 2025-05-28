@@ -8,7 +8,7 @@ zod.config({
   }),
 });
 
-describe('invalid_string_format issue parser', () => {
+describe('parseInvalidStringFormatIssue', () => {
   test('handles date format', () => {
     const schema = zod.object({
       input: zod.iso.date(),

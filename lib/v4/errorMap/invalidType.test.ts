@@ -8,7 +8,7 @@ zod.config({
   }),
 });
 
-describe('invalid_type issue parser', () => {
+describe('parseInvalidTypeIssue', () => {
   test('handles ZodIssueInvalidType', () => {
     const schema = zod.object({
       input: zod.string(),

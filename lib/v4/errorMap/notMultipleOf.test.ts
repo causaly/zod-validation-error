@@ -8,7 +8,7 @@ zod.config({
   }),
 });
 
-describe('not_multiple_of issue parser', () => {
+describe('parseNotMultipleOfIssue', () => {
   test('handles ZodIssueNotMultipleOf', () => {
     const schema = zod.object({
       input: zod.int().multipleOf(2),
