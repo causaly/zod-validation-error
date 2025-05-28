@@ -710,4 +710,21 @@ describe('errorMap', () => {
       );
     });
   });
+
+  describe('ZodIssueNotMultipleOf', () => {
+    test('handles not_multiple_of issue', () => {
+      const schema = zod.object({
+        input: zod.int().multipleOf(2),
+      });
+      const result = schema.safeParse({
+        input: 3,
+      });
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"invalid value at "input"; expected multiple of 2"`
+      );
+    });
+  });
 });
