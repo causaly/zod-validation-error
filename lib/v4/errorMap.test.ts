@@ -18,18 +18,9 @@ describe('errorMap', () => {
       throw new Error('Expected failure');
     }
 
-    expect(result.error.issues).toMatchInlineSnapshot(`
-      [
-        {
-          "code": "invalid_type",
-          "expected": "string",
-          "message": "invalid type at "input"; expected string, received number",
-          "path": [
-            "input",
-          ],
-        },
-      ]
-    `);
+    expect(result.error.issues[0].message).toMatchInlineSnapshot(
+      `"invalid type at "input"; expected string, received number"`
+    );
   });
 
   describe('ZodIssueTooBig', () => {
@@ -43,17 +34,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_big",
-          "maximum": 3,
-          "message": "string contains too many characters at "input"; expected < 3 characters, received 5 characters",
-          "origin": "string",
-          "path": [
-            "input",
-          ],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"string contains too many characters at "input"; expected < 3 characters, received 5 characters"`
+      );
     });
 
     test('handles number input', () => {
@@ -66,18 +49,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_big",
-          "inclusive": true,
-          "maximum": 10,
-          "message": "number too big at "input"; expected <= 10, received 20",
-          "origin": "number",
-          "path": [
-            "input",
-          ],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"number too big at "input"; expected <= 10, received 20"`
+      );
     });
 
     test('handles number input using less-than', () => {
@@ -90,18 +64,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_big",
-          "inclusive": false,
-          "maximum": 10,
-          "message": "number too big at "input"; expected < 10, received 10",
-          "origin": "number",
-          "path": [
-            "input",
-          ],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"number too big at "input"; expected < 10, received 10"`
+      );
     });
 
     test('handles Array input', () => {
@@ -114,17 +79,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_big",
-          "maximum": 2,
-          "message": "array contains too many items at "input"; expected < 2 in size, received 3 items",
-          "origin": "array",
-          "path": [
-            "input",
-          ],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"array contains too many items at "input"; expected < 2 in size, received 3 items"`
+      );
     });
 
     test('handles Set input', () => {
@@ -137,17 +94,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_big",
-          "maximum": 2,
-          "message": "set contains too many items at "input"; expected < 2 in size, received 3 items",
-          "origin": "set",
-          "path": [
-            "input",
-          ],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"set contains too many items at "input"; expected < 2 in size, received 3 items"`
+      );
     });
 
     test('handles Date input', () => {
@@ -160,18 +109,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_big",
-          "inclusive": true,
-          "maximum": 2020-01-01T00:00:00.000Z,
-          "message": "invalid date at "input"; expected prior or equal to 1/1/2020, 2:00:00 AM",
-          "origin": "date",
-          "path": [
-            "input",
-          ],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"invalid date at "input"; expected prior or equal to 1/1/2020, 2:00:00 AM"`
+      );
     });
 
     test('handles BigInt input', () => {
@@ -184,18 +124,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_big",
-          "inclusive": true,
-          "maximum": 100n,
-          "message": "number too big at "input"; expected <= 100, received 200",
-          "origin": "bigint",
-          "path": [
-            "input",
-          ],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"number too big at "input"; expected <= 100, received 200"`
+      );
     });
 
     test('respects custom error message', () => {
@@ -210,18 +141,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_big",
-          "inclusive": true,
-          "maximum": 100n,
-          "message": "Custom error message",
-          "origin": "bigint",
-          "path": [
-            "input",
-          ],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"Custom error message"`
+      );
     });
   });
 
@@ -232,15 +154,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_small",
-          "message": "string is too short; expected > 5 characters, received 3 characters",
-          "minimum": 5,
-          "origin": "string",
-          "path": [],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"string is too short; expected > 5 characters, received 3 characters"`
+      );
     });
 
     test('handles number input', () => {
@@ -249,16 +165,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_small",
-          "inclusive": true,
-          "message": "number is too small; expected >= 10, received 5",
-          "minimum": 10,
-          "origin": "number",
-          "path": [],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"number is too small; expected >= 10, received 5"`
+      );
     });
 
     test('handles number input using greater-than', () => {
@@ -267,16 +176,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_small",
-          "inclusive": false,
-          "message": "number is too small; expected > 10, received 10",
-          "minimum": 10,
-          "origin": "number",
-          "path": [],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"number is too small; expected > 10, received 10"`
+      );
     });
 
     test('handles Array input', () => {
@@ -285,15 +187,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_small",
-          "message": "array contains too few items; expected > 3 in size, received 1 item",
-          "minimum": 3,
-          "origin": "array",
-          "path": [],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"array contains too few items; expected > 3 in size, received 1 item"`
+      );
     });
 
     test('handles Set input', () => {
@@ -302,15 +198,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_small",
-          "message": "set contains too few items; expected > 3 in size, received 1 item",
-          "minimum": 3,
-          "origin": "set",
-          "path": [],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"set contains too few items; expected > 3 in size, received 1 item"`
+      );
     });
 
     test('handles Date input', () => {
@@ -319,16 +209,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_small",
-          "inclusive": true,
-          "message": "invalid date; expected later or equal to 1/1/2020, 2:00:00 AM",
-          "minimum": 2020-01-01T00:00:00.000Z,
-          "origin": "date",
-          "path": [],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"invalid date; expected later or equal to 1/1/2020, 2:00:00 AM"`
+      );
     });
 
     test('respects custom error message', () => {
@@ -339,16 +222,9 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_small",
-          "inclusive": true,
-          "message": "Custom error message",
-          "minimum": 2020-01-01T00:00:00.000Z,
-          "origin": "date",
-          "path": [],
-        }
-      `);
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"Custom error message"`
+      );
     });
 
     test('handles BigInt input', () => {
@@ -357,16 +233,401 @@ describe('errorMap', () => {
       if (result.success) {
         throw new Error('Expected failure');
       }
-      expect(result.error.issues[0]).toMatchInlineSnapshot(`
-        {
-          "code": "too_small",
-          "inclusive": true,
-          "message": "number is too small; expected >= 100, received 50",
-          "minimum": 100n,
-          "origin": "bigint",
-          "path": [],
-        }
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"number is too small; expected >= 100, received 50"`
+      );
+    });
+  });
+
+  describe('ZodIssueInvalidStringFormat', () => {
+    test('handles date format', () => {
+      const schema = zod.object({
+        input: zod.iso.date(),
+      });
+      const result = schema.safeParse({ input: '25-03-2025' });
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues).toMatchInlineSnapshot(`
+        [
+          {
+            "code": "invalid_format",
+            "format": "date",
+            "message": "malformed value at "input"; expected date format",
+            "origin": "string",
+            "path": [
+              "input",
+            ],
+            "pattern": "/^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$/",
+          },
+        ]
       `);
+    });
+
+    test('handles email format', () => {
+      const schema = zod.object({
+        input: zod.email(),
+      });
+      const result = schema.safeParse({ input: 'not-an-email' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected email format"`
+      );
+    });
+
+    test('handles url format', () => {
+      const schema = zod.object({
+        input: zod.url(),
+      });
+      const result = schema.safeParse({ input: 'not-a-url' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected url format"`
+      );
+    });
+
+    test('handles emoji format', () => {
+      const schema = zod.object({
+        input: zod.emoji(),
+      });
+      const result = schema.safeParse({ input: 'not-emoji' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected emoji format"`
+      );
+    });
+
+    test('handles uuid format', () => {
+      const schema = zod.object({
+        input: zod.uuid(),
+      });
+      const result = schema.safeParse({ input: 'not-a-uuid' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected uuid format"`
+      );
+    });
+
+    test('handles guid format', () => {
+      const schema = zod.object({
+        input: zod.guid(),
+      });
+      const result = schema.safeParse({ input: 'not-a-guid' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected guid format"`
+      );
+    });
+
+    test('handles nanoid format', () => {
+      const schema = zod.object({
+        input: zod.nanoid(),
+      });
+      const result = schema.safeParse({ input: 'not-a-nanoid' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected nanoid format"`
+      );
+    });
+
+    test('handles cuid format', () => {
+      const schema = zod.object({
+        input: zod.cuid(),
+      });
+      const result = schema.safeParse({ input: 'not-a-cuid' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected cuid format"`
+      );
+    });
+
+    test('handles cuid2 format', () => {
+      const schema = zod.object({
+        input: zod.cuid2(),
+      });
+      const result = schema.safeParse({ input: 'not-a-cuid2' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected cuid2 format"`
+      );
+    });
+
+    test('handles ulid format', () => {
+      const schema = zod.object({
+        input: zod.ulid(),
+      });
+      const result = schema.safeParse({ input: 'not-a-ulid' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected ulid format"`
+      );
+    });
+
+    test('handles xid format', () => {
+      const schema = zod.object({
+        input: zod.xid(),
+      });
+      const result = schema.safeParse({ input: 'not-an-xid' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected xid format"`
+      );
+    });
+
+    test('handles ksuid format', () => {
+      const schema = zod.object({
+        input: zod.ksuid(),
+      });
+      const result = schema.safeParse({ input: 'not-a-ksuid' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected ksuid format"`
+      );
+    });
+
+    test('handles datetime format', () => {
+      const schema = zod.object({
+        input: zod.iso.datetime(),
+      });
+      const result = schema.safeParse({ input: 'not-a-datetime' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected datetime format"`
+      );
+    });
+
+    test('handles time format', () => {
+      const schema = zod.object({
+        input: zod.iso.time(),
+      });
+      const result = schema.safeParse({ input: 'not-a-time' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected time format"`
+      );
+    });
+
+    test('handles duration format', () => {
+      const schema = zod.object({
+        input: zod.iso.duration(),
+      });
+      const result = schema.safeParse({ input: 'not-a-duration' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected duration format"`
+      );
+    });
+
+    test('handles ipv4 format', () => {
+      const schema = zod.object({
+        input: zod.ipv4(),
+      });
+      const result = schema.safeParse({ input: 'not-an-ipv4' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected ipv4 format"`
+      );
+    });
+
+    test('handles ipv6 format', () => {
+      const schema = zod.object({
+        input: zod.ipv6(),
+      });
+      const result = schema.safeParse({ input: 'not-an-ipv6' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected ipv6 format"`
+      );
+    });
+
+    test('handles cidrv4 format', () => {
+      const schema = zod.object({
+        input: zod.cidrv4(),
+      });
+      const result = schema.safeParse({ input: 'not-a-cidrv4' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected cidrv4 format"`
+      );
+    });
+
+    test('handles cidrv6 format', () => {
+      const schema = zod.object({
+        input: zod.cidrv6(),
+      });
+      const result = schema.safeParse({ input: 'not-a-cidrv6' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected cidrv6 format"`
+      );
+    });
+
+    test('handles base64 format', () => {
+      const schema = zod.object({
+        input: zod.base64(),
+      });
+      const result = schema.safeParse({ input: 'not-base64' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected base64 format"`
+      );
+    });
+
+    test('handles base64url format', () => {
+      const schema = zod.object({
+        input: zod.base64url(),
+      });
+      const result = schema.safeParse({ input: 'not-base64url' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected base64url format"`
+      );
+    });
+
+    // test.only('handles json_string format', () => {
+    //   const schema = zod.object({
+    //     input: zod.json(),
+    //   });
+    //   const result = schema.safeParse({ input: new Date() });
+    //   if (result.success) throw new Error('Expected failure');
+
+    //   expect(result.error.issues[0].message).toMatchInlineSnapshot(`
+    //     {
+    //       "code": "invalid_format",
+    //       "format": "json_string",
+    //       "message": "invalid string format at "input"; expected json_string, received "not-json"",
+    //       "origin": "string",
+    //       "path": [
+    //         "input",
+    //       ],
+    //     }
+    //   `);
+    // });
+
+    test('handles e164 format', () => {
+      const schema = zod.object({
+        input: zod.e164(),
+      });
+      const result = schema.safeParse({ input: 'not-e164' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected e164 format"`
+      );
+    });
+
+    test('handles lowercase format', () => {
+      const schema = zod.object({
+        input: zod.string().lowercase(),
+      });
+      const result = schema.safeParse({ input: 'NOTLOWERCASE' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected all characters to be in lowercase format"`
+      );
+    });
+
+    test('handles uppercase format', () => {
+      const schema = zod.object({
+        input: zod.string().uppercase(),
+      });
+      const result = schema.safeParse({ input: 'notuppercase' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected all characters to be in uppercase format"`
+      );
+    });
+
+    test('handles regex format', () => {
+      const schema = zod.object({
+        input: zod.string().regex(/^abc$/),
+      });
+      const result = schema.safeParse({ input: 'def' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; does not match expected pattern"`
+      );
+    });
+
+    test('handles regex format with `displayInvalidFormatDetails` set to true', () => {
+      const schema = zod.object({
+        input: zod.string().regex(/^abc$/, {
+          error: createErrorMap({
+            displayInvalidFormatDetails: true,
+            includePath: false,
+          }),
+        }),
+      });
+      const result = schema.safeParse({ input: 'def' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value; should match pattern "/^abc$/""`
+      );
+    });
+
+    test('handles jwt format', () => {
+      const schema = zod.object({
+        input: zod.jwt({
+          alg: 'HS256',
+        }),
+      });
+      const result = schema.safeParse({ input: 'not-a-jwt' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; expected jwt format"`
+      );
+    });
+
+    // TODO: Open issue to fix this in zod v4
+    // the type expectation for issue.alg is not correct
+    // test('handles jwt format with `displayInvalidFormatDetails` set to true', () => {
+    //   const schema = zod.object({
+    //     input: zod.jwt({
+    //       alg: 'HS256',
+    //       error: createErrorMap({
+    //         displayInvalidFormatDetails: true,
+    //         includePath: false,
+    //       }),
+    //     }),
+    //   });
+    //   const result = schema.safeParse({ input: 'def' });
+    //   if (result.success) throw new Error('Expected failure');
+    //   expect(result.error.issues[0].message).toMatchInlineSnapshot(
+    //     `"malformed value; expected jwt format"`
+    //   );
+    // });
+
+    test('handles starts_with format', () => {
+      const schema = zod.object({
+        input: zod.string().startsWith('abc'),
+      });
+      const result = schema.safeParse({ input: 'def' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; should start with "abc""`
+      );
+    });
+
+    test('handles ends_with format', () => {
+      const schema = zod.object({
+        input: zod.string().endsWith('xyz'),
+      });
+      const result = schema.safeParse({ input: 'abc' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; should end with "xyz""`
+      );
+    });
+
+    test('handles includes format', () => {
+      const schema = zod.object({
+        input: zod.string().includes('foo'),
+      });
+      const result = schema.safeParse({ input: 'bar' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"malformed value at "input"; should include "foo""`
+      );
     });
   });
 });

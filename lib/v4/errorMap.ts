@@ -14,24 +14,30 @@ type AbstractSyntaxTree = {
 
 // invalid type: expectation, realization
 
-export type CreateErrorMapOptions = {
+export type ErrorMapOptions = {
+  includePath?: boolean;
+  displayInvalidFormatDetails?: boolean;
   errorDetails?: {
     disabled?: boolean;
     prefix?: string;
     suffix?: string;
   };
-  includePath?: boolean;
   unionSeparator?: string;
 };
 
-const issueParsers: Record<IssueType, (issue: any) => AbstractSyntaxTree> = {
+const issueParsers: Record<
+  IssueType,
+  // @eslint-disable @typescript-eslint/no-explicit-any
+  (issue: any, options: ErrorMapOptions) => AbstractSyntaxTree
+> = {
   invalid_type: parseInvalidTypeIssue,
   too_big: parseTooBigIssue,
   too_small: parseTooSmallIssue,
+  invalid_format: parseInvalidStringFormatIssue,
 };
 
 export function createErrorMap(
-  options: CreateErrorMapOptions = {}
+  options: ErrorMapOptions = {}
 ): zod.$ZodErrorMap<zod.$ZodIssue> {
   const errorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
     if (issue.code === undefined) {
@@ -40,17 +46,14 @@ export function createErrorMap(
     }
 
     const parseFunc = issueParsers[issue.code];
-    const ast = parseFunc(issue);
+    const ast = parseFunc(issue, options);
     return toString(ast, options);
   };
 
   return errorMap;
 }
 
-function toString(
-  ast: AbstractSyntaxTree,
-  options: CreateErrorMapOptions
-): string {
+function toString(ast: AbstractSyntaxTree, options: ErrorMapOptions): string {
   const errorDetails = options.errorDetails ?? {};
 
   const buf = [ast.claim];
@@ -276,6 +279,150 @@ function parseTooSmallIssue(issue: zod.$ZodIssueTooSmall): AbstractSyntaxTree {
       };
   }
 }
+
+function parseInvalidStringFormatIssue(
+  issue: zod.$ZodIssueInvalidStringFormat,
+  options: Pick<ErrorMapOptions, 'displayInvalidFormatDetails'> = {
+    displayInvalidFormatDetails: false,
+  }
+): AbstractSyntaxTree {
+  let expectation: string;
+
+  switch (issue.format) {
+    case 'lowercase':
+    case 'uppercase': {
+      expectation = `expected all characters to be in ${issue.format} format`;
+      break;
+    }
+    default: {
+      if (isZodIssueStringStartsWith(issue)) {
+        return parseStringStartsWith(issue);
+      }
+      if (isZodIssueStringEndsWith(issue)) {
+        return parseStringEndsWith(issue);
+      }
+      if (isZodIssueStringIncludes(issue)) {
+        return parseStringIncludes(issue);
+      }
+      if (isZodIssueStringInvalidRegex(issue)) {
+        return parseStringInvalidRegex(issue, options);
+      }
+      if (isZodIssueStringInvalidJWT(issue)) {
+        return parseStringInvalidJWT(issue, options);
+      }
+
+      expectation = `expected ${issue.format} format`;
+    }
+  }
+
+  return {
+    type: issue.code,
+    path: issue.path,
+    claim: 'malformed value',
+    expectation,
+  };
+}
+
+function isZodIssueStringStartsWith(
+  issue: zod.$ZodIssueInvalidStringFormat
+): issue is zod.$ZodIssueStringStartsWith {
+  return issue.format === 'starts_with';
+}
+
+function parseStringStartsWith(
+  issue: zod.$ZodIssueStringStartsWith
+): AbstractSyntaxTree {
+  return {
+    type: issue.code,
+    path: issue.path,
+    claim: 'malformed value',
+    expectation: `should start with "${issue.prefix}"`,
+  };
+}
+
+function isZodIssueStringEndsWith(
+  issue: zod.$ZodIssueInvalidStringFormat
+): issue is zod.$ZodIssueStringEndsWith {
+  return issue.format === 'ends_with';
+}
+
+function parseStringEndsWith(
+  issue: zod.$ZodIssueStringEndsWith
+): AbstractSyntaxTree {
+  return {
+    type: issue.code,
+    path: issue.path,
+    claim: 'malformed value',
+    expectation: `should end with "${issue.suffix}"`,
+  };
+}
+
+function isZodIssueStringIncludes(
+  issue: zod.$ZodIssueInvalidStringFormat
+): issue is zod.$ZodIssueStringIncludes {
+  return issue.format === 'includes';
+}
+
+function parseStringIncludes(
+  issue: zod.$ZodIssueStringIncludes
+): AbstractSyntaxTree {
+  return {
+    type: issue.code,
+    path: issue.path,
+    claim: 'malformed value',
+    expectation: `should include "${issue.includes}"`,
+  };
+}
+
+function isZodIssueStringInvalidRegex(
+  issue: zod.$ZodIssueInvalidStringFormat
+): issue is zod.$ZodIssueStringInvalidRegex {
+  return issue.format === 'regex';
+}
+
+function parseStringInvalidRegex(
+  issue: zod.$ZodIssueStringInvalidRegex,
+  options: Pick<ErrorMapOptions, 'displayInvalidFormatDetails'> = {
+    displayInvalidFormatDetails: false,
+  }
+): AbstractSyntaxTree {
+  return {
+    type: issue.code,
+    path: issue.path,
+    claim: 'malformed value',
+    expectation: options.displayInvalidFormatDetails
+      ? `should match pattern "${issue.pattern}"`
+      : `does not match expected pattern`,
+  };
+}
+
+function isZodIssueStringInvalidJWT(
+  issue: zod.$ZodIssueInvalidStringFormat
+): issue is zod.$ZodIssueStringInvalidJWT {
+  return issue.format === 'jwt';
+}
+
+function parseStringInvalidJWT(
+  issue: zod.$ZodIssueStringInvalidJWT,
+  options: Pick<ErrorMapOptions, 'displayInvalidFormatDetails'> = {
+    displayInvalidFormatDetails: false,
+  }
+): AbstractSyntaxTree {
+  return {
+    type: issue.code,
+    path: issue.path,
+    claim: 'malformed value',
+    expectation:
+      options.displayInvalidFormatDetails && issue.algorithm
+        ? `expected jwt (${issue.algorithm}) format`
+        : `expected jwt format`,
+  };
+}
+
+// export interface $ZodIssueStringInvalidJWT extends $ZodIssueInvalidStringFormat {
+//     format: "jwt";
+//     algorithm?: string;
+// }
 
 function compileTypeRealization(issue: zod.$ZodIssue): string | undefined {
   if (!('input' in issue)) {
