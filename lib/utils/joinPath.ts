@@ -1,3 +1,4 @@
+import { stringifySymbol } from './stringify.ts';
 import type { NonEmptyArray } from './NonEmptyArray.ts';
 
 /**
@@ -45,8 +46,4 @@ export function joinPath(path: NonEmptyArray<PropertyKey>): string {
 
 function escapeQuotes(str: string): string {
   return str.replace(/"/g, '\\"');
-}
-
-function stringifySymbol(symbol: symbol): string {
-  return symbol.description ?? '';
 }
