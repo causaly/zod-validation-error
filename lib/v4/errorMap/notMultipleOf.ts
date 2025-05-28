@@ -1,7 +1,7 @@
 import type * as zod from 'zod/v4/core';
 import type { AbstractSyntaxTree } from './types.ts';
 
-export function parseNotMultipleOf(
+export function parseNotMultipleOfIssue(
   issue: zod.$ZodIssueNotMultipleOf
 ): AbstractSyntaxTree {
   return {

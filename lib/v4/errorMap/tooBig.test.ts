@@ -8,7 +8,7 @@ zod.config({
   }),
 });
 
-describe('too_big issue parser', () => {
+describe('parseTooBigIssue', () => {
   test('handles string input', () => {
     const schema = zod.object({
       input: zod.string().max(3),
