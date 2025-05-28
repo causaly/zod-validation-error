@@ -1,12 +1,12 @@
 import type * as zod from 'zod/v4/core';
 import type { AbstractSyntaxTree } from './types.ts';
 
-export function parseInvalidElementIssue(
-  issue: zod.$ZodIssueInvalidElement
+export function parseCustomIssue(
+  issue: zod.$ZodIssueCustom
 ): AbstractSyntaxTree {
   return {
     type: issue.code,
     path: issue.path,
-    claim: `unexpected element in ${issue.origin}`,
+    claim: issue.message,
   };
 }

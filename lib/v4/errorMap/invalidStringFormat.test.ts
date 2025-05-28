@@ -243,26 +243,6 @@ describe('parseInvalidStringFormatIssue', () => {
     );
   });
 
-  // test.only('handles json_string format', () => {
-  //   const schema = zod.object({
-  //     input: zod.json(),
-  //   });
-  //   const result = schema.safeParse({ input: new Date() });
-  //   if (result.success) throw new Error('Expected failure');
-
-  //   expect(result.error.issues[0].message).toMatchInlineSnapshot(`
-  //     {
-  //       "code": "invalid_format",
-  //       "format": "json_string",
-  //       "message": "invalid string format at "input"; expected json_string, received "not-json"",
-  //       "origin": "string",
-  //       "path": [
-  //         "input",
-  //       ],
-  //     }
-  //   `);
-  // });
-
   test('handles e164 format', () => {
     const schema = zod.object({
       input: zod.e164(),
