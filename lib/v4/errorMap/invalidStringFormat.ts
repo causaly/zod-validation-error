@@ -125,7 +125,7 @@ function parseStringInvalidJWT(
     claim: 'malformed value',
     expectation:
       options.displayInvalidFormatDetails && issue.algorithm
-        ? `expected jwt (${issue.algorithm}) format`
+        ? `expected jwt/${issue.algorithm} format`
         : `expected jwt format`,
   };
 }

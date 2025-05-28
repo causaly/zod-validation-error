@@ -12,11 +12,19 @@ export type AbstractSyntaxTree = {
 
 export type ErrorMapOptions = {
   displayInvalidFormatDetails: boolean;
+  // Allowed Values
   valuesSeparator: string;
   valuesLastSeparator: string | undefined;
   wrapStringValuesInQuote: boolean;
   maxValuesToDisplay: number;
+  // Unrecognized keys
+  unrecognizedKeysSeparator: string;
+  unrecognizedKeysLastSeparator: string | undefined;
+  wrapUnrecognizedKeysInQuote: boolean;
+  maxUnrecognizedKeysToDisplay: number;
   includePath: boolean;
+  issueSeparator: string;
+  unionSeparator: string;
   errorDetails?: {
     disabled?: boolean;
     prefix?: string;
