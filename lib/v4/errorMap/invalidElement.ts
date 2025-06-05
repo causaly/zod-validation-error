@@ -7,6 +7,6 @@ export function parseInvalidElementIssue(
   return {
     type: issue.code,
     path: issue.path,
-    claim: `unexpected element in ${issue.origin}`,
+    message: `unexpected element in ${issue.origin}`,
   };
 }

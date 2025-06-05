@@ -7,6 +7,6 @@ export function parseInvalidKeyIssue(
   return {
     type: issue.code,
     path: issue.path,
-    claim: `unexpected key in ${issue.origin}`,
+    message: `unexpected key in ${issue.origin}`,
   };
 }

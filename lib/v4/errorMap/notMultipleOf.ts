@@ -7,7 +7,6 @@ export function parseNotMultipleOfIssue(
   return {
     type: issue.code,
     path: issue.path,
-    claim: `invalid value`,
-    expectation: `expected multiple of ${issue.divisor}`,
+    message: `expected multiple of ${issue.divisor}`,
   };
 }

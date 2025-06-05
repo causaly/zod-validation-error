@@ -7,14 +7,14 @@ export function parseInvalidStringFormatIssue(
     displayInvalidFormatDetails: false,
   }
 ): AbstractSyntaxTree {
-  let expectation: string;
-
   switch (issue.format) {
     case 'lowercase':
-    case 'uppercase': {
-      expectation = `expected all characters to be in ${issue.format} format`;
-      break;
-    }
+    case 'uppercase':
+      return {
+        type: issue.code,
+        path: issue.path,
+        message: `value must be in ${issue.format} format`,
+      };
     default: {
       if (isZodIssueStringStartsWith(issue)) {
         return parseStringStartsWith(issue);
@@ -32,32 +32,30 @@ export function parseInvalidStringFormatIssue(
         return parseStringInvalidJWT(issue, options);
       }
 
-      expectation = `expected ${issue.format} format`;
+      return {
+        type: issue.code,
+        path: issue.path,
+        message: `invalid ${issue.format}`,
+      };
     }
   }
-
-  return {
-    type: issue.code,
-    path: issue.path,
-    claim: 'malformed value',
-    expectation,
-  };
 }
 function isZodIssueStringStartsWith(
   issue: zod.$ZodIssueInvalidStringFormat
 ): issue is zod.$ZodIssueStringStartsWith {
   return issue.format === 'starts_with';
 }
+
 function parseStringStartsWith(
   issue: zod.$ZodIssueStringStartsWith
 ): AbstractSyntaxTree {
   return {
     type: issue.code,
     path: issue.path,
-    claim: 'malformed value',
-    expectation: `should start with "${issue.prefix}"`,
+    message: `value must start with "${issue.prefix}"`,
   };
 }
+
 function isZodIssueStringEndsWith(
   issue: zod.$ZodIssueInvalidStringFormat
 ): issue is zod.$ZodIssueStringEndsWith {
@@ -69,10 +67,10 @@ function parseStringEndsWith(
   return {
     type: issue.code,
     path: issue.path,
-    claim: 'malformed value',
-    expectation: `should end with "${issue.suffix}"`,
+    message: `value must end with "${issue.suffix}"`,
   };
 }
+
 function isZodIssueStringIncludes(
   issue: zod.$ZodIssueInvalidStringFormat
 ): issue is zod.$ZodIssueStringIncludes {
@@ -84,10 +82,10 @@ function parseStringIncludes(
   return {
     type: issue.code,
     path: issue.path,
-    claim: 'malformed value',
-    expectation: `should include "${issue.includes}"`,
+    message: `value must include "${issue.includes}"`,
   };
 }
+
 function isZodIssueStringInvalidRegex(
   issue: zod.$ZodIssueInvalidStringFormat
 ): issue is zod.$ZodIssueStringInvalidRegex {
@@ -99,15 +97,18 @@ function parseStringInvalidRegex(
     displayInvalidFormatDetails: false,
   }
 ): AbstractSyntaxTree {
+  let message = 'value must match pattern';
+  if (options.displayInvalidFormatDetails) {
+    message += ` "${issue.pattern}"`;
+  }
+
   return {
     type: issue.code,
     path: issue.path,
-    claim: 'malformed value',
-    expectation: options.displayInvalidFormatDetails
-      ? `should match pattern "${issue.pattern}"`
-      : `does not match expected pattern`,
+    message,
   };
 }
+
 function isZodIssueStringInvalidJWT(
   issue: zod.$ZodIssueInvalidStringFormat
 ): issue is zod.$ZodIssueStringInvalidJWT {
@@ -122,10 +123,9 @@ function parseStringInvalidJWT(
   return {
     type: issue.code,
     path: issue.path,
-    claim: 'malformed value',
-    expectation:
+    message:
       options.displayInvalidFormatDetails && issue.algorithm
-        ? `expected jwt/${issue.algorithm} format`
-        : `expected jwt format`,
+        ? `invalid jwt/${issue.algorithm}`
+        : `invalid jwt`,
   };
 }

@@ -12,27 +12,37 @@ export function joinValues(
   values: Array<Primitive>,
   options: JoinValuesOptions
 ): string {
-  let str = '';
-  const maxLength = Math.min(
-    options.maxValuesToDisplay ?? Number.MAX_SAFE_INTEGER,
-    values.length
-  );
+  const valuesToDisplay = (
+    options.maxValuesToDisplay
+      ? values.slice(0, options.maxValuesToDisplay)
+      : values
+  ).map((value) => {
+    return stringifyValue(value, {
+      wrapStringsInQuote: options.wrapStringsInQuote,
+    });
+  });
 
-  for (let index = 0; index < maxLength; index++) {
-    const value = values[index];
+  // add remaining values count (if any)
+  // this is to avoid displaying too many values in the error message
+  // and to keep the message concise
+  // e.g. `"foo", "bar", "baz" or 3 more value(s)`
+  if (valuesToDisplay.length < values.length) {
+    valuesToDisplay.push(
+      `${values.length - valuesToDisplay.length} more value(s)`
+    );
+  }
 
+  return valuesToDisplay.reduce<string>((acc, value, index) => {
     if (index > 0) {
-      if (options.lastSeparator && index === maxLength - 1) {
-        str += options.lastSeparator;
+      if (index === valuesToDisplay.length - 1 && options.lastSeparator) {
+        acc += options.lastSeparator;
       } else {
-        str += options.separator;
+        acc += options.separator;
       }
     }
 
-    str += stringifyValue(value, {
-      wrapStringsInQuote: options.wrapStringsInQuote,
-    });
-  }
+    acc += value;
 
-  return str;
+    return acc;
+  }, '');
 }

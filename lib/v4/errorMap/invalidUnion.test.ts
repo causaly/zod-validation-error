@@ -17,7 +17,7 @@ describe('parseInvalidUnionIssue', () => {
     if (result.success) throw new Error('Expected failure');
 
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"invalid type; expected string, or invalid type; expected number, or invalid type; expected boolean, or invalid type; expected null, or invalid type; expected array, or invalid type; expected record at "input"; "`
+      `"Expected string or Expected number or Expected boolean or Expected null or Expected array or Expected record at "input""`
     );
   });
 });

@@ -20,7 +20,7 @@ describe('parseNotMultipleOfIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"invalid value at "input"; expected multiple of 2"`
+      `"Expected multiple of 2 at "input""`
     );
   });
 });

@@ -7,35 +7,34 @@ export function parseInvalidValueIssue(
   issue: zod.$ZodIssueInvalidValue,
   options: Pick<
     ErrorMapOptions,
-    | 'valuesSeparator'
-    | 'wrapStringValuesInQuote'
-    | 'maxValuesToDisplay'
-    | 'valuesLastSeparator'
+    | 'allowedValuesSeparator'
+    | 'maxAllowedValuesToDisplay'
+    | 'wrapAllowedValuesInQuote'
+    | 'allowedValuesLastSeparator'
   >
 ): AbstractSyntaxTree {
-  let expectation: string | undefined;
+  let message: string;
 
   if (issue.values.length === 0) {
-    expectation = undefined;
+    message = 'invalid value';
   } else if (issue.values.length === 1) {
     const valueStr = stringifyValue(issue.values[0], {
       wrapStringsInQuote: true,
     });
-    expectation = `expected ${valueStr}`;
+    message = `expected value to be ${valueStr}`;
   } else {
     const valuesStr = joinValues(issue.values, {
-      separator: options.valuesSeparator,
-      lastSeparator: options.valuesLastSeparator,
-      wrapStringsInQuote: options.wrapStringValuesInQuote,
-      maxValuesToDisplay: options.maxValuesToDisplay,
+      separator: options.allowedValuesSeparator,
+      lastSeparator: options.allowedValuesLastSeparator,
+      wrapStringsInQuote: options.wrapAllowedValuesInQuote,
+      maxValuesToDisplay: options.maxAllowedValuesToDisplay,
     });
-    expectation = `expected one of ${valuesStr}`;
+    message = `expected value to be one of ${valuesStr}`;
   }
 
   return {
     type: issue.code,
     path: issue.path,
-    claim: 'invalid value',
-    expectation: expectation,
+    message,
   };
 }

@@ -23,7 +23,7 @@ describe('parseUnrecognizedKeysIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"invalid object; unrecognized key "b2""`
+      `"Unrecognized key(s) "b2" in object"`
     );
   });
 
@@ -43,7 +43,7 @@ describe('parseUnrecognizedKeysIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"invalid object; unrecognized keys "b2", "c3" and "d4""`
+      `"Unrecognized key(s) "b2", "c3" and "d4" in object"`
     );
   });
 });

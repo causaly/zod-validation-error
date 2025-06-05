@@ -1,12 +1,5 @@
-import {
-  compileNumericValueRealization,
-  compileCharacterLengthRealization,
-  compileArraySizeRealization,
-  compileSetSizeRealization,
-  compileFileSizeRealization,
-} from './tooBig.ts';
-import type { AbstractSyntaxTree } from './types.ts';
 import type * as zod from 'zod/v4/core';
+import type { AbstractSyntaxTree } from './types.ts';
 
 export function parseTooSmallIssue(
   issue: zod.$ZodIssueTooSmall
@@ -18,78 +11,54 @@ export function parseTooSmallIssue(
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'number is too small',
-        expectation: `expected >${
-          issue.inclusive ? '=' : ''
+        message: `number must be greater ${
+          issue.inclusive ? 'or equal to' : 'than'
         } ${issue.minimum.toLocaleString()}`,
-        realization: compileNumericValueRealization(issue),
       };
     }
     case 'date': {
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'invalid date',
-        expectation: `expected ${
+        message: `date must be ${
           issue.inclusive ? 'later or equal to' : 'later to'
-        } ${new Date(issue.minimum as number).toLocaleString()}`,
+        } "${new Date(issue.minimum as number).toLocaleString()}"`,
       };
     }
     case 'string': {
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'string is too short',
-        expectation: `expected >${
-          issue.inclusive ? '=' : ''
-        } ${issue.minimum.toLocaleString()} character${
-          issue.minimum === 1 ? '' : 's'
-        }`,
-        realization: compileCharacterLengthRealization(issue),
+        message: `string must contain at least ${issue.minimum.toLocaleString()} character(s)`,
       };
     }
     case 'array': {
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'array contains too few items',
-        expectation: `expected >${
-          issue.inclusive ? '=' : ''
-        } ${issue.minimum.toLocaleString()} in size`,
-        realization: compileArraySizeRealization(issue),
+        message: `array must contain at least ${issue.minimum.toLocaleString()} item(s)`,
       };
     }
     case 'set': {
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'set contains too few items',
-        expectation: `expected >${
-          issue.inclusive ? '=' : ''
-        } ${issue.minimum.toLocaleString()} in size`,
-        realization: compileSetSizeRealization(issue),
+        message: `set must contain at least ${issue.minimum.toLocaleString()} item(s)`,
       };
     }
     case 'file': {
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'file is too small in size',
-        expectation: `expected >${
-          issue.inclusive ? '=' : ''
-        } ${issue.minimum.toLocaleString()} byte${
-          issue.minimum === 1 ? '' : 's'
-        }`,
-        realization: compileFileSizeRealization(issue),
+        message: `file must be at least ${issue.minimum.toLocaleString()} byte(s) in size`,
       };
     }
     default:
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'invalid value',
-        expectation: `expected >${
-          issue.inclusive ? '=' : ''
+        message: `value must be greater ${
+          issue.inclusive ? 'or equal to' : 'than'
         } ${issue.minimum.toLocaleString()}`,
       };
   }

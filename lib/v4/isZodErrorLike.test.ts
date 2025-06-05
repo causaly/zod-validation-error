@@ -12,7 +12,7 @@ class CustomZodError extends Error {
 }
 
 describe('isZodErrorLike()', () => {
-  test('returns true when argument is an actual ZodError', () => {
+  test('returns true on parsing error', () => {
     const schema = zod.email();
     const response = schema.safeParse('foobar');
 
@@ -21,6 +21,26 @@ describe('isZodErrorLike()', () => {
     }
 
     expect(isZodErrorLike(response.error)).toEqual(true);
+  });
+
+  test('returns true when argument is an instance of ZodError', () => {
+    const error = new zod.ZodError([]);
+    expect(isZodErrorLike(error)).toEqual(true);
+  });
+
+  test('returns true when argument is an instance of ZodRealError', () => {
+    const error = new zod.ZodRealError([]);
+    expect(isZodErrorLike(error)).toEqual(true);
+  });
+
+  test('returns true when argument is an instance of $ZodError', () => {
+    const error = new zod.core.$ZodError([]);
+    expect(isZodErrorLike(error)).toEqual(true);
+  });
+
+  test('returns true when argument is an instance of $ZodRealError', () => {
+    const error = new zod.core.$ZodRealError([]);
+    expect(isZodErrorLike(error)).toEqual(true);
   });
 
   test('returns false when argument resembles a ZodError but does not have issues', () => {
@@ -58,15 +78,6 @@ describe('isZodErrorLike()', () => {
 
   test('returns false when argument is object', () => {
     const err = {};
-
-    expect(isZodErrorLike(err)).toEqual(false);
-  });
-
-  test('returns false when argument is object, even if it carries the same props as an actual ZodError', () => {
-    const err = {
-      name: 'ZodError',
-      issues: [],
-    };
 
     expect(isZodErrorLike(err)).toEqual(false);
   });

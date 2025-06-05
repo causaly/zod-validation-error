@@ -1,5 +1,6 @@
 import { joinPath } from '../../utils/joinPath.ts';
 import { isNonEmptyArray } from '../../utils/NonEmptyArray.ts';
+import { titleCase } from '../../utils/titleCase.ts';
 import { parseInvalidElementIssue } from './invalidElement.ts';
 import { parseInvalidStringFormatIssue } from './invalidStringFormat.ts';
 import { parseInvalidTypeIssue } from './invalidType.ts';
@@ -40,7 +41,8 @@ export function parseInvalidUnionIssue(
   options: ErrorMapOptions
 ): AbstractSyntaxTree {
   const errorMap = createErrorMap(options);
-  const claim = issue.errors
+
+  const message = issue.errors
     .reduce<string[]>((acc, issues) => {
       const newIssues = issues.map(errorMap).join(options.issueSeparator);
 
@@ -55,32 +57,33 @@ export function parseInvalidUnionIssue(
   return {
     type: issue.code,
     path: issue.path,
-    claim,
+    message,
   };
 }
 
 export const defaultErrorMapOptions: ErrorMapOptions = {
   includePath: true,
+  unionSeparator: ' or ',
+  issueSeparator: '; ',
   displayInvalidFormatDetails: false,
-  valuesSeparator: ', ',
-  valuesLastSeparator: ' or ',
-  wrapStringValuesInQuote: true,
-  maxValuesToDisplay: 10,
+  allowedValuesSeparator: ', ',
+  allowedValuesLastSeparator: ' or ',
+  wrapAllowedValuesInQuote: true,
+  maxAllowedValuesToDisplay: 10,
   unrecognizedKeysSeparator: ', ',
   unrecognizedKeysLastSeparator: ' and ',
   wrapUnrecognizedKeysInQuote: true,
   maxUnrecognizedKeysToDisplay: 5,
-  issueSeparator: '; ',
-  unionSeparator: ', or ',
+  issuesInTitleCase: true,
 };
 
 export function createErrorMap(
-  options: Partial<ErrorMapOptions> = {}
+  partialOptions: Partial<ErrorMapOptions> = {}
 ): zod.$ZodErrorMap<zod.$ZodIssue> {
   // fill-in default options
-  const refinedOptions = {
+  const options = {
     ...defaultErrorMapOptions,
-    ...options,
+    ...partialOptions,
   };
 
   const errorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
@@ -90,39 +93,38 @@ export function createErrorMap(
     }
 
     const parseFunc = issueParsers[issue.code];
-    const ast = parseFunc(issue, refinedOptions);
-    return toString(ast, refinedOptions);
+    const ast = parseFunc(issue, options);
+    return toString(ast, options);
   };
 
   return errorMap;
 }
 
 function toString(ast: AbstractSyntaxTree, options: ErrorMapOptions): string {
-  const errorDetails = options.errorDetails ?? {};
+  const buf = [];
 
-  const buf = [ast.claim];
+  if (options.issuesInTitleCase) {
+    buf.push(titleCase(ast.message));
+  } else {
+    buf.push(ast.message);
+  }
 
-  if (
+  pathCondition: if (
     options.includePath &&
     ast.path !== undefined &&
     isNonEmptyArray(ast.path)
   ) {
-    buf.push(` at "${joinPath(ast.path)}"`);
-  }
+    // handle array indices
+    if (ast.path.length === 1) {
+      const identifier = ast.path[0];
 
-  if (!errorDetails.disabled) {
-    buf.push(errorDetails.prefix ?? `; `);
-    if (ast.expectation) {
-      buf.push(ast.expectation);
-
-      if (ast.realization) {
-        buf.push(`, `);
+      if (typeof identifier === 'number') {
+        buf.push(` at index ${identifier}`);
+        break pathCondition;
       }
     }
-    if (ast.realization) {
-      buf.push(ast.realization);
-    }
-    buf.push(errorDetails.suffix ?? '');
+
+    buf.push(` at "${joinPath(ast.path)}"`);
   }
 
   return buf.join('');

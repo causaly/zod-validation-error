@@ -20,7 +20,7 @@ describe('parseTooBigIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"string contains too many characters at "input"; expected < 3 characters, received 5 characters"`
+      `"String must contain at most 3 character(s) at "input""`
     );
   });
 
@@ -35,7 +35,7 @@ describe('parseTooBigIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"number too big at "input"; expected <= 10, received 20"`
+      `"Number must be less or equal to 10 at "input""`
     );
   });
 
@@ -50,7 +50,7 @@ describe('parseTooBigIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"number too big at "input"; expected < 10, received 10"`
+      `"Number must be less than 10 at "input""`
     );
   });
 
@@ -65,7 +65,7 @@ describe('parseTooBigIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"array contains too many items at "input"; expected < 2 in size, received 3 items"`
+      `"Array must contain at most 2 item(s) at "input""`
     );
   });
 
@@ -80,13 +80,13 @@ describe('parseTooBigIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"set contains too many items at "input"; expected < 2 in size, received 3 items"`
+      `"Set must contain at most 2 item(s) at "input""`
     );
   });
 
   test('handles Date input', () => {
     const schema = zod.object({
-      input: zod.date().max(new Date('2020-01-01')),
+      input: zod.date().max(new Date('2020/01/01')),
     });
     const result = schema.safeParse({
       input: new Date('2021-01-01'),
@@ -95,7 +95,7 @@ describe('parseTooBigIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"invalid date at "input"; expected prior or equal to 1/1/2020, 2:00:00 AM"`
+      `"Date must be prior or equal to "1/1/2020, 12:00:00 AM" at "input""`
     );
   });
 
@@ -110,7 +110,7 @@ describe('parseTooBigIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"number too big at "input"; expected <= 100, received 200"`
+      `"Number must be less or equal to 100 at "input""`
     );
   });
 

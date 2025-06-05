@@ -19,7 +19,7 @@ describe('parseInvalidStringFormatIssue', () => {
     }
 
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected date format"`
+      `"Invalid date at "input""`
     );
   });
 
@@ -30,7 +30,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-an-email' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected email format"`
+      `"Invalid email at "input""`
     );
   });
 
@@ -41,7 +41,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-url' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected url format"`
+      `"Invalid url at "input""`
     );
   });
 
@@ -52,7 +52,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-emoji' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected emoji format"`
+      `"Invalid emoji at "input""`
     );
   });
 
@@ -63,7 +63,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-uuid' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected uuid format"`
+      `"Invalid uuid at "input""`
     );
   });
 
@@ -74,7 +74,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-guid' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected guid format"`
+      `"Invalid guid at "input""`
     );
   });
 
@@ -85,7 +85,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-nanoid' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected nanoid format"`
+      `"Invalid nanoid at "input""`
     );
   });
 
@@ -96,7 +96,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-cuid' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected cuid format"`
+      `"Invalid cuid at "input""`
     );
   });
 
@@ -107,7 +107,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-cuid2' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected cuid2 format"`
+      `"Invalid cuid2 at "input""`
     );
   });
 
@@ -118,7 +118,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-ulid' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected ulid format"`
+      `"Invalid ulid at "input""`
     );
   });
 
@@ -129,7 +129,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-an-xid' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected xid format"`
+      `"Invalid xid at "input""`
     );
   });
 
@@ -140,7 +140,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-ksuid' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected ksuid format"`
+      `"Invalid ksuid at "input""`
     );
   });
 
@@ -151,7 +151,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-datetime' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected datetime format"`
+      `"Invalid datetime at "input""`
     );
   });
 
@@ -162,7 +162,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-time' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected time format"`
+      `"Invalid time at "input""`
     );
   });
 
@@ -173,7 +173,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-duration' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected duration format"`
+      `"Invalid duration at "input""`
     );
   });
 
@@ -184,7 +184,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-an-ipv4' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected ipv4 format"`
+      `"Invalid ipv4 at "input""`
     );
   });
 
@@ -195,7 +195,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-an-ipv6' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected ipv6 format"`
+      `"Invalid ipv6 at "input""`
     );
   });
 
@@ -206,7 +206,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-cidrv4' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected cidrv4 format"`
+      `"Invalid cidrv4 at "input""`
     );
   });
 
@@ -217,7 +217,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-cidrv6' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected cidrv6 format"`
+      `"Invalid cidrv6 at "input""`
     );
   });
 
@@ -228,7 +228,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-base64' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected base64 format"`
+      `"Invalid base64 at "input""`
     );
   });
 
@@ -239,7 +239,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-base64url' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected base64url format"`
+      `"Invalid base64url at "input""`
     );
   });
 
@@ -250,7 +250,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-e164' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected e164 format"`
+      `"Invalid e164 at "input""`
     );
   });
 
@@ -261,7 +261,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'NOTLOWERCASE' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected all characters to be in lowercase format"`
+      `"Value must be in lowercase format at "input""`
     );
   });
 
@@ -272,7 +272,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'notuppercase' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected all characters to be in uppercase format"`
+      `"Value must be in uppercase format at "input""`
     );
   });
 
@@ -283,7 +283,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'def' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; does not match expected pattern"`
+      `"Value must match pattern at "input""`
     );
   });
 
@@ -299,7 +299,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'def' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value; should match pattern "/^abc$/""`
+      `"Value must match pattern "/^abc$/""`
     );
   });
 
@@ -312,7 +312,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'not-a-jwt' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; expected jwt format"`
+      `"Invalid jwt at "input""`
     );
   });
 
@@ -342,7 +342,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'def' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; should start with "abc""`
+      `"Value must start with "abc" at "input""`
     );
   });
 
@@ -353,7 +353,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'abc' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; should end with "xyz""`
+      `"Value must end with "xyz" at "input""`
     );
   });
 
@@ -364,7 +364,7 @@ describe('parseInvalidStringFormatIssue', () => {
     const result = schema.safeParse({ input: 'bar' });
     if (result.success) throw new Error('Expected failure');
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"malformed value at "input"; should include "foo""`
+      `"Value must include "foo" at "input""`
     );
   });
 });

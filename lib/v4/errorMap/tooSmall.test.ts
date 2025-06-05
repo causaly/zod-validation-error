@@ -16,7 +16,7 @@ describe('parseTooSmallIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"string is too short; expected > 5 characters, received 3 characters"`
+      `"String must contain at least 5 character(s)"`
     );
   });
 
@@ -27,7 +27,7 @@ describe('parseTooSmallIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"number is too small; expected >= 10, received 5"`
+      `"Number must be greater or equal to 10"`
     );
   });
 
@@ -38,7 +38,7 @@ describe('parseTooSmallIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"number is too small; expected > 10, received 10"`
+      `"Number must be greater than 10"`
     );
   });
 
@@ -49,7 +49,7 @@ describe('parseTooSmallIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"array contains too few items; expected > 3 in size, received 1 item"`
+      `"Array must contain at least 3 item(s)"`
     );
   });
 
@@ -60,7 +60,7 @@ describe('parseTooSmallIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"set contains too few items; expected > 3 in size, received 1 item"`
+      `"Set must contain at least 3 item(s)"`
     );
   });
 
@@ -71,7 +71,7 @@ describe('parseTooSmallIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"invalid date; expected later or equal to 1/1/2020, 2:00:00 AM"`
+      `"Date must be later or equal to "1/1/2020, 2:00:00 AM""`
     );
   });
 
@@ -95,7 +95,7 @@ describe('parseTooSmallIssue', () => {
       throw new Error('Expected failure');
     }
     expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"number is too small; expected >= 100, received 50"`
+      `"Number must be greater or equal to 100"`
     );
   });
 });

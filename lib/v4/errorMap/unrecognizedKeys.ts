@@ -22,9 +22,6 @@ export function parseUnrecognizedKeysIssue(
   return {
     type: issue.code,
     path: issue.path,
-    claim: `invalid object`,
-    realization: `unrecognized key${
-      issue.keys.length === 1 ? '' : 's'
-    } ${keysStr}`,
+    message: `unrecognized key(s) ${keysStr} in object`,
   };
 }

@@ -11,139 +11,55 @@ export function parseTooBigIssue(
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'number too big',
-        expectation: `expected <${
-          issue.inclusive ? '=' : ''
+        message: `number must be less ${
+          issue.inclusive ? 'or equal to' : 'than'
         } ${issue.maximum.toLocaleString()}`,
-        realization: compileNumericValueRealization(issue),
       };
     }
     case 'date': {
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'invalid date',
-        expectation: `expected ${
+        message: `date must be ${
           issue.inclusive ? 'prior or equal to' : 'prior to'
-        } ${new Date(issue.maximum as number).toLocaleString()}`,
+        } "${new Date(issue.maximum as number).toLocaleString()}"`,
       };
     }
     case 'string': {
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'string contains too many characters',
-        expectation: `expected <${
-          issue.inclusive ? '=' : ''
-        } ${issue.maximum.toLocaleString()} character${
-          issue.maximum === 1 ? '' : 's'
-        }`,
-        realization: compileCharacterLengthRealization(issue),
+        message: `string must contain at most ${issue.maximum.toLocaleString()} character(s)`,
       };
     }
     case 'array': {
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'array contains too many items',
-        expectation: `expected <${
-          issue.inclusive ? '=' : ''
-        } ${issue.maximum.toLocaleString()} in size`,
-        realization: compileArraySizeRealization(issue),
+        message: `array must contain at most ${issue.maximum.toLocaleString()} item(s)`,
       };
     }
     case 'set': {
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'set contains too many items',
-        expectation: `expected <${
-          issue.inclusive ? '=' : ''
-        } ${issue.maximum.toLocaleString()} in size`,
-        realization: compileSetSizeRealization(issue),
+        message: `set must contain at most ${issue.maximum.toLocaleString()} item(s)`,
       };
     }
     case 'file': {
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'file is too large in size',
-        expectation: `expected <${
-          issue.inclusive ? '=' : ''
-        } ${issue.maximum.toLocaleString()} byte${
-          issue.maximum === 1 ? '' : 's'
-        }`,
-        realization: compileFileSizeRealization(issue),
+        message: `file must not exceed ${issue.maximum.toLocaleString()} byte(s) in size`,
       };
     }
     default:
       return {
         type: issue.code,
         path: issue.path,
-        claim: 'invalid value',
-        expectation: `expected <${
-          issue.inclusive ? '=' : ''
+        message: `value must be less ${
+          issue.inclusive ? 'or equal to' : 'than'
         } ${issue.maximum.toLocaleString()}`,
       };
   }
-} // export interface $ZodIssueStringInvalidJWT extends $ZodIssueInvalidStringFormat {
-export function compileNumericValueRealization(
-  issue: zod.$ZodIssue
-): string | undefined {
-  switch (typeof issue.input) {
-    case 'number':
-    case 'bigint':
-      return `received ${issue.input.toLocaleString()}`;
-    default:
-      return undefined;
-  }
-}
-
-export function compileCharacterLengthRealization(
-  issue: zod.$ZodIssue
-): string | undefined {
-  switch (typeof issue.input) {
-    case 'string':
-      return `received ${issue.input.length.toLocaleString()} character${
-        issue.input.length === 1 ? '' : 's'
-      }`;
-    default:
-      return undefined;
-  }
-}
-
-export function compileArraySizeRealization(
-  issue: zod.$ZodIssue
-): string | undefined {
-  if (Array.isArray(issue.input)) {
-    return `received ${issue.input.length.toLocaleString()} item${
-      issue.input.length === 1 ? '' : 's'
-    }`;
-  }
-
-  return undefined;
-}
-
-export function compileSetSizeRealization(
-  issue: zod.$ZodIssue
-): string | undefined {
-  if (issue.input instanceof Set) {
-    return `received ${issue.input.size.toLocaleString()} item${
-      issue.input.size === 1 ? '' : 's'
-    }`;
-  }
-
-  return undefined;
-}
-
-export function compileFileSizeRealization(
-  issue: zod.$ZodIssue
-): string | undefined {
-  if (issue.input instanceof File) {
-    return `received ${issue.input.size.toLocaleString()} byte${
-      issue.input.size === 1 ? '' : 's'
-    }`;
-  }
-
-  return undefined;
 }

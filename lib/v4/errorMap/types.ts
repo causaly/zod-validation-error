@@ -4,30 +4,27 @@ export type IssueType = NonNullable<zod.$ZodIssue['code']>;
 
 export type AbstractSyntaxTree = {
   type: IssueType;
-  claim: string;
   path?: zod.$ZodIssue['path'];
-  expectation?: string;
-  realization?: string;
+  message: string;
 };
 
 export type ErrorMapOptions = {
+  // Include path
+  includePath: boolean;
+  // Concat issues
+  unionSeparator: string;
+  issueSeparator: string;
+  issuesInTitleCase: boolean;
+  // Invalid format options
   displayInvalidFormatDetails: boolean;
-  // Allowed Values
-  valuesSeparator: string;
-  valuesLastSeparator: string | undefined;
-  wrapStringValuesInQuote: boolean;
-  maxValuesToDisplay: number;
-  // Unrecognized keys
+  // Allowed values options
+  allowedValuesSeparator: string;
+  allowedValuesLastSeparator: string | undefined;
+  wrapAllowedValuesInQuote: boolean;
+  maxAllowedValuesToDisplay: number;
+  // Unrecognized keys options
   unrecognizedKeysSeparator: string;
   unrecognizedKeysLastSeparator: string | undefined;
   wrapUnrecognizedKeysInQuote: boolean;
   maxUnrecognizedKeysToDisplay: number;
-  includePath: boolean;
-  issueSeparator: string;
-  unionSeparator: string;
-  errorDetails?: {
-    disabled?: boolean;
-    prefix?: string;
-    suffix?: string;
-  };
 };

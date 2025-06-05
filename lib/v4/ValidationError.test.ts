@@ -25,25 +25,21 @@ describe('ValidationError', () => {
     });
 
     test('accepts ZodError as cause', () => {
-      const message = 'Invalid email coyote@acme';
-      const issues: Array<zod.core.$ZodIssue> = [
-        {
-          code: 'invalid_format',
-          message: 'Invalid email',
-          path: [],
-          format: 'email',
-          input: 'coyote@acme',
-        },
-      ];
-      const cause = new zod.core.$ZodError(issues);
-
-      const err = new ValidationError(message, {
-        cause,
+      const schema = zod.object({
+        input: zod.email(),
       });
+      const result = schema.safeParse({ input: 'coyote@acme' });
+      if (result.success) throw new Error('Expected failure');
+
+      const message = 'Invalid email coyote@acme';
+      const err = new ValidationError(message, {
+        cause: result.error,
+      });
+
       expect(err.message).toBe(message);
       // @ts-ignore
-      expect(err.cause).toEqual(cause);
-      expect(err.details).toEqual(issues);
+      expect(err.cause).toEqual(result.error);
+      expect(err.details).toEqual(result.error.issues);
     });
   });
 
