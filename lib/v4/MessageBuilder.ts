@@ -1,5 +1,4 @@
 import { type NonEmptyArray } from '../utils/NonEmptyArray.ts';
-import { titleCase } from '../utils/titleCase.ts';
 import { defaultErrorMapOptions } from './errorMap/index.ts';
 import type * as zod from 'zod/v4/core';
 
@@ -16,7 +15,6 @@ export type MessageBuilderOptions = {
   prefixSeparator: string;
   maxIssuesInMessage: number;
   issueSeparator: string;
-  issuesInTitleCase: boolean;
   error: zod.$ZodErrorMap<zod.$ZodIssue>;
 };
 
@@ -27,7 +25,6 @@ export const defaultMessageBuilderOptions: MessageBuilderOptions & {
   prefixSeparator: ': ',
   maxIssuesInMessage: 99, // I've got 99 problems but the b$tch ain't one
   issueSeparator: defaultErrorMapOptions.issueSeparator,
-  issuesInTitleCase: defaultErrorMapOptions.issuesInTitleCase,
   error: stubErrorMap,
 };
 
@@ -47,19 +44,6 @@ export function createMessageBuilder(
       // format error message
       .map((issue) => {
         const message = errorMap(issue);
-
-        if (options.issuesInTitleCase) {
-          if (message == null) {
-            return message;
-          }
-
-          if (typeof message === 'string') {
-            return titleCase(message);
-          }
-
-          return titleCase(message.message);
-        }
-
         return message;
       })
       // concat as string
