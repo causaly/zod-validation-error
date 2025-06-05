@@ -19,8 +19,12 @@ describe('joinValues()', () => {
 
   it('limits number of values displayed with maxValuesToDisplay', () => {
     expect(
-      joinValues([1, 2, 3, 4], { separator: ', ', maxValuesToDisplay: 2 })
-    ).toBe('1, 2');
+      joinValues([1, 2, 3, 4], {
+        separator: ', ',
+        lastSeparator: ' or ',
+        maxValuesToDisplay: 2,
+      })
+    ).toBe('1, 2 or 2 more value(s)');
   });
 
   it('handles empty array', () => {
@@ -45,6 +49,6 @@ describe('joinValues()', () => {
         maxValuesToDisplay: 3,
         wrapStringsInQuote: true,
       })
-    ).toBe('"a", "b" or "c"');
+    ).toBe('"a", "b", "c" or 2 more value(s)');
   });
 });

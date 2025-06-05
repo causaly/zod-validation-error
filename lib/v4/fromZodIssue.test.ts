@@ -55,7 +55,8 @@ describe('fromZodIssue()', () => {
           [
             {
               "code": "too_small",
-              "message": "Too small: expected string to have >3 characters",
+              "inclusive": true,
+              "message": "Too small: expected string to have >=3 characters",
               "minimum": 3,
               "origin": "string",
               "path": [],

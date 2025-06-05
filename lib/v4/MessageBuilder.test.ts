@@ -302,7 +302,7 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Too small: expected string to have >3 characters"`
+          `"Validation error: Too small: expected string to have >=3 characters"`
         );
       }
     }
