@@ -8,7 +8,7 @@ Wrap zod validation errors in user-friendly readable messages.
 
 - User-friendly readable messages, configurable via options;
 - Maintain original issues under `error.details`;
-- Extensive tests.
+- Supports both `zod` v3 and v4.
 
 ## Installation
 
@@ -22,6 +22,8 @@ npm install zod-validation-error
 - TypeScript v.4.5+
 
 ## Quick start
+
+_Are you using zod v4?_ Please read the [v4 docs](/README.v4.md) instead.
 
 ```typescript
 import { z as zod } from 'zod';
@@ -159,7 +161,7 @@ import { createMessageBuilder } from 'zod-validation-error';
 
 const messageBuilder = createMessageBuilder({
   includePath: false,
-  maxIssuesInMessage: 3
+  maxIssuesInMessage: 3,
 });
 ```
 
@@ -320,7 +322,7 @@ _Why is the difference between `ZodError` and `ZodIssue`?_ A `ZodError` is a col
 Alternatively, you may pass the following `options` instead of a `messageBuilder`.
 
 - `options` - _Object_; formatting options (optional)
-user-friendly message (optional, defaults to 99)
+  user-friendly message (optional, defaults to 99)
   - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
   - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
   - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
@@ -376,18 +378,20 @@ import chalk from 'chalk';
 
 // create custom MessageBuilder
 const myMessageBuilder: MessageBuilder = (issues) => {
-  return issues
-    // format error message
-    .map((issue) => {
-      if (issue.code === zod.ZodIssueCode.invalid_string) {
-        return chalk.red(issue.message);
-      }
+  return (
+    issues
+      // format error message
+      .map((issue) => {
+        if (issue.code === zod.ZodIssueCode.invalid_string) {
+          return chalk.red(issue.message);
+        }
 
-      return issue.message;
-    })
-    // join as string with new-line character
-    .join('\n');
-}
+        return issue.message;
+      })
+      // join as string with new-line character
+      .join('\n')
+  );
+};
 
 // create zod schema
 const zodSchema = zod.object({
@@ -403,12 +407,11 @@ try {
   });
 } catch (err) {
   const validationError = fromError(err, {
-    messageBuilder: myMessageBuilder
+    messageBuilder: myMessageBuilder,
   });
   // the error is now displayed with red letters
   console.log(validationError.toString());
 }
-
 ```
 
 ## FAQ
