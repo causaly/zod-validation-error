@@ -85,8 +85,9 @@ describe('parseTooBigIssue', () => {
   });
 
   test('handles Date input', () => {
+    const maxDate = new Date('2020-01-01');
     const schema = zod.object({
-      input: zod.date().max(new Date('2020/01/01')),
+      input: zod.date().max(maxDate),
     });
     const result = schema.safeParse({
       input: new Date('2021-01-01'),
@@ -94,8 +95,8 @@ describe('parseTooBigIssue', () => {
     if (result.success) {
       throw new Error('Expected failure');
     }
-    expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"Date must be prior or equal to "1/1/2020, 12:00:00 AM" at "input""`
+    expect(result.error.issues[0].message).toBe(
+      `Date must be prior or equal to "${maxDate.toLocaleString()}" at "input"`
     );
   });
 

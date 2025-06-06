@@ -65,13 +65,14 @@ describe('parseTooSmallIssue', () => {
   });
 
   test('handles Date input', () => {
-    const schema = zod.date().min(new Date('2020-01-01'));
+    const minDate = new Date('2020-01-01');
+    const schema = zod.date().min(minDate);
     const result = schema.safeParse(new Date('2019-01-01'));
     if (result.success) {
       throw new Error('Expected failure');
     }
-    expect(result.error.issues[0].message).toMatchInlineSnapshot(
-      `"Date must be later or equal to "1/1/2020, 2:00:00 AM""`
+    expect(result.error.issues[0].message).toBe(
+      `Date must be later or equal to "${minDate.toLocaleString()}"`
     );
   });
 
