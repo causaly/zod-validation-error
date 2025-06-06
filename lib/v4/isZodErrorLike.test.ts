@@ -24,7 +24,17 @@ describe('isZodErrorLike()', () => {
   });
 
   test('returns true when argument is an instance of ZodError', () => {
-    const error = new zod.ZodError([]);
+    const error = new zod.ZodError([
+      {
+        origin: 'number',
+        code: 'too_small',
+        minimum: 0,
+        inclusive: false,
+        path: ['id'],
+        message: 'Number must be greater than 0 at "id"',
+        input: -1,
+      },
+    ]);
     expect(isZodErrorLike(error)).toEqual(true);
   });
 
