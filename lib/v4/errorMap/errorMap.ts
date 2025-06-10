@@ -42,17 +42,12 @@ export function parseInvalidUnionIssue(
 ): AbstractSyntaxTree {
   const errorMap = createErrorMap(options);
 
-  const message = issue.errors
-    .reduce<string[]>((acc, issues) => {
-      const newIssues = issues.map(errorMap).join(options.issueSeparator);
-
-      if (!acc.includes(newIssues)) {
-        acc.push(newIssues);
-      }
-
-      return acc;
-    }, [])
-    .join(options.unionSeparator);
+  const individualMessages = issue.errors.map((issues) =>
+    issues.map(errorMap).join(options.issueSeparator)
+  );
+  const message = Array.from(new Set(individualMessages)).join(
+    options.unionSeparator
+  );
 
   return {
     type: issue.code,
