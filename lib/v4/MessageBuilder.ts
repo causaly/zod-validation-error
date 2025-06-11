@@ -42,10 +42,7 @@ export function createMessageBuilder(
       // limit max number of issues printed in the reason section
       .slice(0, options.maxIssuesInMessage)
       // format error message
-      .map((issue) => {
-        const message = errorMap(issue);
-        return message;
-      })
+      .map(errorMap)
       // concat as string
       .join(options.issueSeparator);
 
