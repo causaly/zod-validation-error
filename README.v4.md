@@ -498,9 +498,13 @@ If all you need is to produce user-friendly error messages you may use the `erro
 
 ```typescript
 import { z as zod } from 'zod/v4';
-import { crea } from 'zod-validation-error/v4';
+import { fromError, createErrorMap } from 'zod-validation-error/v4';
 
-zod.setErrorMap(errorMap);
+zod.config({
+  customError: createErrorMap({
+    includePath: true,
+  }),
+});
 ```
 
 ### Does `zod-validation-error` support CommonJS
