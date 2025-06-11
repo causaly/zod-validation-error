@@ -322,7 +322,7 @@ _Why is the difference between `ZodError` and `ZodIssue`?_ A `ZodError` is a col
 Alternatively, you may pass the following `options` instead of a `messageBuilder`.
 
 - `options` - _Object_; formatting options (optional)
-  user-friendly message (optional, defaults to 99)
+  - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
   - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
   - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
   - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
