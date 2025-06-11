@@ -6,7 +6,7 @@ export type ZodIssue = zod.$ZodIssue;
 
 export type MessageBuilder = (issues: NonEmptyArray<ZodIssue>) => string;
 
-const stubErrorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
+const identityErrorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
   return issue.message;
 };
 
@@ -25,7 +25,7 @@ export const defaultMessageBuilderOptions: MessageBuilderOptions & {
   prefixSeparator: ': ',
   maxIssuesInMessage: 99, // I've got 99 problems but the b$tch ain't one
   issueSeparator: defaultErrorMapOptions.issueSeparator,
-  error: stubErrorMap,
+  error: identityErrorMap,
 };
 
 export function createMessageBuilder(
