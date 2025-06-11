@@ -1,4 +1,4 @@
-import type { Primitive } from 'zod';
+import type { util } from 'zod/v4/core';
 
 export function stringifySymbol(symbol: symbol): string {
   return symbol.description ?? '';
@@ -9,7 +9,7 @@ export type StringifyValueOptions = {
 };
 
 export function stringifyValue(
-  value: Primitive,
+  value: util.Primitive,
   options: StringifyValueOptions = {}
 ): string {
   switch (typeof value) {

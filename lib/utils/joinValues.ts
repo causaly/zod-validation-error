@@ -1,5 +1,5 @@
 import { stringifyValue } from './stringify.ts';
-import type { Primitive } from 'zod';
+import type { util } from 'zod/v4/core';
 
 export type JoinValuesOptions = {
   separator: string;
@@ -9,7 +9,7 @@ export type JoinValuesOptions = {
 };
 
 export function joinValues(
-  values: Array<Primitive>,
+  values: Array<util.Primitive>,
   options: JoinValuesOptions
 ): string {
   const valuesToDisplay = (
