@@ -15,13 +15,10 @@ describe('isValidationErrorLike()', () => {
     expect(isValidationErrorLike(new Error('foobar'))).toEqual(false);
   });
 
-  test('returns false when argument is not an Error instance', () => {
-    expect(isValidationErrorLike('foobar')).toEqual(false);
-    expect(isValidationErrorLike(123)).toEqual(false);
-    expect(
-      isValidationErrorLike({
-        message: 'foobar',
-      })
-    ).toEqual(false);
-  });
+  test.each(['foobar', 123, { message: 'foobar' }])(
+    'returns false when argument is %s',
+    (input) => {
+      expect(isValidationErrorLike(input)).toEqual(false);
+    }
+  );
 });
