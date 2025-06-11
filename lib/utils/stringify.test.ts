@@ -1,6 +1,6 @@
 import { stringifyValue, stringifySymbol } from './stringify.ts';
 
-describe('stringifySymbol', () => {
+describe('stringifySymbol()', () => {
   it('returns description for symbol with description', () => {
     expect(stringifySymbol(Symbol('desc'))).toBe('desc');
   });
@@ -9,7 +9,7 @@ describe('stringifySymbol', () => {
   });
 });
 
-describe('stringifyValue', () => {
+describe('stringifyValue()', () => {
   it('stringifies string without quotes by default', () => {
     expect(stringifyValue('foo')).toBe('foo');
   });
