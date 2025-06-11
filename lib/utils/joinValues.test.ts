@@ -13,7 +13,10 @@ describe('joinValues()', () => {
 
   test('wraps strings in quotes if option is set', () => {
     expect(
-      joinValues(['a', 'b', 'c'], { separator: ', ', wrapStringsInQuote: true })
+      joinValues(['a', 'b', 'c'], {
+        separator: ', ',
+        wrapStringValuesInQuote: true,
+      })
     ).toBe('"a", "b", "c"');
   });
 
@@ -47,7 +50,7 @@ describe('joinValues()', () => {
         separator: ', ',
         lastSeparator: ' or ',
         maxValuesToDisplay: 3,
-        wrapStringsInQuote: true,
+        wrapStringValuesInQuote: true,
       })
     ).toBe('"a", "b", "c" or 2 more value(s)');
   });

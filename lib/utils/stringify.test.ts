@@ -1,38 +1,100 @@
-import { stringifyValue, stringifySymbol } from './stringify.ts';
+import { stringify, stringifySymbol } from './stringify.ts';
 
 describe('stringifySymbol()', () => {
-  it('returns description for symbol with description', () => {
+  test('returns description for symbol with description', () => {
     expect(stringifySymbol(Symbol('desc'))).toBe('desc');
   });
-  it('returns empty string for symbol without description', () => {
+  test('returns empty string for symbol without description', () => {
     expect(stringifySymbol(Symbol())).toBe('');
   });
 });
 
-describe('stringifyValue()', () => {
-  it('stringifies string without quotes by default', () => {
-    expect(stringifyValue('foo')).toBe('foo');
+describe('stringify()', () => {
+  test('stringifies string', () => {
+    expect(stringify('foo')).toBe('foo');
   });
-  it('stringifies string with quotes if option set', () => {
-    expect(stringifyValue('foo', { wrapStringsInQuote: true })).toBe('"foo"');
+
+  test('stringifies string with quotes', () => {
+    expect(stringify('foo', { wrapStringValueInQuote: true })).toBe('"foo"');
   });
-  it('stringifies number', () => {
-    expect(stringifyValue(1234)).toBe('1,234');
+
+  test('stringifies number', () => {
+    expect(stringify(1234)).toBe('1,234');
   });
-  it('stringifies bigint', () => {
-    expect(stringifyValue(BigInt(1234))).toBe('1,234');
+
+  test('stringifies number without localization', () => {
+    expect(
+      stringify(1234, {
+        localization: false,
+      })
+    ).toBe('1234');
   });
-  it('stringifies symbol', () => {
-    expect(stringifyValue(Symbol('bar'))).toBe('bar');
+
+  test('stringifies number with explicit locale', () => {
+    expect(
+      stringify(1234, {
+        localization: 'ar-EG',
+      })
+    ).toBe('١٬٢٣٤');
   });
-  it('stringifies null', () => {
-    expect(stringifyValue(null)).toBe('null');
+
+  test('stringifies bigint', () => {
+    expect(stringify(BigInt(1234))).toBe('1,234');
   });
-  it('stringifies undefined', () => {
-    expect(stringifyValue(undefined)).toBe('undefined');
+
+  test('stringifies bigint without localization', () => {
+    expect(
+      stringify(BigInt(1234), {
+        localization: false,
+      })
+    ).toBe('1234');
   });
-  it('stringifies boolean', () => {
-    expect(stringifyValue(true)).toBe('true');
-    expect(stringifyValue(false)).toBe('false');
+
+  test('stringifies bigint with explicit locale', () => {
+    expect(
+      stringify(BigInt(1234), {
+        localization: 'ar-EG',
+      })
+    ).toBe('١٬٢٣٤');
+  });
+
+  test('stringifies symbol', () => {
+    expect(stringify(Symbol('bar'))).toBe('bar');
+  });
+
+  test('stringifies null', () => {
+    expect(stringify(null)).toBe('null');
+  });
+
+  test('stringifies undefined', () => {
+    expect(stringify(undefined)).toBe('undefined');
+  });
+
+  test('stringifies boolean', () => {
+    expect(stringify(true)).toBe('true');
+    expect(stringify(false)).toBe('false');
+  });
+
+  test('stringifies date', () => {
+    const date = new Date('2023-01-01T00:00:00Z');
+    expect(stringify(date)).toBe(date.toLocaleString());
+  });
+
+  test('stringifies date without localization', () => {
+    const date = new Date('2023-01-01T00:00:00Z');
+    expect(
+      stringify(date, {
+        localization: false,
+      })
+    ).toBe(date.toISOString());
+  });
+
+  test('stringifies date with explicit locale', () => {
+    const date = new Date('2023-01-01T00:00:00Z');
+    expect(
+      stringify(date, {
+        localization: 'ar-EG',
+      })
+    ).toBe(date.toLocaleString('ar-EG'));
   });
 });

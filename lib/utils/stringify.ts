@@ -5,26 +5,46 @@ export function stringifySymbol(symbol: symbol): string {
 }
 
 export type StringifyValueOptions = {
-  wrapStringsInQuote?: boolean;
+  wrapStringValueInQuote?: boolean;
+  localization?: boolean | Intl.LocalesArgument;
 };
 
-export function stringifyValue(
-  value: util.Primitive,
+export function stringify(
+  value: util.Primitive | Date,
   options: StringifyValueOptions = {}
 ): string {
   switch (typeof value) {
     case 'symbol':
       return stringifySymbol(value);
     case 'bigint':
-    case 'number':
-      return value.toLocaleString();
+    case 'number': {
+      switch (options.localization) {
+        case true:
+          return value.toLocaleString();
+        case false:
+          return value.toString();
+        default:
+          return value.toLocaleString(options.localization);
+      }
+    }
     case 'string': {
-      if (options.wrapStringsInQuote) {
+      if (options.wrapStringValueInQuote) {
         return `"${value}"`;
       }
       return value;
     }
-    default:
+    default: {
+      if (value instanceof Date) {
+        switch (options.localization) {
+          case true:
+            return value.toLocaleString();
+          case false:
+            return value.toISOString();
+          default:
+            return value.toLocaleString(options.localization);
+        }
+      }
       return String(value);
+    }
   }
 }

@@ -15,7 +15,7 @@ export function parseUnrecognizedKeysIssue(
   const keysStr = joinValues(issue.keys, {
     separator: options.unrecognizedKeysSeparator,
     lastSeparator: options.unrecognizedKeysLastSeparator,
-    wrapStringsInQuote: options.wrapUnrecognizedKeysInQuote,
+    wrapStringValuesInQuote: options.wrapUnrecognizedKeysInQuote,
     maxValuesToDisplay: options.maxUnrecognizedKeysToDisplay,
   });
 

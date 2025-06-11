@@ -1,9 +1,20 @@
-import type { AbstractSyntaxTree } from './types.ts';
+import { stringify } from '../../utils/stringify.ts';
+import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
 export function parseTooBigIssue(
-  issue: zod.$ZodIssueTooBig
+  issue: zod.$ZodIssueTooBig,
+  options: Pick<ErrorMapOptions, 'dateLocalization' | 'numberLocalization'>
 ): AbstractSyntaxTree {
+  const maxValueStr =
+    issue.origin === 'date'
+      ? stringify(new Date(issue.maximum as number), {
+          localization: options.dateLocalization,
+        })
+      : stringify(issue.maximum, {
+          localization: options.numberLocalization,
+        });
+
   switch (issue.origin) {
     case 'number':
     case 'int':
@@ -13,7 +24,14 @@ export function parseTooBigIssue(
         path: issue.path,
         message: `number must be less ${
           issue.inclusive ? 'or equal to' : 'than'
-        } ${issue.maximum.toLocaleString()}`,
+        } ${maxValueStr}`,
+      };
+    }
+    case 'string': {
+      return {
+        type: issue.code,
+        path: issue.path,
+        message: `string must contain at most ${maxValueStr} character(s)`,
       };
     }
     case 'date': {
@@ -22,35 +40,28 @@ export function parseTooBigIssue(
         path: issue.path,
         message: `date must be ${
           issue.inclusive ? 'prior or equal to' : 'prior to'
-        } "${new Date(issue.maximum as number).toLocaleString()}"`,
-      };
-    }
-    case 'string': {
-      return {
-        type: issue.code,
-        path: issue.path,
-        message: `string must contain at most ${issue.maximum.toLocaleString()} character(s)`,
+        } "${maxValueStr}"`,
       };
     }
     case 'array': {
       return {
         type: issue.code,
         path: issue.path,
-        message: `array must contain at most ${issue.maximum.toLocaleString()} item(s)`,
+        message: `array must contain at most ${maxValueStr} item(s)`,
       };
     }
     case 'set': {
       return {
         type: issue.code,
         path: issue.path,
-        message: `set must contain at most ${issue.maximum.toLocaleString()} item(s)`,
+        message: `set must contain at most ${maxValueStr} item(s)`,
       };
     }
     case 'file': {
       return {
         type: issue.code,
         path: issue.path,
-        message: `file must not exceed ${issue.maximum.toLocaleString()} byte(s) in size`,
+        message: `file must not exceed ${maxValueStr} byte(s) in size`,
       };
     }
     default:
@@ -59,7 +70,7 @@ export function parseTooBigIssue(
         path: issue.path,
         message: `value must be less ${
           issue.inclusive ? 'or equal to' : 'than'
-        } ${issue.maximum.toLocaleString()}`,
+        } ${maxValueStr}`,
       };
   }
 }

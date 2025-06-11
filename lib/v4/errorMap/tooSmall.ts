@@ -1,9 +1,20 @@
+import { stringify } from '../../utils/stringify.ts';
 import type * as zod from 'zod/v4/core';
-import type { AbstractSyntaxTree } from './types.ts';
+import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 
 export function parseTooSmallIssue(
-  issue: zod.$ZodIssueTooSmall
+  issue: zod.$ZodIssueTooSmall,
+  options: Pick<ErrorMapOptions, 'dateLocalization' | 'numberLocalization'>
 ): AbstractSyntaxTree {
+  const minValueStr =
+    issue.origin === 'date'
+      ? stringify(new Date(issue.minimum as number), {
+          localization: options.dateLocalization,
+        })
+      : stringify(issue.minimum, {
+          localization: options.numberLocalization,
+        });
+
   switch (issue.origin) {
     case 'number':
     case 'int':
@@ -13,7 +24,7 @@ export function parseTooSmallIssue(
         path: issue.path,
         message: `number must be greater ${
           issue.inclusive ? 'or equal to' : 'than'
-        } ${issue.minimum.toLocaleString()}`,
+        } ${minValueStr}`,
       };
     }
     case 'date': {
@@ -22,35 +33,35 @@ export function parseTooSmallIssue(
         path: issue.path,
         message: `date must be ${
           issue.inclusive ? 'later or equal to' : 'later to'
-        } "${new Date(issue.minimum as number).toLocaleString()}"`,
+        } "${minValueStr}"`,
       };
     }
     case 'string': {
       return {
         type: issue.code,
         path: issue.path,
-        message: `string must contain at least ${issue.minimum.toLocaleString()} character(s)`,
+        message: `string must contain at least ${minValueStr} character(s)`,
       };
     }
     case 'array': {
       return {
         type: issue.code,
         path: issue.path,
-        message: `array must contain at least ${issue.minimum.toLocaleString()} item(s)`,
+        message: `array must contain at least ${minValueStr} item(s)`,
       };
     }
     case 'set': {
       return {
         type: issue.code,
         path: issue.path,
-        message: `set must contain at least ${issue.minimum.toLocaleString()} item(s)`,
+        message: `set must contain at least ${minValueStr} item(s)`,
       };
     }
     case 'file': {
       return {
         type: issue.code,
         path: issue.path,
-        message: `file must be at least ${issue.minimum.toLocaleString()} byte(s) in size`,
+        message: `file must be at least ${minValueStr} byte(s) in size`,
       };
     }
     default:
@@ -59,7 +70,7 @@ export function parseTooSmallIssue(
         path: issue.path,
         message: `value must be greater ${
           issue.inclusive ? 'or equal to' : 'than'
-        } ${issue.minimum.toLocaleString()}`,
+        } ${minValueStr}`,
       };
   }
 }

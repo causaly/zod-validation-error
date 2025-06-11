@@ -1,10 +1,10 @@
-import { stringifyValue } from './stringify.ts';
+import { stringify } from './stringify.ts';
 import type { util } from 'zod/v4/core';
 
 export type JoinValuesOptions = {
   separator: string;
   lastSeparator?: string;
-  wrapStringsInQuote?: boolean;
+  wrapStringValuesInQuote?: boolean;
   maxValuesToDisplay?: number;
 };
 
@@ -17,8 +17,8 @@ export function joinValues(
       ? values.slice(0, options.maxValuesToDisplay)
       : values
   ).map((value) => {
-    return stringifyValue(value, {
-      wrapStringsInQuote: options.wrapStringsInQuote,
+    return stringify(value, {
+      wrapStringValueInQuote: options.wrapStringValuesInQuote,
     });
   });
 

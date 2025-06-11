@@ -70,6 +70,8 @@ export const defaultErrorMapOptions: ErrorMapOptions = {
   wrapUnrecognizedKeysInQuote: true,
   maxUnrecognizedKeysToDisplay: 5,
   issuesInTitleCase: true,
+  dateLocalization: true,
+  numberLocalization: true,
 };
 
 export function createErrorMap(
