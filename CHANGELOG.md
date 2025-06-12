@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 3.5.0
+
+### Minor Changes
+
+- bf72012: Add support for zod v4
+
 ## 3.4.1
 
 ### Patch Changes
