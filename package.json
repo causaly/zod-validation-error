@@ -36,6 +36,11 @@
       "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
       "import": "./dist/index.mjs"
+    },
+    "./v4": {
+      "types": "./dist/v4/index.d.ts",
+      "require": "./dist/v4/index.js",
+      "import": "./dist/v4/index.mjs"
     }
   },
   "files": [
@@ -62,7 +67,7 @@
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
-      "prettier --config ./.prettierrc --write"
+      "prettier --config ./.prettierrc.json --write"
     ]
   },
   "devDependencies": {
@@ -85,9 +90,9 @@
     "tsup": "^8.0.2",
     "typescript": "^5.1.6",
     "vitest": "^3.1.2",
-    "zod": "3.25.50"
+    "zod": "3.25.51"
   },
   "peerDependencies": {
-    "zod": "^3.24.4"
+    "zod": "^3.25.51"
   }
 }

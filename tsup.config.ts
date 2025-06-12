@@ -1,7 +1,10 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['lib/index.ts'],
+  entry: {
+    index: 'lib/index.ts',
+    'v4/index': 'lib/v4/index.ts',
+  },
   splitting: false,
   sourcemap: true,
   clean: true,

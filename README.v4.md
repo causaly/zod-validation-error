@@ -8,6 +8,7 @@ Wrap zod validation errors in user-friendly readable messages.
 
 - User-friendly readable messages, configurable via options;
 - Maintain original issues under `error.details`;
+- Custom error map for automatic user-friendly messages;
 - Supports both `zod` v3 and v4.
 
 ## Installation
@@ -23,23 +24,30 @@ npm install zod-validation-error
 
 ## Quick start
 
-_Are you using zod v4?_ Please read the [v4 docs](/README.v4.md) instead.
-
 ```typescript
-import { z as zod } from 'zod';
-import { fromError } from 'zod-validation-error';
+import { z as zod } from 'zod/v4';
+import { fromError, createErrorMap } from 'zod-validation-error/v4';
+
+// use custom error map to automatically format messages
+// this is optional, but recommended
+// without this, zod's native error messages will be used
+zod.config({
+  customError: createErrorMap({
+    includePath: true,
+  }),
+});
 
 // create zod schema
 const zodSchema = zod.object({
-  id: zod.number().int().positive(),
-  email: zod.string().email(),
+  id: zod.int().positive(),
+  email: zod.email(),
 });
 
 // parse some invalid value
 try {
   zodSchema.parse({
     id: 1,
-    email: 'foobar', // note: invalid email
+    email: 'coyote@acme', // note: invalid email
   });
 } catch (err) {
   const validationError = fromError(err);
@@ -50,6 +58,45 @@ try {
   return validationError;
 }
 ```
+
+<details>
+<summary>Per-format error customization</summary>
+
+For more fine-grained control over the error messages, you may pass the error map as an option to the `fromError` function.
+
+```typescript
+import { z as zod } from 'zod/v4';
+import { fromError, createErrorMap } from 'zod-validation-error/v4';
+
+// create zod schema
+const zodSchema = zod.object({
+  id: zod.int().positive(),
+  email: zod.email(),
+});
+
+// parse some invalid value
+try {
+  zodSchema.parse({
+    id: 1,
+    email: 'coyote@acme', // note: invalid email
+  });
+} catch (err) {
+  // create custom error map
+  const errorMap = createErrorMap({
+    includePath: false,
+  });
+  const validationError = fromError(err, {
+    error: errorMap,
+  });
+  // the error is now readable by the user
+  // you may print it to console
+  console.log(validationError.toString());
+  // or return it as an actual error
+  return validationError;
+}
+```
+
+</details>
 
 ## Motivation
 
@@ -62,18 +109,20 @@ Zod errors are difficult to consume for the end-user. This library wraps Zod val
 ```json
 [
   {
+    "origin": "number",
     "code": "too_small",
-    "inclusive": false,
-    "message": "Number must be greater than 0",
     "minimum": 0,
+    "inclusive": false,
     "path": ["id"],
-    "type": "number"
+    "message": "Number must be greater than 0 at \"id\""
   },
   {
-    "code": "invalid_string",
-    "message": "Invalid email",
+    "origin": "string",
+    "code": "invalid_format",
+    "format": "email",
+    "pattern": "/^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$/",
     "path": ["email"],
-    "validation": "email"
+    "message": "Invalid email at \"email\""
   }
 ]
 ```
@@ -87,8 +136,8 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 ## API
 
 - [ValidationError(message[, options])](#validationerror)
-- [createMessageBuilder(props)](#createMessageBuilder)
-- [errorMap](#errormap)
+- [createErrorMap(options)](#createErrorMap)
+- [createMessageBuilder(options)](#createMessageBuilder)
 - [isValidationError(error)](#isvalidationerror)
 - [isValidationErrorLike(error)](#isvalidationerrorlike)
 - [isZodErrorLike(error)](#iszoderrorlike)
@@ -110,7 +159,7 @@ Main `ValidationError` class, extending native JavaScript `Error`.
 #### Example 1: construct new ValidationError with `message`
 
 ```typescript
-const { ValidationError } = require('zod-validation-error');
+import { ValidationError } from 'zod-validation-error/v4';
 
 const error = new ValidationError('foobar');
 console.log(error instanceof Error); // prints true
@@ -119,21 +168,60 @@ console.log(error instanceof Error); // prints true
 #### Example 2: construct new ValidationError with `message` and `options.cause`
 
 ```typescript
-import { z as zod } from 'zod';
-const { ValidationError } = require('zod-validation-error');
+import { z as zod } from 'zod/v4';
+import { ValidationError } from 'zod-validation-error/v4';
 
 const error = new ValidationError('foobar', {
   cause: new zod.ZodError([
     {
-      code: 'invalid_string',
-      message: 'Invalid email',
-      path: ['email'],
-      validation: 'email',
+      origin: 'number',
+      code: 'too_small',
+      minimum: 0,
+      inclusive: false,
+      path: ['id'],
+      message: 'Number must be greater than 0 at "id"',
+      input: -1,
     },
   ]),
 });
 
 console.log(error.details); // prints issues from zod error
+```
+
+### createErrorMap
+
+Creates zod-validation-error's `errorMap`, which is used to format issues into user-friendly error messages.
+
+Meant to be passed as an option to [fromError](#fromerror), [fromZodIssue](#fromzodissue), [fromZodError](#fromzoderror), [toValidationError](#tovalidationerror) or [MessageBuilder](#MessageBuilder).
+
+Note: zod-validation-error's `errorMap` is an errorMap like all others and thus can also be used directly with `zod` (see https://zod.dev/error-customization for further details).
+
+#### Arguments
+
+- `options` - _Object_; formatting options (optional)
+  - `includePath` - _boolean_; indicates whether to include the erroneous property key in the error message (optional, defaults to `true`).
+  - `displayInvalidFormatDetails` - _boolean_; indicates whether to display invalid format details (e.g. regexp pattern) in the error message (optional, defaults to `false`)
+  - `maxAllowedValuesToDisplay` - _number_; max number of allowed values to display (optional, defaults to 10)
+  - `allowedValuesSeparator` - _number_; used to concatenate allowed values in the message (optional, defaults to `", "`)
+  - `allowedValuesLastSeparator` - _string_ or _undefined_; used to concatenate last allowed value in the message (optional, defaults to `" or "`). Set to `undefined` to disable last separator.
+  - `wrapAllowedValuesInQuote` - _boolean_; indicates whether to wrap allowed values in quotes (optional, defaults to `true`). Note that this only applies to string values.
+  - `maxUnrecognizedKeysToDisplay` - _number_; max number of unrecognized keys to display in the error message (optional, defaults to 5)
+  - `unrecognizedKeysSeparator` - _string_; used to concatenate unrecognized keys in the message (optional, defaults to `", "`)
+  - `unrecognizedKeysLastSeparator` - _string_ or _undefined_; used to concatenate last unrecognized key in the message (optional, defaults to `" and "`). Set to `undefined` to disable last separator.
+  - `wrapUnrecognizedKeysInQuote` - _boolean_; indicates whether to wrap unrecognized keys in quotes (optional, defaults to `true`). Note that this only applies to string keys.
+  - `issuesInTitleCase` - _boolean_; indicates whether to convert issues to title case (optional, defaults to `true`).
+  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to `" or "`)
+  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to `";"`)
+
+#### Example
+
+```typescript
+import { createErrorMap } from 'zod-validation-error/v4';
+
+const messageBuilder = createErrorMap({
+  includePath: false,
+  maxAllowedValuesToDisplay: 3,
+});
 ```
 
 ### createMessageBuilder
@@ -142,40 +230,26 @@ Creates zod-validation-error's default `MessageBuilder`, which is used to produc
 
 Meant to be passed as an option to [fromError](#fromerror), [fromZodIssue](#fromzodissue), [fromZodError](#fromzoderror) or [toValidationError](#tovalidationerror).
 
-You may read more on the concept of the `MessageBuilder` further [below](#MessageBuilder).
-
 #### Arguments
 
-- `props` - _Object_; formatting options (optional)
+- `options` - _Object_; formatting options (optional)
   - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
-  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
-  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
+  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to `";"`)
   - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
-  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
-  - `includePath` - _boolean_; used to provide control on whether to include the erroneous property name suffix or not (optional, defaults to `true`).
+  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to `": "`). Not used when `prefix` is `null`.
+  - `error` - _ErrorMap_; accepts an `errorMap` to format individual issues into user-friendly error messages (optional, defaults to `undefined`). Note that this is an optional property and if not provided, the default error map will be used. Also, you don't necessarily need to pass zod-validation-error's `errorMap` here - you can use your own custom errorMap if you want.
 
 #### Example
 
 ```typescript
-import { createMessageBuilder } from 'zod-validation-error';
+import { createErrorMap, createMessageBuilder } from 'zod-validation-error/v4';
 
 const messageBuilder = createMessageBuilder({
-  includePath: false,
   maxIssuesInMessage: 3,
+  error: createErrorMap({
+    includePath: false,
+  }),
 });
-```
-
-### errorMap
-
-A custom error map to use with zod's `setErrorMap` method and get user-friendly messages automatically.
-
-#### Example
-
-```typescript
-import { z as zod } from 'zod';
-import { errorMap } from 'zod-validation-error';
-
-zod.setErrorMap(errorMap);
 ```
 
 ### isValidationError
@@ -189,8 +263,8 @@ A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#usi
 #### Example
 
 ```typescript
-import { z as zod } from 'zod';
-import { ValidationError, isValidationError } from 'zod-validation-error';
+import { z as zod } from 'zod/v4';
+import { ValidationError, isValidationError } from 'zod-validation-error/v4';
 
 const err = new ValidationError('foobar');
 isValidationError(err); // returns true
@@ -214,7 +288,10 @@ tl;dr if you are uncertain then it is preferable to use `isValidationErrorLike` 
 #### Example
 
 ```typescript
-import { ValidationError, isValidationErrorLike } from 'zod-validation-error';
+import {
+  ValidationError,
+  isValidationErrorLike,
+} from 'zod-validation-error/v4';
 
 const err = new ValidationError('foobar');
 isValidationErrorLike(err); // returns true
@@ -236,8 +313,8 @@ _Why do we need heuristics since we can use a simple `instanceof` comparison?_ B
 #### Example
 
 ```typescript
-import { z as zod } from 'zod';
-import { ValidationError, isZodErrorLike } from 'zod-validation-error';
+import { z as zod } from 'zod/v4';
+import { ValidationError, isZodErrorLike } from 'zod-validation-error/v4';
 
 const zodValidationErr = new ValidationError('foobar');
 isZodErrorLike(zodValidationErr); // returns false
@@ -247,10 +324,13 @@ isZodErrorLike(genericErr); // returns false
 
 const zodErr = new zod.ZodError([
   {
-    code: zod.ZodIssueCode.custom,
-    path: [],
-    message: 'foobar',
-    fatal: true,
+    origin: 'number',
+    code: 'too_small',
+    minimum: 0,
+    inclusive: false,
+    path: ['id'],
+    message: 'Number must be greater than 0 at "id"',
+    input: -1,
   },
 ]);
 isZodErrorLike(zodErr); // returns true
@@ -270,17 +350,7 @@ _What is the difference between `fromError` and `fromZodError`?_ The `fromError`
 
 #### Notes
 
-Alternatively, you may pass the following `options` instead of a `messageBuilder`.
-
-- `options` - _Object_; formatting options (optional)
-  - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
-  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
-  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
-  - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
-  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
-  - `includePath` - _boolean_; used to provide control on whether to include the erroneous property name suffix or not (optional, defaults to `true`).
-
-They will be passed as arguments to the [createMessageBuilder](#createMessageBuilder) function. The only reason they exist is to provide backwards-compatibility with older versions of `zod-validation-error`. They should however be considered deprecated and may be removed in the future.
+Alternatively, you may pass MessageBuilder `options`. They will be passed as arguments to the [createMessageBuilder](#createMessageBuilder) function. The only reason they exist is to provide backwards-compatibility with older versions of `zod-validation-error`. They should however be considered deprecated and may be removed in the future.
 
 ### fromZodIssue
 
@@ -297,11 +367,10 @@ Converts a single zod issue to `ValidationError`.
 Alternatively, you may pass the following `options` instead of a `messageBuilder`.
 
 - `options` - _Object_; formatting options (optional)
-  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
-  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
+  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to `";"`)
   - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
-  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
-  - `includePath` - _boolean_; used to provide control on whether to include the erroneous property name suffix or not (optional, defaults to `true`).
+  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to `": "`). Not used when `prefix` is `null`.
+  - `error` - _ErrorMap_; accepts an `errorMap` to format individual issues into user-friendly error messages (optional, defaults to `undefined`). Note that this is an optional property and if not provided, the default error map will be used. Also, you don't necessarily need to pass zod-validation-error's `errorMap` here - you can use your own custom errorMap if you want.
 
 They will be passed as arguments to the [createMessageBuilder](#createMessageBuilder) function. The only reason they exist is to provide backwards-compatibility with older versions of `zod-validation-error`. They should however be considered deprecated and may be removed in the future.
 
@@ -323,11 +392,10 @@ Alternatively, you may pass the following `options` instead of a `messageBuilder
 
 - `options` - _Object_; formatting options (optional)
   - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
-  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to ";")
-  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to ", or")
+  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to `";"`)
   - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
-  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to ": "). Not used when `prefix` is `null`.
-  - `includePath` - _boolean_; used to provide control on whether to include the erroneous property name suffix or not (optional, defaults to `true`).
+  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to `": "`). Not used when `prefix` is `null`.
+  - `error` - _ErrorMap_; accepts an `errorMap` to format individual issues into user-friendly error messages (optional, defaults to `undefined`). Note that this is an optional property and if not provided, the default error map will be used. Also, you don't necessarily need to pass zod-validation-error's `errorMap` here - you can use your own custom errorMap if you want.
 
 They will be passed as arguments to the [createMessageBuilder](#createMessageBuilder) function. The only reason they exist is to provide backwards-compatibility with older versions of `zod-validation-error`. They should however be considered deprecated and may be removed in the future.
 
@@ -343,14 +411,14 @@ toValidationError(options) => (zodError) => ValidationError
 
 ```typescript
 import * as Either from 'fp-ts/Either';
-import { z as zod } from 'zod';
-import { toValidationError, ValidationError } from 'zod-validation-error';
+import { z as zod } from 'zod/v4';
+import { toValidationError, ValidationError } from 'zod-validation-error/v4';
 
 // create zod schema
 const zodSchema = zod
   .object({
-    id: zod.number().int().positive(),
-    email: zod.string().email(),
+    id: zod.int().positive(),
+    email: zod.email(),
   })
   .brand<'User'>();
 
@@ -360,57 +428,6 @@ export function parse(
   value: zod.input<typeof zodSchema>
 ): Either.Either<ValidationError, User> {
   return Either.tryCatch(() => schema.parse(value), toValidationError());
-}
-```
-
-## MessageBuilder
-
-`zod-validation-error` can be configured with a custom `MessageBuilder` function in order to produce case-specific error messages.
-
-#### Example
-
-For instance, one may want to print `invalid_string` errors to the console in red color.
-
-```typescript
-import { z as zod } from 'zod';
-import { type MessageBuilder, fromError } from 'zod-validation-error';
-import chalk from 'chalk';
-
-// create custom MessageBuilder
-const myMessageBuilder: MessageBuilder = (issues) => {
-  return (
-    issues
-      // format error message
-      .map((issue) => {
-        if (issue.code === zod.ZodIssueCode.invalid_string) {
-          return chalk.red(issue.message);
-        }
-
-        return issue.message;
-      })
-      // join as string with new-line character
-      .join('\n')
-  );
-};
-
-// create zod schema
-const zodSchema = zod.object({
-  id: zod.number().int().positive(),
-  email: zod.string().email(),
-});
-
-// parse some invalid value
-try {
-  zodSchema.parse({
-    id: 1,
-    email: 'foobar', // note: invalid email value
-  });
-} catch (err) {
-  const validationError = fromError(err, {
-    messageBuilder: myMessageBuilder,
-  });
-  // the error is now displayed with red letters
-  console.log(validationError.toString());
 }
 ```
 
@@ -426,8 +443,8 @@ Scenario: Distinguish between `ValidationError` VS generic `Error` in order to r
 
 ```typescript
 import * as Either from 'fp-ts/Either';
-import { z as zod } from 'zod';
-import { isValidationErrorLike } from 'zod-validation-error';
+import { z as zod } from 'zod/v4';
+import { isValidationErrorLike } from 'zod-validation-error/v4';
 
 try {
   func(); // throws Error - or - ValidationError
@@ -447,7 +464,7 @@ It's possible to implement custom validation logic outside `zod` and throw a `Va
 #### Example 1: passing custom message
 
 ```typescript
-import { ValidationError } from 'zod-validation-error';
+import { ValidationError } from 'zod-validation-error/v4';
 import { Buffer } from 'node:buffer';
 
 function parseBuffer(buf: unknown): Buffer {
@@ -462,7 +479,7 @@ function parseBuffer(buf: unknown): Buffer {
 #### Example 2: passing custom message and original error as cause
 
 ```typescript
-import { ValidationError } from 'zod-validation-error';
+import { ValidationError } from 'zod-validation-error/v4';
 
 try {
   // do something that throws an error
@@ -480,55 +497,13 @@ Zod supports customizing error messages by providing a custom "error map". You m
 If all you need is to produce user-friendly error messages you may use the `errorMap` property.
 
 ```typescript
-import { z as zod } from 'zod';
-import { errorMap } from 'zod-validation-error';
+import { z as zod } from 'zod/v4';
+import { fromError, createErrorMap } from 'zod-validation-error/v4';
 
-zod.setErrorMap(errorMap);
-```
-
-#### Example 2: extra customization using `fromZodIssue`
-
-If you need to customize some error code, you may use the `fromZodIssue` function.
-
-```typescript
-import { z as zod } from 'zod';
-import { fromZodIssue } from 'zod-validation-error';
-
-const customErrorMap: zod.ZodErrorMap = (issue, ctx) => {
-  switch (issue.code) {
-    case ZodIssueCode.invalid_type: {
-      return {
-        message:
-          'Custom error message of your preference for invalid_type errors',
-      };
-    }
-    default: {
-      const validationError = fromZodIssue({
-        ...issue,
-        // fallback to the default error message
-        // when issue does not have a message
-        message: issue.message ?? ctx.defaultError,
-      });
-
-      return {
-        message: validationError.message,
-      };
-    }
-  }
-};
-
-zod.setErrorMap(customErrorMap);
-```
-
-### How to use `zod-validation-error` with `react-hook-form`?
-
-```typescript
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { errorMap } from 'zod-validation-error';
-
-useForm({
-  resolver: zodResolver(schema, { errorMap }),
+zod.config({
+  customError: createErrorMap({
+    includePath: true,
+  }),
 });
 ```
 
@@ -539,7 +514,7 @@ Yes, `zod-validation-error` supports CommonJS out-of-the-box. All you need to do
 #### Example
 
 ```typescript
-const { ValidationError } = require('zod-validation-error');
+const { ValidationError } = require('zod-validation-error/v4');
 ```
 
 ## Contribute
