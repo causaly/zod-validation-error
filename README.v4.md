@@ -6,10 +6,10 @@ Wrap zod validation errors in user-friendly readable messages.
 
 #### Features
 
-- User-friendly readable messages, configurable via options;
-- Maintain original issues under `error.details`;
-- Custom error map for automatic user-friendly messages;
-- Supports both `zod` v3 and v4.
+- User-friendly readable error messages with extensive configuration options;
+- Preserves original error details accessible via `error.details`;
+- Provides a custom error map for automatic message formatting;
+- Supports both Zod v3 and v4.
 
 **_Note:_** This is the v4 version of `zod-validation-error`. If you are looking for the v3 documentation, please click [here](./README.md)
 
@@ -84,9 +84,13 @@ try {
   });
 } catch (err) {
   // create custom error map
+  // this is optional, but recommended
+  // without this, zod's native error messages will be used
+  // and the error will not be user-friendly
   const errorMap = createErrorMap({
     includePath: false,
   });
+
   const validationError = fromError(err, {
     error: errorMap,
   });
@@ -358,7 +362,7 @@ _What is the difference between `fromError` and `fromZodError`?_ The `fromError`
 
 #### Notes
 
-Alternatively, you may pass MessageBuilder `options`. They will be passed as arguments to the [createMessageBuilder](#createMessageBuilder) function. The only reason they exist is to provide backwards-compatibility with older versions of `zod-validation-error`. They should however be considered deprecated and may be removed in the future.
+Alternatively, you may pass [createMessageBuilder options](#createMessageBuilder) directly as `options`. These will be used as arguments to create the `MessageBuilder` instance internally.
 
 ### fromZodIssue
 
@@ -372,7 +376,7 @@ Converts a single zod issue to `ValidationError`.
 
 #### Notes
 
-Alternatively, you may pass [createMessageBuilder options](#createMessageBuilder) `options` instead of a `MessageBuilder` instance. They options will be passed as arguments to the `createMessageBuilder` function.
+Alternatively, you may pass [createMessageBuilder options](#createMessageBuilder) directly as `options`. These will be used as arguments to create the `MessageBuilder` instance internally.
 
 ### fromZodError
 
@@ -388,7 +392,7 @@ _Why is the difference between `ZodError` and `ZodIssue`?_ A `ZodError` is a col
 
 #### Notes
 
-Alternatively, you may pass [createMessageBuilder options](#createMessageBuilder) `options` instead of a `MessageBuilder` instance. They options will be passed as arguments to the `createMessageBuilder` function.
+Alternatively, you may pass [createMessageBuilder options](#createMessageBuilder) directly as `options`. These will be used as arguments to create the `MessageBuilder` instance internally.
 
 ### toValidationError
 
