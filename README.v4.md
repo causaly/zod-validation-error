@@ -370,15 +370,7 @@ Converts a single zod issue to `ValidationError`.
 
 #### Notes
 
-Alternatively, you may pass the following `options` instead of a `messageBuilder`.
-
-- `options` - _Object_; formatting options (optional)
-  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to `";"`)
-  - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
-  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to `": "`). Not used when `prefix` is `null`.
-  - `error` - _ErrorMap_; accepts an `errorMap` to format individual issues into user-friendly error messages (optional, defaults to `undefined`). Note that this is an optional property and if not provided, the default error map will be used. Also, you don't necessarily need to pass zod-validation-error's `errorMap` here - you can use your own custom errorMap if you want.
-
-They will be passed as arguments to the [createMessageBuilder](#createMessageBuilder) function. The only reason they exist is to provide backwards-compatibility with older versions of `zod-validation-error`. They should however be considered deprecated and may be removed in the future.
+Alternatively, you may pass [createMessageBuilder options](#createMessageBuilder) `options` instead of a `MessageBuilder` instance. They options will be passed as arguments to the `createMessageBuilder` function.
 
 ### fromZodError
 
@@ -394,16 +386,7 @@ _Why is the difference between `ZodError` and `ZodIssue`?_ A `ZodError` is a col
 
 #### Notes
 
-Alternatively, you may pass the following `options` instead of a `messageBuilder`.
-
-- `options` - _Object_; formatting options (optional)
-  - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
-  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to `";"`)
-  - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
-  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to `": "`). Not used when `prefix` is `null`.
-  - `error` - _ErrorMap_; accepts an `errorMap` to format individual issues into user-friendly error messages (optional, defaults to `undefined`). Note that this is an optional property and if not provided, the default error map will be used. Also, you don't necessarily need to pass zod-validation-error's `errorMap` here - you can use your own custom errorMap if you want.
-
-They will be passed as arguments to the [createMessageBuilder](#createMessageBuilder) function. The only reason they exist is to provide backwards-compatibility with older versions of `zod-validation-error`. They should however be considered deprecated and may be removed in the future.
+Alternatively, you may pass [createMessageBuilder options](#createMessageBuilder) `options` instead of a `MessageBuilder` instance. They options will be passed as arguments to the `createMessageBuilder` function.
 
 ### toValidationError
 
