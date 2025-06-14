@@ -11,7 +11,7 @@ const identityErrorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
 };
 
 export type MessageBuilderOptions = {
-  prefix: string | undefined;
+  prefix: string | null | undefined;
   prefixSeparator: string;
   maxIssuesInMessage: number;
   issueSeparator: string;
