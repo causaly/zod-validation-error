@@ -79,6 +79,7 @@ jobs:
         run: npm run test
 
   test-deno:
+    needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
