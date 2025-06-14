@@ -3,8 +3,10 @@ node_modules
 
 # build output
 dist
-v3
-v4
+/v3
+!/lib/v3
+/v4
+!/lib/v4
 
 # misc
 .DS_Store
