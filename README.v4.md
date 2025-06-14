@@ -422,6 +422,17 @@ export function parse(
 
 ## FAQ
 
+### What is the difference between zod-validation-error and zod's own [prettifyError](https://zod.dev/error-formatting#zprettifyerror)?
+
+While both libraries aim to provide a human-readable string representation of a zod error, they differ in several ways...
+
+1. **End-user focus**: zod-validation-error provides opinionated, user-friendly error messages designed to be displayed directly to end-users in forms or API responses, whereas Zod's native error handling seem more developer-focused.
+1. **Customization options**: zod-validation-error offers extensive configuration for message formatting, such as controlling path inclusion, allowed values display, localization, and more.
+1. **Error handling**: zod-validation-error maintains the original error details while providing a clean, consistent interface through the ValidationError class.
+1. **Integration flexibility**: Beyond just formatting, zod-validation-error provides utility functions for error detection and conversion that work well in various architectural patterns, e.g. functional programming.
+
+Disclaimer: as per this [comment](https://github.com/causaly/zod-validation-error/issues/455#issuecomment-2811895152), we have no intention to antagonize zod. In fact, we are happy to decommission this module assuming it's in the best interest of the community. As of now, it seems that there's room for both `zod-validation-error` and `prettifyError`, also based on Colin McDonnell's [response](https://github.com/causaly/zod-validation-error/issues/455#issuecomment-2814466019).
+
 ### How to distinguish between errors
 
 Use the `isValidationErrorLike` type guard.
@@ -431,8 +442,6 @@ Use the `isValidationErrorLike` type guard.
 Scenario: Distinguish between `ValidationError` VS generic `Error` in order to respond with 400 VS 500 HTTP status code respectively.
 
 ```typescript
-import * as Either from 'fp-ts/Either';
-import { z as zod } from 'zod/v4';
 import { isValidationErrorLike } from 'zod-validation-error/v4';
 
 try {
