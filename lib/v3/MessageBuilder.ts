@@ -1,6 +1,6 @@
 import * as zod from 'zod';
-import { type NonEmptyArray, isNonEmptyArray } from './utils/NonEmptyArray.ts';
-import { joinPath } from './utils/joinPath.ts';
+import { type NonEmptyArray, isNonEmptyArray } from '../utils/NonEmptyArray.ts';
+import { joinPath } from '../utils/joinPath.ts';
 import {
   ISSUE_SEPARATOR,
   MAX_ISSUES_IN_MESSAGE,

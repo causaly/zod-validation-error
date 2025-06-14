@@ -16,4 +16,4 @@ export {
   type ZodIssue,
   createMessageBuilder,
 } from './MessageBuilder.ts';
-export { type NonEmptyArray } from './utils/NonEmptyArray.ts';
+export { type NonEmptyArray } from '../utils/NonEmptyArray.ts';
