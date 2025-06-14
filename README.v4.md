@@ -214,6 +214,8 @@ Note: zod-validation-error's `errorMap` is an errorMap like all others and thus 
   | `issuesInTitleCase` |`boolean` | Indicates whether to convert issues to title case (optional, defaults to `true`). |
   | `unionSeparator` | `string` | Used to concatenate union-issues in user-friendly message (optional, defaults to `" or "`) |
   | `issueSeparator` | `string` | Used to concatenate issues in user-friendly message (optional, defaults to `";"`) |
+  | `dateLocalization` | `boolean \| Intl.LocalesArgument` | Indicates whether to localize date values in the error message (optional, defaults to `true`). If set to `true`, it will use the default locale of the environment. You can also pass an `Intl.LocalesArgument` to specify a custom locale. |
+  | `numberLocalization` | `boolean \| Intl.LocalesArgument` | Indicates whether to localize number values in the error message (optional, defaults to `true`). If set to `true`, it will use the default locale of the environment. You can also pass an `Intl.LocalesArgument` to specify a custom locale. |
 
 #### Example
 
