@@ -11,6 +11,8 @@ Wrap zod validation errors in user-friendly readable messages.
 - Custom error map for automatic user-friendly messages;
 - Supports both `zod` v3 and v4.
 
+**_Note:_** This is the v4 version of `zod-validation-error`. If you are looking for the v3 documentation, please click [here](./README.md)
+
 ## Installation
 
 ```bash

@@ -10,6 +10,8 @@ Wrap zod validation errors in user-friendly readable messages.
 - Maintain original issues under `error.details`;
 - Supports both `zod` v3 and v4.
 
+**_Note:_** This is the v3 version of `zod-validation-error`. If you are looking for zod v4 support, please click [here](/README.v4.md).
+
 ## Installation
 
 ```bash
@@ -22,8 +24,6 @@ npm install zod-validation-error
 - TypeScript v.4.5+
 
 ## Quick start
-
-_Are you using zod v4?_ Please read the [v4 docs](/README.v4.md) instead.
 
 ```typescript
 import { z as zod } from 'zod';
