@@ -38,7 +38,9 @@ jobs:
       - uses: actions/cache@v4
         id: dist
         with:
-          path: '**/dist'
+          path: |
+            './v3'
+            './v4'
           key: ${{ runner.os }}-dist-${{ github.sha }}
 
       - name: Install dependencies
@@ -68,7 +70,9 @@ jobs:
 
       - uses: actions/cache@v4
         with:
-          path: '**/dist'
+          path: |
+            './v3'
+            './v4'
           key: ${{ runner.os }}-dist-${{ github.sha }}
 
       - name: Run tests
