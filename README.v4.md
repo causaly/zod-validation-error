@@ -199,19 +199,21 @@ Note: zod-validation-error's `errorMap` is an errorMap like all others and thus 
 #### Arguments
 
 - `options` - _Object_; formatting options (optional)
-  - `includePath` - _boolean_; indicates whether to include the erroneous property key in the error message (optional, defaults to `true`).
-  - `displayInvalidFormatDetails` - _boolean_; indicates whether to display invalid format details (e.g. regexp pattern) in the error message (optional, defaults to `false`)
-  - `maxAllowedValuesToDisplay` - _number_; max number of allowed values to display (optional, defaults to 10)
-  - `allowedValuesSeparator` - _number_; used to concatenate allowed values in the message (optional, defaults to `", "`)
-  - `allowedValuesLastSeparator` - _string_ or _undefined_; used to concatenate last allowed value in the message (optional, defaults to `" or "`). Set to `undefined` to disable last separator.
-  - `wrapAllowedValuesInQuote` - _boolean_; indicates whether to wrap allowed values in quotes (optional, defaults to `true`). Note that this only applies to string values.
-  - `maxUnrecognizedKeysToDisplay` - _number_; max number of unrecognized keys to display in the error message (optional, defaults to 5)
-  - `unrecognizedKeysSeparator` - _string_; used to concatenate unrecognized keys in the message (optional, defaults to `", "`)
-  - `unrecognizedKeysLastSeparator` - _string_ or _undefined_; used to concatenate last unrecognized key in the message (optional, defaults to `" and "`). Set to `undefined` to disable last separator.
-  - `wrapUnrecognizedKeysInQuote` - _boolean_; indicates whether to wrap unrecognized keys in quotes (optional, defaults to `true`). Note that this only applies to string keys.
-  - `issuesInTitleCase` - _boolean_; indicates whether to convert issues to title case (optional, defaults to `true`).
-  - `unionSeparator` - _string_; used to concatenate union-issues in user-friendly message (optional, defaults to `" or "`)
-  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to `";"`)
+  | Name | Type | Description |
+  | ---- | :----: | ----------- |
+  | `includePath` | `boolean` | Indicates whether to include the erroneous property key in the error message (optional, defaults to `true`) |
+  | `displayInvalidFormatDetails` | `boolean` | Indicates whether to display invalid format details (e.g. regexp pattern) in the error message (optional, defaults to `false`) |
+  | `maxAllowedValuesToDisplay` | `number` | Max number of allowed values to display (optional, defaults to 10) |
+  | `allowedValuesSeparator` | `string` | Used to concatenate allowed values in the message (optional, defaults to `", "`) |
+  | `allowedValuesLastSeparator` | `string \| undefined` | Used to concatenate last allowed value in the message (optional, defaults to `" or "`). Set to `undefined` to disable last separator. |
+  | `wrapAllowedValuesInQuote` |`boolean` | Indicates whether to wrap allowed values in quotes (optional, defaults to `true`). Note that this only applies to string values. |
+  | `maxUnrecognizedKeysToDisplay` | `number` | Max number of unrecognized keys to display in the error message (optional, defaults to `5`) |
+  | `unrecognizedKeysSeparator` | `string` | Used to concatenate unrecognized keys in the message (optional, defaults to `", "`) |
+  | `unrecognizedKeysLastSeparator` | `string \| undefined` | Used to concatenate the last unrecognized key in message (optional, defaults to `" and "`). Set to `undefined` to disable last separator. |
+  | `wrapUnrecognizedKeysInQuote` |`boolean` | Indicates whether to wrap unrecognized keys in quotes (optional, defaults to `true`). Note that this only applies to string keys. |
+  | `issuesInTitleCase` |`boolean` | Indicates whether to convert issues to title case (optional, defaults to `true`). |
+  | `unionSeparator` | `string` | Used to concatenate union-issues in user-friendly message (optional, defaults to `" or "`) |
+  | `issueSeparator` | `string` | Used to concatenate issues in user-friendly message (optional, defaults to `";"`) |
 
 #### Example
 
@@ -233,11 +235,13 @@ Meant to be passed as an option to [fromError](#fromerror), [fromZodIssue](#from
 #### Arguments
 
 - `options` - _Object_; formatting options (optional)
-  - `maxIssuesInMessage` - _number_; max issues to include in user-friendly message (optional, defaults to 99)
-  - `issueSeparator` - _string_; used to concatenate issues in user-friendly message (optional, defaults to `";"`)
-  - `prefix` - _string_ or _null_; prefix to use in user-friendly message (optional, defaults to "Validation error"). Pass `null` to disable prefix completely.
-  - `prefixSeparator` - _string_; used to concatenate prefix with rest of the user-friendly message (optional, defaults to `": "`). Not used when `prefix` is `null`.
-  - `error` - _ErrorMap_; accepts an `errorMap` to format individual issues into user-friendly error messages (optional, defaults to `undefined`). Note that this is an optional property and if not provided, the default error map will be used. Also, you don't necessarily need to pass zod-validation-error's `errorMap` here - you can use your own custom errorMap if you want.
+  | Name | Type | Description |
+  | ---- | :----: | ----------- |
+  | `maxIssuesInMessage` | `number` | Max issues to include in user-friendly message (optional, defaults to `99`) |
+  | `issueSeparator` | `string` | Used to concatenate issues in user-friendly message (optional, defaults to `";"`) |
+  | `prefix` | `string \| undefined` | Prefix to use in user-friendly message (optional, defaults to `"Validation error"`). Pass `undefined` to disable prefix completely. |
+  | `prefixSeparator` | `string` | Used to concatenate prefix with rest of the user-friendly message (optional, defaults to `": "`). Not used when `prefix` is `undefined`. |
+  | `error` | `ErrorMap` | Accepts an `errorMap` to format individual issues into user-friendly error messages (optional, defaults to `undefined`). Note that this is an optional property and if not provided, the default error map will be used. Also, you don't need to pass zod-validation-error's `errorMap` here; you can use your own custom errorMap if you want. |
 
 #### Example
 
