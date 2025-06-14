@@ -82,14 +82,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        deno: ['v1.x']
+        deno: ['v1.x', 'v2.x']
     name: test:deno(${{ matrix.deno }})
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json', '.nvmrc') }}
 
       - uses: denoland/setup-deno@v1
         with:
           deno-version: ${{ matrix.deno }}
       - run: deno --version
-      - run: deno run ./index.ts
+      - run: deno run ./v3/index.ts
+        working-directory: ./lib
+      - run: deno run ./v4/index.ts
         working-directory: ./lib
