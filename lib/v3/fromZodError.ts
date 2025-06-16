@@ -1,3 +1,4 @@
+import { isNonEmptyArray } from '../utils/NonEmptyArray.ts';
 import { fromError } from './fromError.ts';
 import { isZodErrorLike } from './isZodErrorLike.ts';
 import {
@@ -5,7 +6,6 @@ import {
   type CreateMessageBuilderProps,
   type MessageBuilder,
 } from './MessageBuilder.ts';
-import { isNonEmptyArray } from './utils/NonEmptyArray.ts';
 import { ValidationError } from './ValidationError.ts';
 import type * as zod from 'zod';
 

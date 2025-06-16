@@ -1,8 +1,8 @@
 import * as zod from 'zod';
 
+import { isNonEmptyArray } from '../utils/NonEmptyArray.ts';
 import { createMessageBuilder } from './MessageBuilder.ts';
 import { isZodErrorLike } from './isZodErrorLike.ts';
-import { isNonEmptyArray } from './utils/NonEmptyArray.ts';
 
 describe('MessageBuilder', () => {
   test('handles zod.string() schema errors', () => {

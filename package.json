@@ -28,23 +28,29 @@
       "url": "https://github.com/nikoskalogridis"
     }
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "./v3/index.js",
+  "module": "./v3/index.mjs",
+  "types": "./v3/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
+      "types": "./v3/index.d.ts",
+      "require": "./v3/index.js",
+      "import": "./v3/index.mjs"
+    },
+    "./v3": {
+      "types": "./v3/index.d.ts",
+      "require": "./v3/index.js",
+      "import": "./v3/index.mjs"
     },
     "./v4": {
-      "types": "./dist/v4/index.d.ts",
-      "require": "./dist/v4/index.js",
-      "import": "./dist/v4/index.mjs"
+      "types": "./v4/index.d.ts",
+      "require": "./v4/index.js",
+      "import": "./v4/index.mjs"
     }
   },
   "files": [
-    "dist"
+    "v3",
+    "v4"
   ],
   "publishConfig": {
     "access": "public"
@@ -62,7 +68,7 @@
     "changeset": "changeset",
     "prerelease": "npm run build && npm run test",
     "release": "changeset publish",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -83,10 +89,9 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.3",
+    "husky": "^9.1.7",
     "lint-staged": "^15.0.1",
     "prettier": "^2.8.8",
-    "rimraf": "^5.0.1",
     "tsup": "^8.0.2",
     "typescript": "^5.1.6",
     "vitest": "^3.1.2",
