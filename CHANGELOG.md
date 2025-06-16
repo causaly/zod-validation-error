@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 3.5.1
+
+### Patch Changes
+
+- e7713d5: Add compatibility with older node versions and module-resolution strategies + improve docs
+
 ## 3.5.0
 
 ### Minor Changes
