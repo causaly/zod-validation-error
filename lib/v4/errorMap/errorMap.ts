@@ -43,7 +43,14 @@ export function parseInvalidUnionIssue(
   const errorMap = createErrorMap(options);
 
   const individualMessages = issue.errors.map((issues) =>
-    issues.map(errorMap).join(options.issueSeparator)
+    issues
+      .map((subIssue) =>
+        errorMap({
+          ...subIssue,
+          path: issue.path.concat(subIssue.path),
+        })
+      )
+      .join(options.issueSeparator)
   );
   const message = Array.from(new Set(individualMessages)).join(
     options.unionSeparator
@@ -51,7 +58,7 @@ export function parseInvalidUnionIssue(
 
   return {
     type: issue.code,
-    path: issue.path,
+    path: [],
     message,
   };
 }

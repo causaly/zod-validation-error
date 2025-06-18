@@ -161,7 +161,7 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Expected array, received undefined or Expected string, received undefined at "terms""`
+          `"Validation error: Expected array, received undefined at "terms" or Expected string, received undefined at "terms""`
         );
       }
     }
