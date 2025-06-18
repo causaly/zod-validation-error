@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 3.5.2
+
+### Patch Changes
+
+- 3809f85: Include paths of sub-issues of union.
+
 ## 3.5.1
 
 ### Patch Changes

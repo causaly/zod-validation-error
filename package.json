@@ -1,6 +1,6 @@
 {
   "name": "zod-validation-error",
-  "version": "3.5.1",
+  "version": "3.5.2",
   "description": "Wrap zod validation errors in user-friendly readable messages",
   "keywords": [
     "zod",
