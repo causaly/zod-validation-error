@@ -1,2 +1,6 @@
-export { createErrorMap } from './errorMap.ts';
+export {
+  createErrorMap,
+  defaultErrorMapOptions,
+  defaultErrorMap,
+} from './errorMap.ts';
 export type { ErrorMapOptions } from './types.ts';

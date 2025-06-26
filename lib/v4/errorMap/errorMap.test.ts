@@ -1,21 +1,40 @@
 import * as zod from 'zod/v4';
 import { vi } from 'vitest';
-import { createErrorMap, isZodValidationErrorMap } from './errorMap.ts';
+import {
+  createErrorMap,
+  defaultErrorMap,
+  defaultErrorMapOptions,
+} from './errorMap.ts';
 
-describe('zod', () => {
-  test('does NOT provide issue.input on error', () => {
-    const schema = zod.object({
-      input: zod.string(),
-    });
-
-    const result = schema.safeParse({ input: 123 });
-    if (result.success) {
-      throw new Error('Expected failure');
-    }
-
-    expect(result.error.issues[0].input).toBeUndefined();
+describe('errorMap', () => {
+  test('returns defaultErrorMap when no options are passed', () => {
+    const errorMap = createErrorMap();
+    expect(errorMap).toBe(defaultErrorMap);
   });
 
+  test('returns defaultErrorMap when options partially match the default options', () => {
+    const errorMap = createErrorMap({
+      includePath: defaultErrorMapOptions.includePath,
+      issuesInTitleCase: defaultErrorMapOptions.issuesInTitleCase,
+    });
+    expect(errorMap).toBe(defaultErrorMap);
+  });
+
+  test('returns defaultErrorMap when options fully match the default options', () => {
+    const errorMap = createErrorMap(defaultErrorMapOptions);
+    expect(errorMap).toBe(defaultErrorMap);
+  });
+
+  test('does NOT return defaultErrorMap when options diverge from the default options', () => {
+    const errorMap = createErrorMap({
+      ...defaultErrorMapOptions,
+      includePath: false,
+    });
+    expect(errorMap).not.toBe(defaultErrorMap);
+  });
+});
+
+describe('zod', () => {
   test('provides issue.input to errorMap', () => {
     const schema = zod.object({
       input: zod.string(),
@@ -43,20 +62,28 @@ describe('zod', () => {
     );
   });
 
+  test('does NOT provide issue.input on error', () => {
+    const schema = zod.object({
+      input: zod.string(),
+    });
+
+    const result = schema.safeParse({ input: 123 });
+    if (result.success) {
+      throw new Error('Expected failure');
+    }
+
+    expect(result.error.issues[0].input).toBeUndefined();
+  });
+
   test('exposes globalConfig object with errorMap set to undefined by default', () => {
     expect(zod.core.globalConfig.customError).toBeUndefined();
   });
 
   test('overrides global config with custom errorMap', () => {
-    const errorMap = createErrorMap({
-      includePath: true,
-    });
+    const errorMap = createErrorMap();
     zod.config({
       customError: errorMap,
     });
-    expect(zod.core.globalConfig.customError).toBe(errorMap);
-    expect(isZodValidationErrorMap(zod.core.globalConfig.customError)).toBe(
-      true
-    );
+    expect(zod.core.globalConfig.customError).toBe(defaultErrorMap);
   });
 });
