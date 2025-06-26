@@ -18,6 +18,9 @@ import type {
 } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
+// Define a distinguishing property using a unique symbol
+const errorMapSymbol = Symbol('zod-validation-error-map');
+
 export const issueParsers: Record<
   IssueType,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -101,6 +104,13 @@ export function createErrorMap(
     return toString(ast, options);
   };
 
+  Object.defineProperty(errorMap, '_brand', {
+    value: errorMapSymbol,
+    writable: false,
+    configurable: false,
+    enumerable: false, // keeps it hidden from most enumeration
+  });
+
   return errorMap;
 }
 
@@ -132,4 +142,14 @@ function toString(ast: AbstractSyntaxTree, options: ErrorMapOptions): string {
   }
 
   return buf.join('');
+}
+
+export function isZodValidationErrorMap(
+  errorMap: zod.$ZodErrorMap<zod.$ZodIssue> | undefined
+): boolean {
+  return (
+    errorMap !== undefined &&
+    '_brand' in errorMap &&
+    errorMap._brand === errorMapSymbol
+  );
 }
