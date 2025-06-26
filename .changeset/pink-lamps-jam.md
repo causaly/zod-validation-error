@@ -2,4 +2,4 @@
 'zod-validation-error': minor
 ---
 
-Format messages by default, without needing to specify a custom error map. The previous functionlity was default opt-out for message formatting. Now if you want to opt-out you need to pass `error: false` to fromError.
+Default opt-in to error formatting, without needing to specify a custom error map. The previous functionality was default opt-out. Now you need to explicitly pass `error: false` to opt-out.
