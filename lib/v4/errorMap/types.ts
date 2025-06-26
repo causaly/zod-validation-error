@@ -11,7 +11,7 @@ export type AbstractSyntaxTree = {
 export type ErrorMapOptions = {
   // Include path
   includePath: boolean;
-  // Stringify options
+  // Stringify values
   dateLocalization: boolean | Intl.LocalesArgument;
   numberLocalization: boolean | Intl.LocalesArgument;
   // Concat issues

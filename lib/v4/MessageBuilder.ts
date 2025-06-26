@@ -1,6 +1,6 @@
+import * as zod from 'zod/v4/core';
 import { type NonEmptyArray } from '../utils/NonEmptyArray.ts';
-import { defaultErrorMapOptions } from './errorMap/index.ts';
-import type * as zod from 'zod/v4/core';
+import { defaultErrorMap, defaultErrorMapOptions } from './errorMap/index.ts';
 
 export type ZodIssue = zod.$ZodIssue;
 
@@ -15,7 +15,7 @@ export type MessageBuilderOptions = {
   prefixSeparator: string;
   maxIssuesInMessage: number;
   issueSeparator: string;
-  error: zod.$ZodErrorMap<zod.$ZodIssue>;
+  error: zod.$ZodErrorMap<zod.$ZodIssue> | false;
 };
 
 export const defaultMessageBuilderOptions: MessageBuilderOptions & {
@@ -25,7 +25,7 @@ export const defaultMessageBuilderOptions: MessageBuilderOptions & {
   prefixSeparator: ': ',
   maxIssuesInMessage: 99, // I've got 99 problems but the b$tch ain't one
   issueSeparator: defaultErrorMapOptions.issueSeparator,
-  error: identityErrorMap,
+  error: defaultErrorMap,
 };
 
 export function createMessageBuilder(
@@ -35,7 +35,15 @@ export function createMessageBuilder(
     ...defaultMessageBuilderOptions,
     ...partialOptions,
   };
-  const errorMap = options.error;
+  const errorMap =
+    // user requested not to format errors by explicitly setting error to false
+    options.error === false ||
+    // we have already formatted errors with zod-validation-error
+    // using the zod.config() API
+    // thus we should not format them again for performance reasons
+    zod.globalConfig.customError === defaultErrorMap
+      ? identityErrorMap
+      : options.error;
 
   return function messageBuilder(issues) {
     const message = issues

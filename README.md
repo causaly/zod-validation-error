@@ -30,15 +30,6 @@ npm install zod-validation-error
 import { z as zod } from 'zod/v4';
 import { fromError, createErrorMap } from 'zod-validation-error/v4';
 
-// use custom error map to automatically format messages
-// this is optional, but recommended
-// without this, zod's native error messages will be used
-zod.config({
-  customError: createErrorMap({
-    includePath: true,
-  }),
-});
-
 // create zod schema
 const zodSchema = zod.object({
   id: zod.int().positive(),
@@ -60,49 +51,6 @@ try {
   return validationError;
 }
 ```
-
-<details>
-<summary>Per-format error customization</summary>
-
-For more fine-grained control over the error messages, you may pass the error map as an option to the `fromError` function.
-
-```typescript
-import { z as zod } from 'zod/v4';
-import { fromError, createErrorMap } from 'zod-validation-error/v4';
-
-// create zod schema
-const zodSchema = zod.object({
-  id: zod.int().positive(),
-  email: zod.email(),
-});
-
-// parse some invalid value
-try {
-  zodSchema.parse({
-    id: 1,
-    email: 'coyote@acme', // note: invalid email
-  });
-} catch (err) {
-  // create custom error map
-  // this is optional, but recommended
-  // without this, zod's native error messages will be used
-  // and the error will not be user-friendly
-  const errorMap = createErrorMap({
-    includePath: false,
-  });
-
-  const validationError = fromError(err, {
-    error: errorMap,
-  });
-  // the error is now readable by the user
-  // you may print it to console
-  console.log(validationError.toString());
-  // or return it as an actual error
-  return validationError;
-}
-```
-
-</details>
 
 ## Motivation
 
@@ -205,23 +153,26 @@ Note: zod-validation-error's `errorMap` is an errorMap like all others and thus 
 #### Arguments
 
 - `options` - _Object_; formatting options (optional)
-  | Name | Type | Description |
-  | ---- | :----: | ----------- |
-  | `includePath` | `boolean` | Indicates whether to include the erroneous property key in the error message (optional, defaults to `true`) |
-  | `displayInvalidFormatDetails` | `boolean` | Indicates whether to display invalid format details (e.g. regexp pattern) in the error message (optional, defaults to `false`) |
-  | `maxAllowedValuesToDisplay` | `number` | Max number of allowed values to display (optional, defaults to 10) |
-  | `allowedValuesSeparator` | `string` | Used to concatenate allowed values in the message (optional, defaults to `", "`) |
-  | `allowedValuesLastSeparator` | `string \| undefined` | Used to concatenate last allowed value in the message (optional, defaults to `" or "`). Set to `undefined` to disable last separator. |
-  | `wrapAllowedValuesInQuote` |`boolean` | Indicates whether to wrap allowed values in quotes (optional, defaults to `true`). Note that this only applies to string values. |
-  | `maxUnrecognizedKeysToDisplay` | `number` | Max number of unrecognized keys to display in the error message (optional, defaults to `5`) |
-  | `unrecognizedKeysSeparator` | `string` | Used to concatenate unrecognized keys in the message (optional, defaults to `", "`) |
-  | `unrecognizedKeysLastSeparator` | `string \| undefined` | Used to concatenate the last unrecognized key in message (optional, defaults to `" and "`). Set to `undefined` to disable last separator. |
-  | `wrapUnrecognizedKeysInQuote` |`boolean` | Indicates whether to wrap unrecognized keys in quotes (optional, defaults to `true`). Note that this only applies to string keys. |
-  | `issuesInTitleCase` |`boolean` | Indicates whether to convert issues to title case (optional, defaults to `true`). |
-  | `unionSeparator` | `string` | Used to concatenate union-issues in user-friendly message (optional, defaults to `" or "`) |
-  | `issueSeparator` | `string` | Used to concatenate issues in user-friendly message (optional, defaults to `";"`) |
-  | `dateLocalization` | `boolean \| Intl.LocalesArgument` | Indicates whether to localize date values in the error message (optional, defaults to `true`). If set to `true`, it will use the default locale of the environment. You can also pass an `Intl.LocalesArgument` to specify a custom locale. |
-  | `numberLocalization` | `boolean \| Intl.LocalesArgument` | Indicates whether to localize number values in the error message (optional, defaults to `true`). If set to `true`, it will use the default locale of the environment. You can also pass an `Intl.LocalesArgument` to specify a custom locale. |
+
+##### createErrorMap Options
+
+| Name                            |               Type                | Description                                                                                                                                                                                                                                   |
+| ------------------------------- | :-------------------------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `includePath`                   |             `boolean`             | Indicates whether to include the erroneous property key in the error message (optional, defaults to `true`)                                                                                                                                   |
+| `displayInvalidFormatDetails`   |             `boolean`             | Indicates whether to display invalid format details (e.g. regexp pattern) in the error message (optional, defaults to `false`)                                                                                                                |
+| `maxAllowedValuesToDisplay`     |             `number`              | Max number of allowed values to display (optional, defaults to 10)                                                                                                                                                                            |
+| `allowedValuesSeparator`        |             `string`              | Used to concatenate allowed values in the message (optional, defaults to `", "`)                                                                                                                                                              |
+| `allowedValuesLastSeparator`    |       `string \| undefined`       | Used to concatenate last allowed value in the message (optional, defaults to `" or "`). Set to `undefined` to disable last separator.                                                                                                         |
+| `wrapAllowedValuesInQuote`      |             `boolean`             | Indicates whether to wrap allowed values in quotes (optional, defaults to `true`). Note that this only applies to string values.                                                                                                              |
+| `maxUnrecognizedKeysToDisplay`  |             `number`              | Max number of unrecognized keys to display in the error message (optional, defaults to `5`)                                                                                                                                                   |
+| `unrecognizedKeysSeparator`     |             `string`              | Used to concatenate unrecognized keys in the message (optional, defaults to `", "`)                                                                                                                                                           |
+| `unrecognizedKeysLastSeparator` |       `string \| undefined`       | Used to concatenate the last unrecognized key in message (optional, defaults to `" and "`). Set to `undefined` to disable last separator.                                                                                                     |
+| `wrapUnrecognizedKeysInQuote`   |             `boolean`             | Indicates whether to wrap unrecognized keys in quotes (optional, defaults to `true`). Note that this only applies to string keys.                                                                                                             |
+| `issuesInTitleCase`             |             `boolean`             | Indicates whether to convert issues to title case (optional, defaults to `true`).                                                                                                                                                             |
+| `unionSeparator`                |             `string`              | Used to concatenate union-issues in user-friendly message (optional, defaults to `" or "`)                                                                                                                                                    |
+| `issueSeparator`                |             `string`              | Used to concatenate issues in user-friendly message (optional, defaults to `";"`)                                                                                                                                                             |
+| `dateLocalization`              | `boolean \| Intl.LocalesArgument` | Indicates whether to localize date values in the error message (optional, defaults to `true`). If set to `true`, it will use the default locale of the environment. You can also pass an `Intl.LocalesArgument` to specify a custom locale.   |
+| `numberLocalization`            | `boolean \| Intl.LocalesArgument` | Indicates whether to localize number values in the error message (optional, defaults to `true`). If set to `true`, it will use the default locale of the environment. You can also pass an `Intl.LocalesArgument` to specify a custom locale. |
 
 #### Example
 
@@ -243,13 +194,16 @@ Meant to be passed as an option to [fromError](#fromerror), [fromZodIssue](#from
 #### Arguments
 
 - `options` - _Object_; formatting options (optional)
-  | Name | Type | Description |
-  | ---- | :----: | ----------- |
-  | `maxIssuesInMessage` | `number` | Max issues to include in user-friendly message (optional, defaults to `99`) |
-  | `issueSeparator` | `string` | Used to concatenate issues in user-friendly message (optional, defaults to `";"`) |
-  | `prefix` | `string \| undefined` | Prefix to use in user-friendly message (optional, defaults to `"Validation error"`). Pass `undefined` to disable prefix completely. |
-  | `prefixSeparator` | `string` | Used to concatenate prefix with rest of the user-friendly message (optional, defaults to `": "`). Not used when `prefix` is `undefined`. |
-  | `error` | `ErrorMap` | Accepts an `errorMap` to format individual issues into user-friendly error messages (optional, defaults to `undefined`). Note that this is an optional property and if not provided, the default error map will be used. Also, you don't need to pass zod-validation-error's `errorMap` here; you can use your own custom errorMap if you want. |
+
+##### createMessageBuilder Options
+
+| Name                 |         Type          | Description                                                                                                                                                                                                                                                                                                                                  |
+| -------------------- | :-------------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `maxIssuesInMessage` |       `number`        | Max issues to include in user-friendly message (optional, defaults to `99`)                                                                                                                                                                                                                                                                  |
+| `issueSeparator`     |       `string`        | Used to concatenate issues in user-friendly message (optional, defaults to `";"`)                                                                                                                                                                                                                                                            |
+| `prefix`             | `string \| undefined` | Prefix to use in user-friendly message (optional, defaults to `"Validation error"`). Pass `undefined` to disable prefix completely.                                                                                                                                                                                                          |
+| `prefixSeparator`    |       `string`        | Used to concatenate prefix with rest of the user-friendly message (optional, defaults to `": "`). Not used when `prefix` is `undefined`.                                                                                                                                                                                                     |
+| `error`              |  `ErrorMap \| false`  | Accepts an `errorMap` to format individual issues into user-friendly error messages (optional). When set to `false` it will return the message as formatted by `zod`. Note that this is an optional property and if not provided, the default zod-validation-error error map will be used. You can use your own custom errorMap if you want. |
 
 #### Example
 

@@ -18,7 +18,7 @@ import type {
 } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
-export const issueParsers: Record<
+const issueParsers: Record<
   IssueType,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (issue: any, options: ErrorMapOptions) => AbstractSyntaxTree
@@ -36,7 +36,7 @@ export const issueParsers: Record<
   invalid_union: parseInvalidUnionIssue,
 };
 
-export function parseInvalidUnionIssue(
+function parseInvalidUnionIssue(
   issue: zod.$ZodIssueInvalidUnion,
   options: ErrorMapOptions
 ): AbstractSyntaxTree {
@@ -63,7 +63,7 @@ export function parseInvalidUnionIssue(
   };
 }
 
-export const defaultErrorMapOptions: ErrorMapOptions = {
+export const defaultErrorMapOptions = {
   includePath: true,
   unionSeparator: ' or ',
   issueSeparator: '; ',
@@ -79,6 +79,32 @@ export const defaultErrorMapOptions: ErrorMapOptions = {
   issuesInTitleCase: true,
   dateLocalization: true,
   numberLocalization: true,
+} as const satisfies ErrorMapOptions;
+
+function isOptionsEqualToDefault(
+  options: ErrorMapOptions
+): options is typeof defaultErrorMapOptions {
+  for (const key in options) {
+    if (
+      options[key as keyof ErrorMapOptions] !==
+      defaultErrorMapOptions[key as keyof typeof defaultErrorMapOptions]
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export const defaultErrorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
+  if (issue.code === undefined) {
+    // TODO: handle this case
+    return 'Not supported issue type';
+  }
+
+  const parseFunc = issueParsers[issue.code];
+  const ast = parseFunc(issue, defaultErrorMapOptions);
+  return toString(ast, defaultErrorMapOptions);
 };
 
 export function createErrorMap(
@@ -89,6 +115,11 @@ export function createErrorMap(
     ...defaultErrorMapOptions,
     ...partialOptions,
   };
+
+  if (isOptionsEqualToDefault(options)) {
+    // If options are equal to default, return the default error map
+    return defaultErrorMap;
+  }
 
   const errorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
     if (issue.code === undefined) {

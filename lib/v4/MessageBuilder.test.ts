@@ -6,14 +6,10 @@ import { isZodErrorLike } from './isZodErrorLike.ts';
 import { createErrorMap } from './errorMap/errorMap.ts';
 
 describe('MessageBuilder', () => {
-  const errorMap = createErrorMap({
-    includePath: true,
-  });
-
   test('handles zod.string() schema errors', () => {
     const schema = zod.email();
 
-    const messageBuilder = createMessageBuilder({ error: errorMap });
+    const messageBuilder = createMessageBuilder();
 
     try {
       schema.parse('foobar', {
@@ -35,7 +31,7 @@ describe('MessageBuilder', () => {
       name: zod.string().min(2),
     });
 
-    const messageBuilder = createMessageBuilder({ error: errorMap });
+    const messageBuilder = createMessageBuilder();
 
     try {
       schema.parse(
@@ -60,7 +56,7 @@ describe('MessageBuilder', () => {
   test('handles zod.array() schema errors', () => {
     const schema = zod.array(zod.int());
 
-    const messageBuilder = createMessageBuilder({ error: errorMap });
+    const messageBuilder = createMessageBuilder();
 
     try {
       schema.parse([1, 'a', true, 1.23], {
@@ -85,7 +81,7 @@ describe('MessageBuilder', () => {
       }),
     });
 
-    const messageBuilder = createMessageBuilder({ error: errorMap });
+    const messageBuilder = createMessageBuilder();
 
     try {
       schema.parse(
@@ -124,7 +120,7 @@ describe('MessageBuilder', () => {
 
     const schema = success.or(error);
 
-    const messageBuilder = createMessageBuilder({ error: errorMap });
+    const messageBuilder = createMessageBuilder();
 
     try {
       schema.parse(
@@ -148,7 +144,7 @@ describe('MessageBuilder', () => {
       terms: zod.array(zod.string()).or(zod.string()),
     });
 
-    const messageBuilder = createMessageBuilder({ error: errorMap });
+    const messageBuilder = createMessageBuilder();
 
     try {
       schema.parse(
@@ -177,7 +173,7 @@ describe('MessageBuilder', () => {
 
     const schema = part1.and(part2);
 
-    const messageBuilder = createMessageBuilder({ error: errorMap });
+    const messageBuilder = createMessageBuilder();
 
     try {
       schema.parse({});
@@ -197,7 +193,7 @@ describe('MessageBuilder', () => {
       './*': zod.string(),
     });
 
-    const messageBuilder = createMessageBuilder({ error: errorMap });
+    const messageBuilder = createMessageBuilder();
 
     try {
       schema.parse(
@@ -226,7 +222,7 @@ describe('MessageBuilder', () => {
       })
       .implement((num) => num * 2);
 
-    const messageBuilder = createMessageBuilder({ error: errorMap });
+    const messageBuilder = createMessageBuilder();
 
     try {
       // @ts-expect-error Intentionally wrong to exercise runtime checking
@@ -249,7 +245,7 @@ describe('MessageBuilder', () => {
       // @ts-expect-error Intentionally wrong to exercise runtime checking
       .implement(() => 'foo');
 
-    const messageBuilder = createMessageBuilder({ error: errorMap });
+    const messageBuilder = createMessageBuilder();
 
     try {
       fn();
@@ -286,14 +282,13 @@ describe('MessageBuilder', () => {
     }
   });
 
-  test("returns zod's native error messages by default", () => {
+  test("returns zod's native error messages when error is set to false", () => {
     const schema = zod.object({
       name: zod.string().min(3),
     });
 
     const messageBuilder = createMessageBuilder({
-      // note that we are not passing `error` here
-      // so it will use zod's default error map
+      error: false,
     });
 
     try {
