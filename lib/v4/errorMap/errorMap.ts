@@ -21,7 +21,7 @@ import type * as zod from 'zod/v4/core';
 // Define a distinguishing property using a unique symbol
 const errorMapSymbol = Symbol('zod-validation-error-map');
 
-export const issueParsers: Record<
+const issueParsers: Record<
   IssueType,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (issue: any, options: ErrorMapOptions) => AbstractSyntaxTree
@@ -39,7 +39,7 @@ export const issueParsers: Record<
   invalid_union: parseInvalidUnionIssue,
 };
 
-export function parseInvalidUnionIssue(
+function parseInvalidUnionIssue(
   issue: zod.$ZodIssueInvalidUnion,
   options: ErrorMapOptions
 ): AbstractSyntaxTree {
