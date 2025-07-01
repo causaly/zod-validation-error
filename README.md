@@ -450,9 +450,9 @@ try {
 
 Zod supports customizing error messages by providing a custom "error map". You may combine this with `zod-validation-error` to produce user-friendly messages.
 
-#### Example 1: produce user-friendly error messages using the `errorMap` property
+#### Example: produce user-friendly error messages using the `customError` property
 
-If all you need is to produce user-friendly error messages you may use the `errorMap` property.
+If all you need is to produce user-friendly error messages you may use the `customError` property.
 
 ```typescript
 import { z as zod } from 'zod/v4';
@@ -464,6 +464,8 @@ zod.config({
   }),
 });
 ```
+
+`zod-validation-error` will respect the `customError` property when it is set, no further configuration is needed.
 
 ### Does `zod-validation-error` support CommonJS
 
