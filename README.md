@@ -28,7 +28,7 @@ npm install zod-validation-error
 
 ```typescript
 import { z as zod } from 'zod/v4';
-import { fromError, createErrorMap } from 'zod-validation-error/v4';
+import { fromError } from 'zod-validation-error/v4';
 
 // create zod schema
 const zodSchema = zod.object({
