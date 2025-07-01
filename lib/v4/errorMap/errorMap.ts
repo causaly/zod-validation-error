@@ -81,7 +81,7 @@ export const defaultErrorMapOptions = {
   numberLocalization: true,
 } as const satisfies ErrorMapOptions;
 
-function isOptionsEqualToDefault(
+function equalsDefaultOptions(
   options: ErrorMapOptions
 ): options is typeof defaultErrorMapOptions {
   for (const key in options) {
@@ -116,7 +116,7 @@ export function createErrorMap(
     ...partialOptions,
   };
 
-  if (isOptionsEqualToDefault(options)) {
+  if (equalsDefaultOptions(options)) {
     // If options are equal to default, return the default error map
     return defaultErrorMap;
   }
