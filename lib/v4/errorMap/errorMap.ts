@@ -18,6 +18,8 @@ import type {
 } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
+const BRAND = Symbol.for('zod-validation-error-map');
+
 const issueParsers: Record<
   IssueType,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -96,16 +98,31 @@ function equalsDefaultOptions(
   return true;
 }
 
-export const defaultErrorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
-  if (issue.code === undefined) {
-    // TODO: handle this case
-    return 'Not supported issue type';
-  }
+function makeErrorMap(
+  options: ErrorMapOptions
+): zod.$ZodErrorMap<zod.$ZodIssue> {
+  const errorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
+    if (issue.code === undefined) {
+      // TODO: handle this case
+      return 'Not supported issue type';
+    }
 
-  const parseFunc = issueParsers[issue.code];
-  const ast = parseFunc(issue, defaultErrorMapOptions);
-  return toString(ast, defaultErrorMapOptions);
-};
+    const parseFunc = issueParsers[issue.code];
+    const ast = parseFunc(issue, options);
+    return toString(ast, options);
+  };
+
+  Object.defineProperty(errorMap, '_brand', {
+    value: BRAND,
+    writable: false,
+    enumerable: false,
+    configurable: false,
+  });
+
+  return errorMap;
+}
+
+export const defaultErrorMap = makeErrorMap(defaultErrorMapOptions);
 
 export function createErrorMap(
   partialOptions: Partial<ErrorMapOptions> = {}
@@ -121,18 +138,7 @@ export function createErrorMap(
     return defaultErrorMap;
   }
 
-  const errorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
-    if (issue.code === undefined) {
-      // TODO: handle this case
-      return 'Not supported issue type';
-    }
-
-    const parseFunc = issueParsers[issue.code];
-    const ast = parseFunc(issue, options);
-    return toString(ast, options);
-  };
-
-  return errorMap;
+  return makeErrorMap(options);
 }
 
 function toString(ast: AbstractSyntaxTree, options: ErrorMapOptions): string {
@@ -163,4 +169,10 @@ function toString(ast: AbstractSyntaxTree, options: ErrorMapOptions): string {
   }
 
   return buf.join('');
+}
+
+export function isZodValidationErrorMap(
+  errorMap: zod.$ZodErrorMap<zod.$ZodIssue>
+): boolean {
+  return '_brand' in errorMap && errorMap._brand === BRAND;
 }

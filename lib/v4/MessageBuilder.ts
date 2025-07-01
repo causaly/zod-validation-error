@@ -1,6 +1,10 @@
 import * as zod from 'zod/v4/core';
 import { type NonEmptyArray } from '../utils/NonEmptyArray.ts';
-import { defaultErrorMap, defaultErrorMapOptions } from './errorMap/index.ts';
+import {
+  defaultErrorMap,
+  defaultErrorMapOptions,
+  isZodValidationErrorMap,
+} from './errorMap/index.ts';
 
 export type ZodIssue = zod.$ZodIssue;
 
@@ -41,7 +45,9 @@ export function createMessageBuilder(
     // we have already formatted errors with zod-validation-error
     // using the zod.config() API
     // thus we should not format them again for performance reasons
-    zod.globalConfig.customError === defaultErrorMap
+    (partialOptions.error === undefined &&
+      zod.globalConfig.customError !== undefined &&
+      isZodValidationErrorMap(zod.globalConfig.customError))
       ? identityErrorMap
       : options.error;
 

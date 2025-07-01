@@ -259,7 +259,7 @@ describe('MessageBuilder', () => {
     }
   });
 
-  test('respects `includePath` prop when set to `false`', () => {
+  test('accepts custom error map as option`', () => {
     const schema = zod.object({
       name: zod.string().min(3),
     });
@@ -301,5 +301,164 @@ describe('MessageBuilder', () => {
         );
       }
     }
+  });
+
+  describe('global zod-validation-error errorMap', () => {
+    beforeAll(() => {
+      zod.config({
+        customError: createErrorMap({
+          includePath: false,
+        }),
+      });
+    });
+
+    afterAll(() => {
+      zod.config({
+        customError: undefined,
+      });
+    });
+
+    test('respects global error map by default', () => {
+      const schema = zod.object({
+        name: zod.string().min(3),
+      });
+
+      const messageBuilder = createMessageBuilder();
+
+      try {
+        schema.parse({ name: 'jo' });
+      } catch (err) {
+        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
+          const message = messageBuilder(err.issues);
+          expect(message).toMatchInlineSnapshot(
+            `"Validation error: String must contain at least 3 character(s)"`
+          );
+        }
+      }
+    });
+
+    test('respects global error map when `error` option is set to false', () => {
+      const schema = zod.object({
+        name: zod.string().min(3),
+      });
+
+      const messageBuilder = createMessageBuilder({
+        error: false,
+      });
+
+      try {
+        schema.parse({ name: 'jo' });
+      } catch (err) {
+        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
+          const message = messageBuilder(err.issues);
+          expect(message).toMatchInlineSnapshot(
+            `"Validation error: String must contain at least 3 character(s)"`
+          );
+        }
+      }
+    });
+
+    test('ignores global error map when a custom error map is explicitly passed as option', () => {
+      const schema = zod.object({
+        name: zod.string().min(3),
+      });
+
+      const messageBuilder = createMessageBuilder({
+        error: createErrorMap({
+          // note: this is different from the global error map
+          includePath: true,
+        }),
+      });
+
+      try {
+        schema.parse({ name: 'jo' });
+      } catch (err) {
+        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
+          const message = messageBuilder(err.issues);
+          expect(message).toMatchInlineSnapshot(
+            `"Validation error: String must contain at least 3 character(s) at "name""`
+          );
+        }
+      }
+    });
+  });
+
+  describe('global non zod-validation-error errorMap', () => {
+    beforeAll(() => {
+      zod.config({
+        // note: this is not a zod-validation-error error map
+        // but a custom error map that returns the issue message directly
+        customError: (issue) => issue.message,
+      });
+    });
+
+    afterAll(() => {
+      zod.config({
+        customError: undefined,
+      });
+    });
+
+    test('overrides global error map by default', () => {
+      const schema = zod.object({
+        name: zod.string().min(3),
+      });
+
+      const messageBuilder = createMessageBuilder();
+
+      try {
+        schema.parse({ name: 'jo' });
+      } catch (err) {
+        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
+          const message = messageBuilder(err.issues);
+          expect(message).toMatchInlineSnapshot(
+            `"Validation error: String must contain at least 3 character(s) at "name""`
+          );
+        }
+      }
+    });
+
+    test('respects global error map when `error` option is set to false', () => {
+      const schema = zod.object({
+        name: zod.string().min(3),
+      });
+
+      const messageBuilder = createMessageBuilder({
+        error: false,
+      });
+
+      try {
+        schema.parse({ name: 'jo' });
+      } catch (err) {
+        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
+          const message = messageBuilder(err.issues);
+          expect(message).toMatchInlineSnapshot(
+            `"Validation error: Too small: expected string to have >=3 characters"`
+          );
+        }
+      }
+    });
+
+    test('ignores global error map when a custom error map is explicitly passed as option', () => {
+      const schema = zod.object({
+        name: zod.string().min(3),
+      });
+
+      const messageBuilder = createMessageBuilder({
+        error: createErrorMap({
+          includePath: false,
+        }),
+      });
+
+      try {
+        schema.parse({ name: 'jo' });
+      } catch (err) {
+        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
+          const message = messageBuilder(err.issues);
+          expect(message).toMatchInlineSnapshot(
+            `"Validation error: String must contain at least 3 character(s)"`
+          );
+        }
+      }
+    });
   });
 });
