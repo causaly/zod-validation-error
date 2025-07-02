@@ -1,13 +1,10 @@
 # @causaly/zod-validation-error
 
-## 4.0.0
+## 4.0.0-beta.1
 
 ### Major Changes
 
 - 9be31d2: Make v4 the default export of zod-validation-error
-
-### Minor Changes
-
 - 3f77fd9: Default opt-in to error formatting, without needing to specify a custom error map. The previous functionality was default opt-out. Now you need to explicitly pass `error: false` to opt-out.
 
 ## 3.5.2
