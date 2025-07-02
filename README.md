@@ -11,7 +11,7 @@ Wrap zod validation errors in user-friendly readable messages.
 - Provides a custom error map for automatic message formatting;
 - Supports both Zod v3 and v4.
 
-**_Note:_** This is the v4 version of `zod-validation-error`. If you are looking for the zod v3 support, please click [here](./README.v3.md)
+**_Note:_** This version of `zod-validation-error` works with zod v4. If you are looking for zod v3 support, please click [here](./README.v3.md)
 
 ## Installation
 
@@ -28,7 +28,7 @@ npm install zod-validation-error
 
 ```typescript
 import { z as zod } from 'zod/v4';
-import { fromError } from 'zod-validation-error/v4';
+import { fromError } from 'zod-validation-error';
 
 // create zod schema
 const zodSchema = zod.object({
