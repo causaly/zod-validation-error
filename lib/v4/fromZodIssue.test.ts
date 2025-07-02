@@ -16,7 +16,7 @@ describe('fromZodIssue()', () => {
         const validationError = fromZodIssue(err.issues[0]);
         expect(validationError).toBeInstanceOf(ValidationError);
         expect(validationError.message).toMatchInlineSnapshot(
-          `"Validation error: Invalid email address"`
+          `"Validation error: Invalid email"`
         );
         expect(validationError.details).toMatchInlineSnapshot(`
           [
@@ -42,7 +42,7 @@ describe('fromZodIssue()', () => {
     } catch (err) {
       if (isZodErrorLike(err)) {
         const errorMap = createErrorMap({
-          includePath: true,
+          includePath: false,
         });
         const validationError = fromZodIssue(err.issues[0], {
           error: errorMap,
@@ -50,6 +50,36 @@ describe('fromZodIssue()', () => {
         expect(validationError).toBeInstanceOf(ValidationError);
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: String must contain at least 3 character(s)"`
+        );
+        expect(validationError.details).toMatchInlineSnapshot(`
+          [
+            {
+              "code": "too_small",
+              "inclusive": true,
+              "message": "Too small: expected string to have >=3 characters",
+              "minimum": 3,
+              "origin": "string",
+              "path": [],
+            },
+          ]
+        `);
+      }
+    }
+  });
+
+  test('uses original error message when error property is set to false', () => {
+    const schema = zod.string().min(3);
+
+    try {
+      schema.parse('ab');
+    } catch (err) {
+      if (isZodErrorLike(err)) {
+        const validationError = fromZodIssue(err.issues[0], {
+          error: false,
+        });
+        expect(validationError).toBeInstanceOf(ValidationError);
+        expect(validationError.message).toMatchInlineSnapshot(
+          `"Validation error: Too small: expected string to have >=3 characters"`
         );
         expect(validationError.details).toMatchInlineSnapshot(`
           [

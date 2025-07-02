@@ -11,7 +11,7 @@ describe('fromError()', () => {
     const validationError = fromError(error);
 
     expect(validationError).toMatchInlineSnapshot(
-      `[ZodValidationError: Validation error: Invalid email address]`
+      `[ZodValidationError: Validation error: Invalid email]`
     );
   });
 
@@ -72,6 +72,23 @@ describe('fromError()', () => {
 
     expect(validationError).toMatchInlineSnapshot(
       `[ZodValidationError: Validation error: Expected string at "username", Expected string at "password"]`
+    );
+  });
+
+  test('uses original error message when error property is set to false', () => {
+    const schema = zod.object({
+      username: zod.string().min(1),
+      password: zod.string().min(1),
+    });
+    const { error } = schema.safeParse({});
+
+    const validationError = fromError(error, {
+      error: false,
+      issueSeparator: ', ',
+    });
+
+    expect(validationError).toMatchInlineSnapshot(
+      `[ZodValidationError: Validation error: Invalid input: expected string, received undefined, Invalid input: expected string, received undefined]`
     );
   });
 });

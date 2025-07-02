@@ -18,7 +18,9 @@ import type {
 } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
-export const issueParsers: Record<
+const BRAND = Symbol.for('zod-validation-error-map');
+
+const issueParsers: Record<
   IssueType,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (issue: any, options: ErrorMapOptions) => AbstractSyntaxTree
@@ -36,7 +38,7 @@ export const issueParsers: Record<
   invalid_union: parseInvalidUnionIssue,
 };
 
-export function parseInvalidUnionIssue(
+function parseInvalidUnionIssue(
   issue: zod.$ZodIssueInvalidUnion,
   options: ErrorMapOptions
 ): AbstractSyntaxTree {
@@ -63,7 +65,7 @@ export function parseInvalidUnionIssue(
   };
 }
 
-export const defaultErrorMapOptions: ErrorMapOptions = {
+export const defaultErrorMapOptions = {
   includePath: true,
   unionSeparator: ' or ',
   issueSeparator: '; ',
@@ -79,17 +81,26 @@ export const defaultErrorMapOptions: ErrorMapOptions = {
   issuesInTitleCase: true,
   dateLocalization: true,
   numberLocalization: true,
-};
+} as const satisfies ErrorMapOptions;
 
-export function createErrorMap(
-  partialOptions: Partial<ErrorMapOptions> = {}
+function equalsDefaultOptions(
+  options: ErrorMapOptions
+): options is typeof defaultErrorMapOptions {
+  for (const key in options) {
+    if (
+      options[key as keyof ErrorMapOptions] !==
+      defaultErrorMapOptions[key as keyof typeof defaultErrorMapOptions]
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function makeErrorMap(
+  options: ErrorMapOptions
 ): zod.$ZodErrorMap<zod.$ZodIssue> {
-  // fill-in default options
-  const options = {
-    ...defaultErrorMapOptions,
-    ...partialOptions,
-  };
-
   const errorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
     if (issue.code === undefined) {
       // TODO: handle this case
@@ -101,7 +112,33 @@ export function createErrorMap(
     return toString(ast, options);
   };
 
+  Object.defineProperty(errorMap, '_brand', {
+    value: BRAND,
+    writable: false,
+    enumerable: false,
+    configurable: false,
+  });
+
   return errorMap;
+}
+
+export const defaultErrorMap = makeErrorMap(defaultErrorMapOptions);
+
+export function createErrorMap(
+  partialOptions: Partial<ErrorMapOptions> = {}
+): zod.$ZodErrorMap<zod.$ZodIssue> {
+  // fill-in default options
+  const options = {
+    ...defaultErrorMapOptions,
+    ...partialOptions,
+  };
+
+  if (equalsDefaultOptions(options)) {
+    // If options are equal to default, return the default error map
+    return defaultErrorMap;
+  }
+
+  return makeErrorMap(options);
 }
 
 function toString(ast: AbstractSyntaxTree, options: ErrorMapOptions): string {
@@ -132,4 +169,10 @@ function toString(ast: AbstractSyntaxTree, options: ErrorMapOptions): string {
   }
 
   return buf.join('');
+}
+
+export function isZodValidationErrorMap(
+  errorMap: zod.$ZodErrorMap<zod.$ZodIssue>
+): boolean {
+  return '_brand' in errorMap && errorMap._brand === BRAND;
 }
