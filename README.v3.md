@@ -27,7 +27,7 @@ npm install zod-validation-error
 
 ```typescript
 import { z as zod } from 'zod';
-import { fromError } from 'zod-validation-error';
+import { fromError } from 'zod-validation-error/v3';
 
 // create zod schema
 const zodSchema = zod.object({
@@ -157,7 +157,7 @@ You may read more on the concept of the `MessageBuilder` further [below](#Messag
 #### Example
 
 ```typescript
-import { createMessageBuilder } from 'zod-validation-error';
+import { createMessageBuilder } from 'zod-validation-error/v3';
 
 const messageBuilder = createMessageBuilder({
   includePath: false,
@@ -173,7 +173,7 @@ A custom error map to use with zod's `setErrorMap` method and get user-friendly 
 
 ```typescript
 import { z as zod } from 'zod';
-import { errorMap } from 'zod-validation-error';
+import { errorMap } from 'zod-validation-error/v3';
 
 zod.setErrorMap(errorMap);
 ```
@@ -190,7 +190,7 @@ A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#usi
 
 ```typescript
 import { z as zod } from 'zod';
-import { ValidationError, isValidationError } from 'zod-validation-error';
+import { ValidationError, isValidationError } from 'zod-validation-error/v3';
 
 const err = new ValidationError('foobar');
 isValidationError(err); // returns true
@@ -214,7 +214,10 @@ tl;dr if you are uncertain then it is preferable to use `isValidationErrorLike` 
 #### Example
 
 ```typescript
-import { ValidationError, isValidationErrorLike } from 'zod-validation-error';
+import {
+  ValidationError,
+  isValidationErrorLike,
+} from 'zod-validation-error/v3';
 
 const err = new ValidationError('foobar');
 isValidationErrorLike(err); // returns true
@@ -237,7 +240,7 @@ _Why do we need heuristics since we can use a simple `instanceof` comparison?_ B
 
 ```typescript
 import { z as zod } from 'zod';
-import { ValidationError, isZodErrorLike } from 'zod-validation-error';
+import { ValidationError, isZodErrorLike } from 'zod-validation-error/v3';
 
 const zodValidationErr = new ValidationError('foobar');
 isZodErrorLike(zodValidationErr); // returns false
@@ -344,7 +347,7 @@ toValidationError(options) => (zodError) => ValidationError
 ```typescript
 import * as Either from 'fp-ts/Either';
 import { z as zod } from 'zod';
-import { toValidationError, ValidationError } from 'zod-validation-error';
+import { toValidationError, ValidationError } from 'zod-validation-error/v3';
 
 // create zod schema
 const zodSchema = zod
@@ -373,7 +376,7 @@ For instance, one may want to print `invalid_string` errors to the console in re
 
 ```typescript
 import { z as zod } from 'zod';
-import { type MessageBuilder, fromError } from 'zod-validation-error';
+import { type MessageBuilder, fromError } from 'zod-validation-error/v3';
 import chalk from 'chalk';
 
 // create custom MessageBuilder
@@ -427,7 +430,7 @@ Scenario: Distinguish between `ValidationError` VS generic `Error` in order to r
 ```typescript
 import * as Either from 'fp-ts/Either';
 import { z as zod } from 'zod';
-import { isValidationErrorLike } from 'zod-validation-error';
+import { isValidationErrorLike } from 'zod-validation-error/v3';
 
 try {
   func(); // throws Error - or - ValidationError
@@ -447,7 +450,7 @@ It's possible to implement custom validation logic outside `zod` and throw a `Va
 #### Example 1: passing custom message
 
 ```typescript
-import { ValidationError } from 'zod-validation-error';
+import { ValidationError } from 'zod-validation-error/v3';
 import { Buffer } from 'node:buffer';
 
 function parseBuffer(buf: unknown): Buffer {
@@ -462,7 +465,7 @@ function parseBuffer(buf: unknown): Buffer {
 #### Example 2: passing custom message and original error as cause
 
 ```typescript
-import { ValidationError } from 'zod-validation-error';
+import { ValidationError } from 'zod-validation-error/v3';
 
 try {
   // do something that throws an error
@@ -481,7 +484,7 @@ If all you need is to produce user-friendly error messages you may use the `erro
 
 ```typescript
 import { z as zod } from 'zod';
-import { errorMap } from 'zod-validation-error';
+import { errorMap } from 'zod-validation-error/v3';
 
 zod.setErrorMap(errorMap);
 ```
@@ -492,7 +495,7 @@ If you need to customize some error code, you may use the `fromZodIssue` functio
 
 ```typescript
 import { z as zod } from 'zod';
-import { fromZodIssue } from 'zod-validation-error';
+import { fromZodIssue } from 'zod-validation-error/v3';
 
 const customErrorMap: zod.ZodErrorMap = (issue, ctx) => {
   switch (issue.code) {
@@ -525,7 +528,7 @@ zod.setErrorMap(customErrorMap);
 ```typescript
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { errorMap } from 'zod-validation-error';
+import { errorMap } from 'zod-validation-error/v3';
 
 useForm({
   resolver: zodResolver(schema, { errorMap }),

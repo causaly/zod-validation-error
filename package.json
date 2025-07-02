@@ -33,14 +33,14 @@
       "url": "https://github.com/nikoskalogridis"
     }
   ],
-  "main": "./v3/index.js",
-  "module": "./v3/index.mjs",
-  "types": "./v3/index.d.ts",
+  "main": "./v4/index.js",
+  "module": "./v4/index.mjs",
+  "types": "./v4/index.d.ts",
   "exports": {
     ".": {
-      "types": "./v3/index.d.ts",
-      "require": "./v3/index.js",
-      "import": "./v3/index.mjs"
+      "types": "./v4/index.d.ts",
+      "require": "./v4/index.js",
+      "import": "./v4/index.mjs"
     },
     "./v3": {
       "types": "./v3/index.d.ts",
