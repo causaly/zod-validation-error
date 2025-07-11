@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 3.5.3
+
+### Patch Changes
+
+- 7bae962: Add support for zod v4 as peer dependency.
+
 ## 3.5.2
 
 ### Patch Changes
