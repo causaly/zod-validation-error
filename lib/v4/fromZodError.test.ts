@@ -3,7 +3,6 @@ import * as zod from 'zod/v4';
 import { fromZodError } from './fromZodError.ts';
 import { ValidationError } from './ValidationError.ts';
 import { isZodErrorLike } from './isZodErrorLike.ts';
-import { createErrorMap } from './errorMap/errorMap.ts';
 
 describe('fromZodError()', () => {
   test('handles ZodError', () => {
@@ -14,69 +13,6 @@ describe('fromZodError()', () => {
     } catch (err) {
       if (isZodErrorLike(err)) {
         const validationError = fromZodError(err);
-        expect(validationError).toBeInstanceOf(ValidationError);
-        expect(validationError.message).toMatchInlineSnapshot(
-          `"Validation error: Invalid email"`
-        );
-        expect(validationError.details).toMatchInlineSnapshot(`
-          [
-            {
-              "code": "invalid_format",
-              "format": "email",
-              "message": "Invalid email address",
-              "origin": "string",
-              "path": [],
-              "pattern": "/^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$/",
-            },
-          ]
-        `);
-      }
-    }
-  });
-
-  test('accepts custom errorMap as option', () => {
-    const schema = zod.email();
-
-    try {
-      schema.parse('foobar');
-    } catch (err) {
-      if (isZodErrorLike(err)) {
-        const errorMap = createErrorMap({
-          includePath: true,
-        });
-        const validationError = fromZodError(err, {
-          error: errorMap,
-        });
-        expect(validationError).toBeInstanceOf(ValidationError);
-        expect(validationError.message).toMatchInlineSnapshot(
-          `"Validation error: Invalid email"`
-        );
-        expect(validationError.details).toMatchInlineSnapshot(`
-          [
-            {
-              "code": "invalid_format",
-              "format": "email",
-              "message": "Invalid email address",
-              "origin": "string",
-              "path": [],
-              "pattern": "/^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$/",
-            },
-          ]
-        `);
-      }
-    }
-  });
-
-  test('uses original error message when error property is set to false', () => {
-    const schema = zod.email();
-
-    try {
-      schema.parse('foobar');
-    } catch (err) {
-      if (isZodErrorLike(err)) {
-        const validationError = fromZodError(err, {
-          error: false,
-        });
         expect(validationError).toBeInstanceOf(ValidationError);
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Invalid email address"`

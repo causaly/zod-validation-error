@@ -11,7 +11,7 @@ Wrap zod validation errors in user-friendly readable messages.
 - Provides a custom error map for automatic message formatting;
 - Supports both Zod v3 and v4.
 
-**_Note:_** This version of `zod-validation-error` works with zod v4. If you are looking for zod v3 support, please click [here](./README.v3.md)
+**_Note:_** This version of `zod-validation-error` works with zod v4. If you are looking for zod v3 support, please refer to the [v3 documentation](./README.v3.md)
 
 ## Installation
 
@@ -179,7 +179,7 @@ Note: zod-validation-error's `errorMap` is an errorMap like all others and thus 
 ```typescript
 import { createErrorMap } from 'zod-validation-error';
 
-const messageBuilder = createErrorMap({
+const errorMap = createErrorMap({
   includePath: false,
   maxAllowedValuesToDisplay: 3,
 });
@@ -197,24 +197,24 @@ Meant to be passed as an option to [fromError](#fromerror), [fromZodIssue](#from
 
 ##### createMessageBuilder Options
 
-| Name                 |         Type          | Description                                                                                                                                                                                                                                                                                                                                  |
-| -------------------- | :-------------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `maxIssuesInMessage` |       `number`        | Max issues to include in user-friendly message (optional, defaults to `99`)                                                                                                                                                                                                                                                                  |
-| `issueSeparator`     |       `string`        | Used to concatenate issues in user-friendly message (optional, defaults to `";"`)                                                                                                                                                                                                                                                            |
-| `prefix`             | `string \| undefined` | Prefix to use in user-friendly message (optional, defaults to `"Validation error"`). Pass `undefined` to disable prefix completely.                                                                                                                                                                                                          |
-| `prefixSeparator`    |       `string`        | Used to concatenate prefix with rest of the user-friendly message (optional, defaults to `": "`). Not used when `prefix` is `undefined`.                                                                                                                                                                                                     |
-| `error`              |  `ErrorMap \| false`  | Accepts an `errorMap` to format individual issues into user-friendly error messages (optional). When set to `false` it will return the message as formatted by `zod`. Note that this is an optional property and if not provided, the default zod-validation-error error map will be used. You can use your own custom errorMap if you want. |
+| Name                 |         Type          | Description                                                                                                                              |
+| -------------------- | :-------------------: | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `maxIssuesInMessage` |       `number`        | Max issues to include in user-friendly message (optional, defaults to `99`)                                                              |
+| `issueSeparator`     |       `string`        | Used to concatenate issues in user-friendly message (optional, defaults to `";"`)                                                        |
+| `unionSeparator`     |       `string`        | Used to concatenate union-issues in user-friendly message (optional, defaults to `" or "`)                                               |
+| `prefix`             | `string \| undefined` | Prefix to use in user-friendly message (optional, defaults to `"Validation error"`). Pass `undefined` to disable prefix completely.      |
+| `prefixSeparator`    |       `string`        | Used to concatenate prefix with rest of the user-friendly message (optional, defaults to `": "`). Not used when `prefix` is `undefined`. |
+| `includePath`        |       `boolean`       | Indicates whether to include the erroneous property key in the error message (optional, defaults to `true`)                              |
+| `forceTitleCase`     |       `boolean`       | Indicates whether to convert individual issue messages to title case (optional, defaults to `true`).                                     |
 
 #### Example
 
 ```typescript
-import { createErrorMap, createMessageBuilder } from 'zod-validation-error';
+import { createMessageBuilder } from 'zod-validation-error';
 
 const messageBuilder = createMessageBuilder({
   maxIssuesInMessage: 3,
-  error: createErrorMap({
-    includePath: false,
-  }),
+  includePath: false,
 });
 ```
 
@@ -453,7 +453,7 @@ If all you need is to produce user-friendly error messages you may use the `cust
 
 ```typescript
 import { z as zod } from 'zod/v4';
-import { fromError, createErrorMap } from 'zod-validation-error';
+import { createErrorMap } from 'zod-validation-error';
 
 zod.config({
   customError: createErrorMap({

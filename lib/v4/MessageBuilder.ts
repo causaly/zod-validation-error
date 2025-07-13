@@ -1,25 +1,21 @@
-import * as zod from 'zod/v4/core';
-import { type NonEmptyArray } from '../utils/NonEmptyArray.ts';
-import {
-  defaultErrorMap,
-  defaultErrorMapOptions,
-  isZodValidationErrorMap,
-} from './errorMap/index.ts';
+import { joinPath } from '../utils/joinPath.ts';
+import { isNonEmptyArray, type NonEmptyArray } from '../utils/NonEmptyArray.ts';
+import { titleCase } from '../utils/titleCase.ts';
+import { defaultErrorMapOptions } from './errorMap/index.ts';
+import type * as zod from 'zod/v4/core';
 
 export type ZodIssue = zod.$ZodIssue;
 
 export type MessageBuilder = (issues: NonEmptyArray<ZodIssue>) => string;
-
-const identityErrorMap: zod.$ZodErrorMap<zod.$ZodIssue> = (issue) => {
-  return issue.message;
-};
 
 export type MessageBuilderOptions = {
   prefix: string | null | undefined;
   prefixSeparator: string;
   maxIssuesInMessage: number;
   issueSeparator: string;
-  error: zod.$ZodErrorMap<zod.$ZodIssue> | false;
+  unionSeparator: string;
+  includePath: boolean;
+  forceTitleCase: boolean;
 };
 
 export const defaultMessageBuilderOptions: MessageBuilderOptions & {
@@ -29,7 +25,9 @@ export const defaultMessageBuilderOptions: MessageBuilderOptions & {
   prefixSeparator: ': ',
   maxIssuesInMessage: 99, // I've got 99 problems but the b$tch ain't one
   issueSeparator: defaultErrorMapOptions.issueSeparator,
-  error: defaultErrorMap,
+  unionSeparator: defaultErrorMapOptions.unionSeparator,
+  includePath: true,
+  forceTitleCase: true,
 };
 
 export function createMessageBuilder(
@@ -39,29 +37,72 @@ export function createMessageBuilder(
     ...defaultMessageBuilderOptions,
     ...partialOptions,
   };
-  const errorMap =
-    // user requested not to format errors by explicitly setting error to false
-    options.error === false ||
-    // we have already formatted errors with zod-validation-error
-    // using the zod.config() API
-    // thus we should not format them again for performance reasons
-    (partialOptions.error === undefined &&
-      zod.globalConfig.customError !== undefined &&
-      isZodValidationErrorMap(zod.globalConfig.customError))
-      ? identityErrorMap
-      : options.error;
 
   return function messageBuilder(issues) {
     const message = issues
       // limit max number of issues printed in the reason section
       .slice(0, options.maxIssuesInMessage)
       // format error message
-      .map(errorMap)
+      .map((issue) => mapIssue(issue, options))
       // concat as string
       .join(options.issueSeparator);
 
     return conditionallyPrefixMessage(message, options);
   };
+}
+
+function mapIssue(
+  issue: zod.$ZodIssue,
+  options: MessageBuilderOptions
+): string {
+  if (issue.code === 'invalid_union') {
+    const individualMessages = issue.errors.map((issues) =>
+      issues
+        .map((subIssue) =>
+          mapIssue(
+            {
+              ...subIssue,
+              path: issue.path.concat(subIssue.path),
+            },
+            options
+          )
+        )
+        .join(options.issueSeparator)
+    );
+
+    // deduplicate messages
+    // and join them with the union separator
+    // to create a single message for the invalid union issue
+    return Array.from(new Set(individualMessages)).join(options.unionSeparator);
+  }
+
+  const buf = [];
+
+  if (options.forceTitleCase) {
+    buf.push(titleCase(issue.message));
+  } else {
+    buf.push(issue.message);
+  }
+
+  pathCondition: if (
+    options.includePath &&
+    issue.path !== undefined &&
+    isNonEmptyArray(issue.path)
+  ) {
+    // handle array indices
+    if (issue.path.length === 1) {
+      const identifier = issue.path[0];
+
+      if (typeof identifier === 'number') {
+        buf.push(` at index ${identifier}`);
+        break pathCondition;
+      }
+    }
+
+    buf.push(` at "${joinPath(issue.path)}"`);
+  }
+
+  return buf.join('');
 }
 
 function conditionallyPrefixMessage(
