@@ -1,7 +1,6 @@
 import { joinPath } from '../utils/joinPath.ts';
 import { isNonEmptyArray, type NonEmptyArray } from '../utils/NonEmptyArray.ts';
 import { titleCase } from '../utils/titleCase.ts';
-import { defaultErrorMapOptions } from './errorMap/index.ts';
 import type * as zod from 'zod/v4/core';
 
 export type ZodIssue = zod.$ZodIssue;
@@ -24,8 +23,8 @@ export const defaultMessageBuilderOptions: MessageBuilderOptions & {
   prefix: 'Validation error',
   prefixSeparator: ': ',
   maxIssuesInMessage: 99, // I've got 99 problems but the b$tch ain't one
-  issueSeparator: defaultErrorMapOptions.issueSeparator,
-  unionSeparator: defaultErrorMapOptions.unionSeparator,
+  unionSeparator: ' or ',
+  issueSeparator: '; ',
   includePath: true,
   forceTitleCase: true,
 };

@@ -9,15 +9,9 @@ export type AbstractSyntaxTree = {
 };
 
 export type ErrorMapOptions = {
-  // Include path
-  includePath: boolean;
   // Stringify values
   dateLocalization: boolean | Intl.LocalesArgument;
   numberLocalization: boolean | Intl.LocalesArgument;
-  // Concat issues
-  unionSeparator: string;
-  issueSeparator: string;
-  issuesInTitleCase: boolean;
   // Invalid format options
   displayInvalidFormatDetails: boolean;
   // Allowed values options
