@@ -28,7 +28,15 @@ npm install zod-validation-error
 
 ```typescript
 import { z as zod } from 'zod';
-import { fromError } from 'zod-validation-error';
+import { fromError, createErrorMap } from 'zod-validation-error';
+
+// configure zod to use zod-validation-error's error map
+// this is optional, you may also use your own custom error map or zod's native error map
+// we recommend using zod-validation-error's error map for better user-friendly messages
+// see https://zod.dev/error-customization for further details
+zod.config({
+  customError: createErrorMap(),
+});
 
 // create zod schema
 const zodSchema = zod.object({
