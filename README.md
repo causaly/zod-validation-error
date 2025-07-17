@@ -8,7 +8,7 @@ Wrap zod validation errors in user-friendly readable messages.
 
 - User-friendly readable error messages with extensive configuration options;
 - Preserves original error details accessible via `error.details`;
-- Provides a custom error map for automatic message formatting;
+- Provides a custom error map for improved message formatting;
 - Supports both Zod v3 and v4.
 
 **_Note:_** This version of `zod-validation-error` works with zod v4. If you are looking for zod v3 support, please refer to the [v3 documentation](./README.v3.md)
@@ -27,7 +27,7 @@ npm install zod-validation-error
 ## Quick start
 
 ```typescript
-import { z as zod } from 'zod/v4';
+import { z as zod } from 'zod';
 import { fromError } from 'zod-validation-error';
 
 // create zod schema
@@ -102,7 +102,7 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 
 ### ValidationError
 
-Main `ValidationError` class, extending native JavaScript `Error`.
+Main `ValidationError` class, extending the native JavaScript `Error`.
 
 #### Arguments
 
@@ -122,7 +122,7 @@ console.log(error instanceof Error); // prints true
 #### Example 2: construct new ValidationError with `message` and `options.cause`
 
 ```typescript
-import { z as zod } from 'zod/v4';
+import { z as zod } from 'zod';
 import { ValidationError } from 'zod-validation-error';
 
 const error = new ValidationError('foobar', {
@@ -146,9 +146,9 @@ console.log(error.details); // prints issues from zod error
 
 Creates zod-validation-error's `errorMap`, which is used to format issues into user-friendly error messages.
 
-Meant to be passed as an option to [fromError](#fromerror), [fromZodIssue](#fromzodissue), [fromZodError](#fromzoderror), [toValidationError](#tovalidationerror) or [MessageBuilder](#MessageBuilder).
+We think that zod's native error map is not user-friendly enough, so we provide our own implementation that formats issues into human-readable messages.
 
-Note: zod-validation-error's `errorMap` is an errorMap like all others and thus can also be used directly with `zod` (see https://zod.dev/error-customization for further details).
+Note: zod-validation-error's `errorMap` is an errorMap like all others and thus can also be used directly with `zod` (see https://zod.dev/error-customization for further details), e.g.
 
 #### Arguments
 
@@ -156,32 +156,31 @@ Note: zod-validation-error's `errorMap` is an errorMap like all others and thus 
 
 ##### createErrorMap Options
 
-| Name                            |               Type                | Description                                                                                                                                                                                                                                   |
-| ------------------------------- | :-------------------------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `includePath`                   |             `boolean`             | Indicates whether to include the erroneous property key in the error message (optional, defaults to `true`)                                                                                                                                   |
-| `displayInvalidFormatDetails`   |             `boolean`             | Indicates whether to display invalid format details (e.g. regexp pattern) in the error message (optional, defaults to `false`)                                                                                                                |
-| `maxAllowedValuesToDisplay`     |             `number`              | Max number of allowed values to display (optional, defaults to 10)                                                                                                                                                                            |
-| `allowedValuesSeparator`        |             `string`              | Used to concatenate allowed values in the message (optional, defaults to `", "`)                                                                                                                                                              |
-| `allowedValuesLastSeparator`    |       `string \| undefined`       | Used to concatenate last allowed value in the message (optional, defaults to `" or "`). Set to `undefined` to disable last separator.                                                                                                         |
-| `wrapAllowedValuesInQuote`      |             `boolean`             | Indicates whether to wrap allowed values in quotes (optional, defaults to `true`). Note that this only applies to string values.                                                                                                              |
-| `maxUnrecognizedKeysToDisplay`  |             `number`              | Max number of unrecognized keys to display in the error message (optional, defaults to `5`)                                                                                                                                                   |
-| `unrecognizedKeysSeparator`     |             `string`              | Used to concatenate unrecognized keys in the message (optional, defaults to `", "`)                                                                                                                                                           |
-| `unrecognizedKeysLastSeparator` |       `string \| undefined`       | Used to concatenate the last unrecognized key in message (optional, defaults to `" and "`). Set to `undefined` to disable last separator.                                                                                                     |
-| `wrapUnrecognizedKeysInQuote`   |             `boolean`             | Indicates whether to wrap unrecognized keys in quotes (optional, defaults to `true`). Note that this only applies to string keys.                                                                                                             |
-| `issuesInTitleCase`             |             `boolean`             | Indicates whether to convert issues to title case (optional, defaults to `true`).                                                                                                                                                             |
-| `unionSeparator`                |             `string`              | Used to concatenate union-issues in user-friendly message (optional, defaults to `" or "`)                                                                                                                                                    |
-| `issueSeparator`                |             `string`              | Used to concatenate issues in user-friendly message (optional, defaults to `";"`)                                                                                                                                                             |
-| `dateLocalization`              | `boolean \| Intl.LocalesArgument` | Indicates whether to localize date values in the error message (optional, defaults to `true`). If set to `true`, it will use the default locale of the environment. You can also pass an `Intl.LocalesArgument` to specify a custom locale.   |
-| `numberLocalization`            | `boolean \| Intl.LocalesArgument` | Indicates whether to localize number values in the error message (optional, defaults to `true`). If set to `true`, it will use the default locale of the environment. You can also pass an `Intl.LocalesArgument` to specify a custom locale. |
+| Name                            |               Type                | Description                                                                                                                                                                                                            |
+| ------------------------------- | :-------------------------------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `displayInvalidFormatDetails`   |             `boolean`             | Indicates whether to display invalid format details (e.g. regexp pattern) in the error message (optional, defaults to `false`)                                                                                         |
+| `maxAllowedValuesToDisplay`     |             `number`              | Max number of allowed values to display (optional, defaults to `10`). Allowed values beyond this limit will be hidden.                                                                                                 |
+| `allowedValuesSeparator`        |             `string`              | Used to concatenate allowed values in the message (optional, defaults to `", "`)                                                                                                                                       |
+| `allowedValuesLastSeparator`    |       `string \| undefined`       | Used to concatenate last allowed value in the message (optional, defaults to `" or "`). Set to `undefined` to disable.                                                                                                 |
+| `wrapAllowedValuesInQuote`      |             `boolean`             | Indicates whether to wrap allowed values in quotes (optional, defaults to `true`). Note that this only applies to string values.                                                                                       |
+| `maxUnrecognizedKeysToDisplay`  |             `number`              | Max number of unrecognized keys to display in the error message (optional, defaults to `5`)                                                                                                                            |
+| `unrecognizedKeysSeparator`     |             `string`              | Used to concatenate unrecognized keys in the message (optional, defaults to `", "`)                                                                                                                                    |
+| `unrecognizedKeysLastSeparator` |       `string \| undefined`       | Used to concatenate the last unrecognized key in message (optional, defaults to `" and "`). Set to `undefined` to disable.                                                                                             |
+| `wrapUnrecognizedKeysInQuote`   |             `boolean`             | Indicates whether to wrap unrecognized keys in quotes (optional, defaults to `true`). Note that this only applies to string keys.                                                                                      |
+| `dateLocalization`              | `boolean \| Intl.LocalesArgument` | Indicates whether to localize date values (optional, defaults to `true`). If set to `true`, it will use the default locale of the environment. You can also pass `Intl.LocalesArgument` to specify a custom locale.    |
+| `numberLocalization`            | `boolean \| Intl.LocalesArgument` | Indicates whether to localize numeric values (optional, defaults to `true`). If set to `true`, it will use the default locale of the environment. You can also pass `Intl.LocalesArgument` to specify a custom locale. |
 
 #### Example
 
 ```typescript
+import { z as zod } from 'zod';
 import { createErrorMap } from 'zod-validation-error';
 
-const errorMap = createErrorMap({
-  includePath: false,
-  maxAllowedValuesToDisplay: 3,
+zod.config({
+  customError: createErrorMap({
+    // default values are used when not specified
+    displayInvalidFormatDetails: true,
+  }),
 });
 ```
 
@@ -229,7 +228,7 @@ A [type guard](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#usi
 #### Example
 
 ```typescript
-import { z as zod } from 'zod/v4';
+import { z as zod } from 'zod';
 import { ValidationError, isValidationError } from 'zod-validation-error';
 
 const err = new ValidationError('foobar');
@@ -276,7 +275,7 @@ _Why do we need heuristics since we can use a simple `instanceof` comparison?_ B
 #### Example
 
 ```typescript
-import { z as zod } from 'zod/v4';
+import { z as zod } from 'zod';
 import { ValidationError, isZodErrorLike } from 'zod-validation-error';
 
 const zodValidationErr = new ValidationError('foobar');
@@ -313,7 +312,7 @@ _What is the difference between `fromError` and `fromZodError`?_ The `fromError`
 
 #### Notes
 
-Alternatively, you may pass [createMessageBuilder options](#createMessageBuilder) directly as `options`. These will be used as arguments to create the `MessageBuilder` instance internally.
+Alternatively, you may pass [createMessageBuilder options](#createmessagebuilder-options) directly as `options`. These will be used as arguments to create the `MessageBuilder` instance internally.
 
 ### fromZodIssue
 
@@ -327,7 +326,7 @@ Converts a single zod issue to `ValidationError`.
 
 #### Notes
 
-Alternatively, you may pass [createMessageBuilder options](#createMessageBuilder) directly as `options`. These will be used as arguments to create the `MessageBuilder` instance internally.
+Alternatively, you may pass [createMessageBuilder options](#createmessagebuilder-options) directly as `options`. These will be used as arguments to create the `MessageBuilder` instance internally.
 
 ### fromZodError
 
@@ -343,7 +342,7 @@ _Why is the difference between `ZodError` and `ZodIssue`?_ A `ZodError` is a col
 
 #### Notes
 
-Alternatively, you may pass [createMessageBuilder options](#createMessageBuilder) directly as `options`. These will be used as arguments to create the `MessageBuilder` instance internally.
+Alternatively, you may pass [createMessageBuilder options](#createmessagebuilder-optionscreateMessageBuilder) directly as `options`. These will be used as arguments to create the `MessageBuilder` instance internally.
 
 ### toValidationError
 
@@ -357,7 +356,7 @@ toValidationError(options) => (zodError) => ValidationError
 
 ```typescript
 import * as Either from 'fp-ts/Either';
-import { z as zod } from 'zod/v4';
+import { z as zod } from 'zod';
 import { toValidationError, ValidationError } from 'zod-validation-error';
 
 // create zod schema
@@ -383,12 +382,22 @@ export function parse(
 
 While both libraries aim to provide a human-readable string representation of a zod error, they differ in several ways...
 
-1. **End-user focus**: zod-validation-error provides opinionated, user-friendly error messages designed to be displayed directly to end-users in forms or API responses, whereas Zod's native error handling seem more developer-focused.
+1. **End-user focus**: zod-validation-error provides opinionated, user-friendly error messages designed to be displayed directly to end-users in forms or API responses.
 1. **Customization options**: zod-validation-error offers extensive configuration for message formatting, such as controlling path inclusion, allowed values display, localization, and more.
 1. **Error handling**: zod-validation-error maintains the original error details while providing a clean, consistent interface through the ValidationError class.
 1. **Integration flexibility**: Beyond just formatting, zod-validation-error provides utility functions for error detection and conversion that work well in various architectural patterns, e.g. functional programming.
 
 Disclaimer: as per this [comment](https://github.com/causaly/zod-validation-error/issues/455#issuecomment-2811895152), we have no intention to antagonize zod. In fact, we are happy to decommission this module assuming it's in the best interest of the community. As of now, it seems that there's room for both `zod-validation-error` and `prettifyError`, also based on Colin McDonnell's [response](https://github.com/causaly/zod-validation-error/issues/455#issuecomment-2814466019).
+
+### Do I need to use `zod-validation-error`'s error map?
+
+No, you can use zod's native error map if you prefer. However, we recommend using `zod-validation-error`'s error map for better user-friendly messages.
+
+You may also use your own custom error map if you have specific requirements, e.g. internationalization.
+
+### Where can I see how `zod-validation-error`'s error map formatting works?
+
+The easiest way to understand how `zod-validation-error`'s error map works is to look at the [tests](./lib/v4/errorMap/errorMap.test.ts). They cover various scenarios and demonstrate how the error map formats issues into user-friendly messages.
 
 ### How to distinguish between errors
 
@@ -452,7 +461,7 @@ Zod supports customizing error messages by providing a custom "error map". You m
 If all you need is to produce user-friendly error messages you may use the `customError` property.
 
 ```typescript
-import { z as zod } from 'zod/v4';
+import { z as zod } from 'zod';
 import { createErrorMap } from 'zod-validation-error';
 
 zod.config({
@@ -471,7 +480,7 @@ Yes, `zod-validation-error` supports CommonJS out-of-the-box. All you need to do
 #### Example
 
 ```typescript
-const { ValidationError } = require('zod-validation-error/v4');
+const { ValidationError } = require('zod-validation-error');
 ```
 
 ## Contribute
