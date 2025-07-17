@@ -8,7 +8,7 @@ Wrap zod validation errors in user-friendly readable messages.
 
 - User-friendly readable error messages with extensive configuration options;
 - Preserves original error details accessible via `error.details`;
-- Provides a custom error map for improved message formatting;
+- Provides a custom error map for better user-friendly messages;
 - Supports both Zod v3 and v4.
 
 **_Note:_** This version of `zod-validation-error` works with zod v4. If you are looking for zod v3 support, please refer to the [v3 documentation](./README.v3.md)
@@ -110,7 +110,7 @@ Validation error: Number must be greater than 0 at "id"; Invalid email at "email
 
 ### ValidationError
 
-Main `ValidationError` class, extending the native JavaScript `Error`.
+Main `ValidationError` class, extending JavaScript's native `Error`.
 
 #### Arguments
 
