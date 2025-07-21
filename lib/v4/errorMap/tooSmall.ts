@@ -22,8 +22,8 @@ export function parseTooSmallIssue(
       return {
         type: issue.code,
         path: issue.path,
-        message: `number must be greater ${
-          issue.inclusive ? 'or equal to' : 'than'
+        message: `number must be greater than${
+          issue.inclusive ? ' or equal to' : ''
         } ${minValueStr}`,
       };
     }
@@ -68,8 +68,8 @@ export function parseTooSmallIssue(
       return {
         type: issue.code,
         path: issue.path,
-        message: `value must be greater ${
-          issue.inclusive ? 'or equal to' : 'than'
+        message: `value must be greater than${
+          issue.inclusive ? ' or equal to' : ''
         } ${minValueStr}`,
       };
   }

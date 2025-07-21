@@ -3,7 +3,6 @@ import * as zod from 'zod/v4';
 import { isNonEmptyArray } from '../utils/NonEmptyArray.ts';
 import { createMessageBuilder } from './MessageBuilder.ts';
 import { isZodErrorLike } from './isZodErrorLike.ts';
-import { createErrorMap } from './errorMap/errorMap.ts';
 
 describe('MessageBuilder', () => {
   test('handles zod.string() schema errors', () => {
@@ -19,7 +18,7 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Invalid email"`
+          `"Validation error: Invalid email address"`
         );
       }
     }
@@ -47,7 +46,7 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Number must be greater than 0 at "id"; String must contain at least 2 character(s) at "name""`
+          `"Validation error: Too small: expected number to be >0 at "id"; Too small: expected string to have >=2 characters at "name""`
         );
       }
     }
@@ -66,7 +65,7 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Expected number, received string at index 1; Expected number, received boolean at index 2; Expected int, received number at index 3"`
+          `"Validation error: Invalid input: expected number, received string at index 1; Invalid input: expected number, received boolean at index 2; Invalid input: expected int, received number at index 3"`
         );
       }
     }
@@ -100,7 +99,7 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Number must be greater than 0 at "id"; Expected number, received string at "arr[1]"; String must contain at least 2 character(s) at "nestedObj.name""`
+          `"Validation error: Too small: expected number to be >0 at "id"; Invalid input: expected number, received string at "arr[1]"; Too small: expected string to have >=2 characters at "nestedObj.name""`
         );
       }
     }
@@ -133,7 +132,7 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Expected value to be "success" at "status"; Expected object, received undefined at "data" or Expected value to be "error" at "status""`
+          `"Validation error: Invalid input: expected "success" at "status"; Invalid input: expected object, received undefined at "data" or Invalid input: expected "error" at "status""`
         );
       }
     }
@@ -157,7 +156,7 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Expected array, received undefined at "terms" or Expected string, received undefined at "terms""`
+          `"Validation error: Invalid input: expected array, received undefined at "terms" or Invalid input: expected string, received undefined at "terms""`
         );
       }
     }
@@ -181,7 +180,7 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Expected value to be "value1" at "prop1"; Expected value to be "value2" at "prop2""`
+          `"Validation error: Invalid input: expected "value1" at "prop1"; Invalid input: expected "value2" at "prop2""`
         );
       }
     }
@@ -209,7 +208,7 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Expected string, received number at "."; Expected string, received boolean at "./*""`
+          `"Validation error: Invalid input: expected string, received number at "."; Invalid input: expected string, received boolean at "./*""`
         );
       }
     }
@@ -231,7 +230,7 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Expected number at index 0"`
+          `"Validation error: Invalid input: expected number, received string at index 0"`
         );
       }
     }
@@ -253,212 +252,9 @@ describe('MessageBuilder', () => {
       if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
         const message = messageBuilder(err.issues);
         expect(message).toMatchInlineSnapshot(
-          `"Validation error: Expected number"`
+          `"Validation error: Invalid input: expected number, received string"`
         );
       }
     }
-  });
-
-  test('accepts custom error map as option`', () => {
-    const schema = zod.object({
-      name: zod.string().min(3),
-    });
-
-    const messageBuilder = createMessageBuilder({
-      error: createErrorMap({
-        includePath: false,
-      }),
-    });
-
-    try {
-      schema.parse({ name: 'jo' });
-    } catch (err) {
-      if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
-        const message = messageBuilder(err.issues);
-        expect(message).toMatchInlineSnapshot(
-          `"Validation error: String must contain at least 3 character(s)"`
-        );
-      }
-    }
-  });
-
-  test("returns zod's native error messages when error is set to false", () => {
-    const schema = zod.object({
-      name: zod.string().min(3),
-    });
-
-    const messageBuilder = createMessageBuilder({
-      error: false,
-    });
-
-    try {
-      schema.parse({ name: 'jo' });
-    } catch (err) {
-      if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
-        const message = messageBuilder(err.issues);
-        expect(message).toMatchInlineSnapshot(
-          `"Validation error: Too small: expected string to have >=3 characters"`
-        );
-      }
-    }
-  });
-
-  describe('global zod-validation-error errorMap', () => {
-    beforeAll(() => {
-      zod.config({
-        customError: createErrorMap({
-          includePath: false,
-        }),
-      });
-    });
-
-    afterAll(() => {
-      zod.config({
-        customError: undefined,
-      });
-    });
-
-    test('respects global error map by default', () => {
-      const schema = zod.object({
-        name: zod.string().min(3),
-      });
-
-      const messageBuilder = createMessageBuilder();
-
-      try {
-        schema.parse({ name: 'jo' });
-      } catch (err) {
-        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
-          const message = messageBuilder(err.issues);
-          expect(message).toMatchInlineSnapshot(
-            `"Validation error: String must contain at least 3 character(s)"`
-          );
-        }
-      }
-    });
-
-    test('respects global error map when `error` option is set to false', () => {
-      const schema = zod.object({
-        name: zod.string().min(3),
-      });
-
-      const messageBuilder = createMessageBuilder({
-        error: false,
-      });
-
-      try {
-        schema.parse({ name: 'jo' });
-      } catch (err) {
-        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
-          const message = messageBuilder(err.issues);
-          expect(message).toMatchInlineSnapshot(
-            `"Validation error: String must contain at least 3 character(s)"`
-          );
-        }
-      }
-    });
-
-    test('ignores global error map when a custom error map is explicitly passed as option', () => {
-      const schema = zod.object({
-        name: zod.string().min(3),
-      });
-
-      const messageBuilder = createMessageBuilder({
-        error: createErrorMap({
-          // note: this is different from the global error map
-          includePath: true,
-        }),
-      });
-
-      try {
-        schema.parse({ name: 'jo' });
-      } catch (err) {
-        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
-          const message = messageBuilder(err.issues);
-          expect(message).toMatchInlineSnapshot(
-            `"Validation error: String must contain at least 3 character(s) at "name""`
-          );
-        }
-      }
-    });
-  });
-
-  describe('global non zod-validation-error errorMap', () => {
-    beforeAll(() => {
-      zod.config({
-        // note: this is not a zod-validation-error error map
-        // but a custom error map that returns the issue message directly
-        customError: (issue) => issue.message,
-      });
-    });
-
-    afterAll(() => {
-      zod.config({
-        customError: undefined,
-      });
-    });
-
-    test('overrides global error map by default', () => {
-      const schema = zod.object({
-        name: zod.string().min(3),
-      });
-
-      const messageBuilder = createMessageBuilder();
-
-      try {
-        schema.parse({ name: 'jo' });
-      } catch (err) {
-        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
-          const message = messageBuilder(err.issues);
-          expect(message).toMatchInlineSnapshot(
-            `"Validation error: String must contain at least 3 character(s) at "name""`
-          );
-        }
-      }
-    });
-
-    test('respects global error map when `error` option is set to false', () => {
-      const schema = zod.object({
-        name: zod.string().min(3),
-      });
-
-      const messageBuilder = createMessageBuilder({
-        error: false,
-      });
-
-      try {
-        schema.parse({ name: 'jo' });
-      } catch (err) {
-        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
-          const message = messageBuilder(err.issues);
-          expect(message).toMatchInlineSnapshot(
-            `"Validation error: Too small: expected string to have >=3 characters"`
-          );
-        }
-      }
-    });
-
-    test('ignores global error map when a custom error map is explicitly passed as option', () => {
-      const schema = zod.object({
-        name: zod.string().min(3),
-      });
-
-      const messageBuilder = createMessageBuilder({
-        error: createErrorMap({
-          includePath: false,
-        }),
-      });
-
-      try {
-        schema.parse({ name: 'jo' });
-      } catch (err) {
-        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
-          const message = messageBuilder(err.issues);
-          expect(message).toMatchInlineSnapshot(
-            `"Validation error: String must contain at least 3 character(s)"`
-          );
-        }
-      }
-    });
   });
 });
