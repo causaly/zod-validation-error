@@ -22,8 +22,8 @@ export function parseTooBigIssue(
       return {
         type: issue.code,
         path: issue.path,
-        message: `number must be less ${
-          issue.inclusive ? 'or equal to' : 'than'
+        message: `number must be less than${
+          issue.inclusive ? ' or equal to' : ''
         } ${maxValueStr}`,
       };
     }
@@ -68,8 +68,8 @@ export function parseTooBigIssue(
       return {
         type: issue.code,
         path: issue.path,
-        message: `value must be less ${
-          issue.inclusive ? 'or equal to' : 'than'
+        message: `value must be less than${
+          issue.inclusive ? ' or equal to' : ''
         } ${maxValueStr}`,
       };
   }

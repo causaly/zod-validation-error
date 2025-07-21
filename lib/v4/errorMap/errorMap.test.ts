@@ -673,7 +673,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"number must be less or equal to 10"`
+        `"number must be less than or equal to 10"`
       );
     });
 
@@ -749,7 +749,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"number must be less or equal to 100"`
+        `"number must be less than or equal to 100"`
       );
     });
 
@@ -790,7 +790,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"number must be greater or equal to 10"`
+        `"number must be greater than or equal to 10"`
       );
     });
 
@@ -859,7 +859,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"number must be greater or equal to 100"`
+        `"number must be greater than or equal to 100"`
       );
     });
   });
@@ -1017,7 +1017,7 @@ describe('errorMap', () => {
               {
                 "code": "too_small",
                 "inclusive": true,
-                "message": "number must be greater or equal to 1",
+                "message": "number must be greater than or equal to 1",
                 "minimum": 1,
                 "origin": "number",
                 "path": [
