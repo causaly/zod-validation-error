@@ -7,7 +7,6 @@ export function parseCustomIssue(
   return {
     type: issue.code,
     path: issue.path,
-    // FIXME
     message: issue.message ?? '',
   };
 }
