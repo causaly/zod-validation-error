@@ -3,7 +3,7 @@ import type * as zod from 'zod/v4/core';
 import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 
 export function parseUnrecognizedKeysIssue(
-  issue: zod.$ZodIssueUnrecognizedKeys,
+  issue: zod.$ZodRawIssue<zod.$ZodIssueUnrecognizedKeys>,
   options: Pick<
     ErrorMapOptions,
     | 'unrecognizedKeysSeparator'
