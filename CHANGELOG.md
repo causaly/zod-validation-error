@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 4.0.1-beta.0
+
+### Patch Changes
+
+- 3bf9e78: Separate the concerns of error mapping VS message building
+
 ## 4.0.0
 
 ### Major Changes
