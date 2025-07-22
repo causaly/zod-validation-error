@@ -1034,5 +1034,39 @@ describe('errorMap', () => {
         }
       `);
     });
+
+    test('primitive string|null', () => {
+      const schema = zod.union([zod.string(), zod.null()]);
+
+      const result = schema.safeParse(10);
+      if (result.success) throw new Error('Expected failure');
+
+      // check that underlying issues are formatted with our custom error map
+      expect(result.error.issues[0]).toMatchInlineSnapshot(`
+        {
+          "code": "invalid_union",
+          "errors": [
+            [
+              {
+                "code": "invalid_type",
+                "expected": "string",
+                "message": "expected string, received number",
+                "path": [],
+              },
+            ],
+            [
+              {
+                "code": "invalid_type",
+                "expected": "null",
+                "message": "expected null, received number",
+                "path": [],
+              },
+            ],
+          ],
+          "message": "Invalid input",
+          "path": [],
+        }
+      `);
+    });
   });
 });
