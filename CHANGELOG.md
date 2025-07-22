@@ -1,17 +1,12 @@
 # @causaly/zod-validation-error
 
-## 4.0.0-beta.2
-
-### Patch Changes
-
-- b979890: Add support for zod v4 as a peer dependency.
-
-## 4.0.0-beta.1
+## 4.0.0
 
 ### Major Changes
 
 - 9be31d2: Make v4 the default export of zod-validation-error
-- 3f77fd9: Default opt-in to error formatting, without needing to specify a custom error map. The previous functionality was default opt-out. Now you need to explicitly pass `error: false` to opt-out.
+- b979890: Add support for zod v4 as a peer dependency.
+- 3bf9e78: Update the API to separate between error mapping and message building.
 
 ## 3.5.2
 
