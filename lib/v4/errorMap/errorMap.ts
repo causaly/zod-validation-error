@@ -16,7 +16,6 @@ import type {
 } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
-
 type IssueParsers = {
   [IssueCode in IssueType]: (
     issue: zod.$ZodRawIssue<Extract<zod.$ZodIssue, { code: IssueCode }>>,
