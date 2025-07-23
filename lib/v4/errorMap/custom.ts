@@ -7,6 +7,6 @@ export function parseCustomIssue(
   return {
     type: issue.code,
     path: issue.path,
-    message: issue.message ?? '',
+    message: issue.message ?? 'Invalid input',
   };
 }

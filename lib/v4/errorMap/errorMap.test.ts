@@ -966,7 +966,7 @@ describe('errorMap', () => {
               },
             ],
           ],
-          "message": "",
+          "message": "Invalid input",
           "path": [
             "input",
           ],
@@ -1026,7 +1026,7 @@ describe('errorMap', () => {
               },
             ],
           ],
-          "message": "",
+          "message": "Invalid input",
           "path": [
             "foo",
             "bar",
@@ -1063,7 +1063,7 @@ describe('errorMap', () => {
               },
             ],
           ],
-          "message": "",
+          "message": "Invalid input",
           "path": [],
         }
       `);
