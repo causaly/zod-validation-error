@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 4.0.1
+
+### Patch Changes
+
+- f8b7c44: Handle no path property in "invalid_union" by @MiaInturi
+
 ## 4.0.0
 
 ### Major Changes
