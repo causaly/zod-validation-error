@@ -4,7 +4,7 @@ import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
 export function parseInvalidValueIssue(
-  issue: zod.$ZodIssueInvalidValue,
+  issue: zod.$ZodRawIssue<zod.$ZodIssueInvalidValue>,
   options: Pick<
     ErrorMapOptions,
     | 'allowedValuesSeparator'

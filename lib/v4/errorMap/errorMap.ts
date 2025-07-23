@@ -16,11 +16,14 @@ import type {
 } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
-const issueParsers: Record<
-  IssueType,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (issue: any, options: ErrorMapOptions) => AbstractSyntaxTree
-> = {
+type IssueParsers = {
+  [IssueCode in IssueType]: (
+    issue: zod.$ZodRawIssue<Extract<zod.$ZodIssue, { code: IssueCode }>>,
+    options: ErrorMapOptions
+  ) => AbstractSyntaxTree;
+};
+
+const issueParsers: IssueParsers = {
   invalid_type: parseInvalidTypeIssue,
   too_big: parseTooBigIssue,
   too_small: parseTooSmallIssue,
@@ -30,8 +33,8 @@ const issueParsers: Record<
   not_multiple_of: parseNotMultipleOfIssue,
   unrecognized_keys: parseUnrecognizedKeysIssue,
   invalid_key: parseInvalidKeyIssue,
-  custom: parseInvalidUnionIssue,
-  invalid_union: parseCustomIssue,
+  custom: parseCustomIssue,
+  invalid_union: parseInvalidUnionIssue,
 };
 
 export const defaultErrorMapOptions = {
@@ -63,7 +66,10 @@ export function createErrorMap(
       return 'Not supported issue type';
     }
 
-    const parseFunc = issueParsers[issue.code];
+    const parseFunc = issueParsers[issue.code] as (
+      iss: typeof issue,
+      opts: ErrorMapOptions
+    ) => AbstractSyntaxTree;
     const ast = parseFunc(issue, options);
     return ast.message;
   };

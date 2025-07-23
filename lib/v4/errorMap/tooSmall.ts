@@ -3,7 +3,7 @@ import type * as zod from 'zod/v4/core';
 import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 
 export function parseTooSmallIssue(
-  issue: zod.$ZodIssueTooSmall,
+  issue: zod.$ZodRawIssue<zod.$ZodIssueTooSmall>,
   options: Pick<ErrorMapOptions, 'dateLocalization' | 'numberLocalization'>
 ): AbstractSyntaxTree {
   const minValueStr =

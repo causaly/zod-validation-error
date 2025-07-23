@@ -3,7 +3,7 @@ import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
 export function parseTooBigIssue(
-  issue: zod.$ZodIssueTooBig,
+  issue: zod.$ZodRawIssue<zod.$ZodIssueTooBig>,
   options: Pick<ErrorMapOptions, 'dateLocalization' | 'numberLocalization'>
 ): AbstractSyntaxTree {
   const maxValueStr =

@@ -2,7 +2,7 @@ import type { AbstractSyntaxTree } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
 export function parseInvalidTypeIssue(
-  issue: zod.$ZodIssueInvalidType
+  issue: zod.$ZodRawIssue<zod.$ZodIssueInvalidType>
 ): AbstractSyntaxTree {
   let message = `expected ${issue.expected}`;
 
