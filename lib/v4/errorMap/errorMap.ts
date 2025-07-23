@@ -68,9 +68,9 @@ export function createErrorMap(
     }
 
     const parseFunc = issueParsers[issue.code] as (
-    iss: typeof issue,
-    opts: ErrorMapOptions
-  ) => AbstractSyntaxTree;;
+      iss: typeof issue,
+      opts: ErrorMapOptions
+    ) => AbstractSyntaxTree;
     const ast = parseFunc(issue, options);
     return ast.message;
   };
