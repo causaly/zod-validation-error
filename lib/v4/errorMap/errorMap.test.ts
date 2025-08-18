@@ -1001,35 +1001,15 @@ describe('errorMap', () => {
       // check that underlying issues are formatted with our custom error map
       expect(result.error.issues[0]).toMatchInlineSnapshot(`
         {
-          "code": "invalid_union",
-          "errors": [
-            [
-              {
-                "code": "invalid_value",
-                "message": "expected value to be false",
-                "path": [],
-                "values": [
-                  false,
-                ],
-              },
-            ],
-            [
-              {
-                "code": "too_small",
-                "inclusive": true,
-                "message": "number must be greater than or equal to 1",
-                "minimum": 1,
-                "origin": "number",
-                "path": [
-                  "baz",
-                ],
-              },
-            ],
-          ],
-          "message": "Invalid input",
+          "code": "too_small",
+          "inclusive": true,
+          "message": "number must be greater than or equal to 1",
+          "minimum": 1,
+          "origin": "number",
           "path": [
             "foo",
             "bar",
+            "baz",
           ],
         }
       `);
