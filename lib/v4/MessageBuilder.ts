@@ -54,7 +54,7 @@ function mapIssue(
   issue: zod.$ZodIssue,
   options: MessageBuilderOptions
 ): string {
-  if (issue.code === 'invalid_union') {
+  if (issue.code === 'invalid_union' && isNonEmptyArray(issue.errors)) {
     const individualMessages = issue.errors.map((issues) =>
       issues
         .map((subIssue) =>
