@@ -292,6 +292,59 @@ describe('MessageBuilder', () => {
     });
   });
 
+  describe('zod.discriminatedUnion', () => {
+    test('handles invalid input', () => {
+      const schema = zod.discriminatedUnion('type', [
+        zod.object({ type: zod.literal('a'), foo: zod.string() }),
+        zod.object({ type: zod.literal('b'), bar: zod.string() }),
+      ]);
+
+      const messageBuilder = createMessageBuilder({
+        includePath: true,
+      });
+
+      try {
+        schema.parse({});
+      } catch (err) {
+        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
+          const message = messageBuilder(err.issues);
+          expect(message).toMatchInlineSnapshot(
+            `"Validation error: Invalid input at "type""`
+          );
+        }
+      }
+    });
+
+    test('accepts custom error message', () => {
+      const schema = zod.discriminatedUnion(
+        'type',
+        [
+          zod.object({ type: zod.literal('a'), foo: zod.string() }),
+          zod.object({ type: zod.literal('b'), bar: zod.string() }),
+        ],
+        {
+          // custom error message
+          error: 'custom error message',
+        }
+      );
+
+      const messageBuilder = createMessageBuilder({
+        includePath: true,
+      });
+
+      try {
+        schema.parse({});
+      } catch (err) {
+        if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
+          const message = messageBuilder(err.issues);
+          expect(message).toMatchInlineSnapshot(
+            `"Validation error: Custom error message at "type""`
+          );
+        }
+      }
+    });
+  });
+
   describe('custom errorMap', () => {
     beforeAll(() => {
       zod.config({
