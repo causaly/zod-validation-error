@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 4.0.2
+
+### Patch Changes
+
+- 6fd928f: Improve handling for zod.discriminatedUnion errors.
+
 ## 4.0.1
 
 ### Patch Changes
