@@ -14,6 +14,8 @@ export type ErrorMapOptions = {
   numberLocalization: boolean | Intl.LocalesArgument;
   // Invalid format options
   displayInvalidFormatDetails: boolean;
+  // Report input type
+  reportInput: false | 'type' | 'typeAndValue';
   // Allowed values options
   allowedValuesSeparator: string;
   allowedValuesLastSeparator: string | undefined;
