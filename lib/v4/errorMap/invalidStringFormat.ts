@@ -1,131 +1,69 @@
-import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
+import { prependWithAOrAn } from '../../utils/prependWithAOrAn.ts';
+import { stringify } from '../../utils/stringify.ts';
 import type * as zod from 'zod/v4/core';
+import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 
 export function parseInvalidStringFormatIssue(
   issue: zod.$ZodRawIssue<zod.$ZodIssueInvalidStringFormat>,
-  options: Pick<ErrorMapOptions, 'displayInvalidFormatDetails'> = {
-    displayInvalidFormatDetails: false,
-  }
+  options: Pick<
+    ErrorMapOptions,
+    'displayInvalidFormatDetails' | 'reportInput' | 'numberLocalization'
+  >
 ): AbstractSyntaxTree {
+  let message = '';
+
   switch (issue.format) {
     case 'lowercase':
     case 'uppercase':
-      return {
-        type: issue.code,
-        path: issue.path,
-        message: `value must be in ${issue.format} format`,
-      };
+      message += `expected string to be in ${issue.format} format`;
+      break;
+    case 'starts_with': {
+      message += `expected string to start with "${issue.prefix}"`;
+      break;
+    }
+    case 'ends_with': {
+      message += `expected string to end with "${issue.suffix}"`;
+      break;
+    }
+    case 'includes': {
+      message += `expected string to include "${issue.includes}"`;
+      break;
+    }
+    case 'regex': {
+      message += 'expected string to match pattern';
+      if (options.displayInvalidFormatDetails) {
+        message += ` "${issue.pattern}"`;
+      }
+      break;
+    }
+    case 'jwt': {
+      message += 'expected string to be a jwt';
+      if (options.displayInvalidFormatDetails && issue.algorithm) {
+        message += `/${issue.algorithm}`;
+      }
+      message += ' token';
+      break;
+    }
+    case 'email': {
+      message += 'expected string to be an email address';
+      break;
+    }
     default: {
-      if (isZodIssueStringStartsWith(issue)) {
-        return parseStringStartsWith(issue);
-      }
-      if (isZodIssueStringEndsWith(issue)) {
-        return parseStringEndsWith(issue);
-      }
-      if (isZodIssueStringIncludes(issue)) {
-        return parseStringIncludes(issue);
-      }
-      if (isZodIssueStringInvalidRegex(issue)) {
-        return parseStringInvalidRegex(issue, options);
-      }
-      if (isZodIssueStringInvalidJWT(issue)) {
-        return parseStringInvalidJWT(issue, options);
-      }
-
-      return {
-        type: issue.code,
-        path: issue.path,
-        message: `invalid ${issue.format}`,
-      };
+      message += `expected string to be ${prependWithAOrAn(issue.format)}`;
     }
   }
-}
-function isZodIssueStringStartsWith(
-  issue: zod.$ZodRawIssue<zod.$ZodIssueInvalidStringFormat>
-): issue is zod.$ZodRawIssue<zod.$ZodIssueStringStartsWith> {
-  return issue.format === 'starts_with';
-}
 
-function parseStringStartsWith(
-  issue: zod.$ZodRawIssue<zod.$ZodIssueStringStartsWith>
-): AbstractSyntaxTree {
-  return {
-    type: issue.code,
-    path: issue.path,
-    message: `value must start with "${issue.prefix}"`,
-  };
-}
-
-function isZodIssueStringEndsWith(
-  issue: zod.$ZodRawIssue<zod.$ZodIssueInvalidStringFormat>
-): issue is zod.$ZodRawIssue<zod.$ZodIssueStringEndsWith> {
-  return issue.format === 'ends_with';
-}
-function parseStringEndsWith(
-  issue: zod.$ZodRawIssue<zod.$ZodIssueStringEndsWith>
-): AbstractSyntaxTree {
-  return {
-    type: issue.code,
-    path: issue.path,
-    message: `value must end with "${issue.suffix}"`,
-  };
-}
-
-function isZodIssueStringIncludes(
-  issue: zod.$ZodRawIssue<zod.$ZodIssueInvalidStringFormat>
-): issue is zod.$ZodRawIssue<zod.$ZodIssueStringIncludes> {
-  return issue.format === 'includes';
-}
-function parseStringIncludes(
-  issue: zod.$ZodRawIssue<zod.$ZodIssueStringIncludes>
-): AbstractSyntaxTree {
-  return {
-    type: issue.code,
-    path: issue.path,
-    message: `value must include "${issue.includes}"`,
-  };
-}
-
-function isZodIssueStringInvalidRegex(
-  issue: zod.$ZodRawIssue<zod.$ZodIssueInvalidStringFormat>
-): issue is zod.$ZodRawIssue<zod.$ZodIssueStringInvalidRegex> {
-  return issue.format === 'regex';
-}
-function parseStringInvalidRegex(
-  issue: zod.$ZodRawIssue<zod.$ZodIssueStringInvalidRegex>,
-  options: Pick<ErrorMapOptions, 'displayInvalidFormatDetails'> = {
-    displayInvalidFormatDetails: false,
-  }
-): AbstractSyntaxTree {
-  let message = 'value must match pattern';
-  if (options.displayInvalidFormatDetails) {
-    message += ` "${issue.pattern}"`;
+  if ('input' in issue && options.reportInput === 'typeAndValue') {
+    const valueStr = stringify(issue.input, {
+      wrapStringValueInQuote: true,
+      localization: options.numberLocalization,
+    });
+    message += `, received ${valueStr}`;
   }
 
   return {
     type: issue.code,
     path: issue.path,
     message,
-  };
-}
-
-function isZodIssueStringInvalidJWT(
-  issue: zod.$ZodRawIssue<zod.$ZodIssueInvalidStringFormat>
-): issue is zod.$ZodRawIssue<zod.$ZodIssueStringInvalidJWT> {
-  return issue.format === 'jwt';
-}
-function parseStringInvalidJWT(
-  issue: zod.$ZodRawIssue<zod.$ZodIssueStringInvalidJWT>,
-  options: Pick<ErrorMapOptions, 'displayInvalidFormatDetails'> = {
-    displayInvalidFormatDetails: false,
-  }
-): AbstractSyntaxTree {
-  return {
-    type: issue.code,
-    path: issue.path,
-    message:
-      options.displayInvalidFormatDetails && issue.algorithm
-        ? `invalid jwt/${issue.algorithm}`
-        : `invalid jwt`,
   };
 }

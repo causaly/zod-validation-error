@@ -1,10 +1,14 @@
+import { isPrimitive } from '../../utils/isPrimitive.ts';
 import { stringify } from '../../utils/stringify.ts';
 import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
 export function parseTooBigIssue(
   issue: zod.$ZodRawIssue<zod.$ZodIssueTooBig>,
-  options: Pick<ErrorMapOptions, 'dateLocalization' | 'numberLocalization'>
+  options: Pick<
+    ErrorMapOptions,
+    'dateLocalization' | 'numberLocalization' | 'reportInput'
+  >
 ): AbstractSyntaxTree {
   const maxValueStr =
     issue.origin === 'date'
@@ -15,62 +19,66 @@ export function parseTooBigIssue(
           localization: options.numberLocalization,
         });
 
+  let message = '';
+
   switch (issue.origin) {
     case 'number':
     case 'int':
     case 'bigint': {
-      return {
-        type: issue.code,
-        path: issue.path,
-        message: `number must be less than${
-          issue.inclusive ? ' or equal to' : ''
-        } ${maxValueStr}`,
-      };
+      message += `expected number to be less than${
+        issue.inclusive ? ' or equal to' : ''
+      } ${maxValueStr}`;
+      break;
     }
     case 'string': {
-      return {
-        type: issue.code,
-        path: issue.path,
-        message: `string must contain at most ${maxValueStr} character(s)`,
-      };
+      message += `expected string to contain at most ${maxValueStr} character(s)`;
+      break;
     }
     case 'date': {
-      return {
-        type: issue.code,
-        path: issue.path,
-        message: `date must be ${
-          issue.inclusive ? 'prior or equal to' : 'prior to'
-        } "${maxValueStr}"`,
-      };
+      message += `expected date to be prior ${
+        issue.inclusive ? 'or equal to' : 'to'
+      } "${maxValueStr}"`;
+      break;
     }
     case 'array': {
-      return {
-        type: issue.code,
-        path: issue.path,
-        message: `array must contain at most ${maxValueStr} item(s)`,
-      };
+      message += `expected array to contain at most ${maxValueStr} item(s)`;
+      break;
     }
     case 'set': {
-      return {
-        type: issue.code,
-        path: issue.path,
-        message: `set must contain at most ${maxValueStr} item(s)`,
-      };
+      message += `expected set to contain at most ${maxValueStr} item(s)`;
+      break;
     }
     case 'file': {
-      return {
-        type: issue.code,
-        path: issue.path,
-        message: `file must not exceed ${maxValueStr} byte(s) in size`,
-      };
+      message += `expected file to not exceed ${maxValueStr} byte(s) in size`;
+      break;
     }
-    default:
-      return {
-        type: issue.code,
-        path: issue.path,
-        message: `value must be less than${
-          issue.inclusive ? ' or equal to' : ''
-        } ${maxValueStr}`,
-      };
+    default: {
+      message += `expected value to be less than${
+        issue.inclusive ? ' or equal to' : ''
+      } ${maxValueStr}`;
+    }
   }
+
+  if ('input' in issue && options.reportInput === 'typeAndValue') {
+    const value = issue.input;
+
+    if (isPrimitive(value)) {
+      const valueStr = stringify(value, {
+        wrapStringValueInQuote: true,
+        localization: options.numberLocalization,
+      });
+      message += `, received ${valueStr}`;
+    } else if (value instanceof Date) {
+      const valueStr = stringify(value, {
+        localization: options.dateLocalization,
+      });
+      message += `, received ${valueStr}`;
+    }
+  }
+
+  return {
+    type: issue.code,
+    path: issue.path,
+    message,
+  };
 }
