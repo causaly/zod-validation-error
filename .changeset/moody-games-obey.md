@@ -1,5 +1,6 @@
 ---
-'zod-validation-error': minor
+'zod-validation-error': major
 ---
 
-Add input value to the error message based on the reportInput option.
+- Conditionally report value in error message based on `reportInput` option.
+- Error messages have changed to consistently follow the `expected <expectation>, received <realization>` format (breaking change).
