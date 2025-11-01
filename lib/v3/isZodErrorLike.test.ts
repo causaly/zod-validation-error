@@ -1,4 +1,4 @@
-import * as zod from 'zod/v3';
+import * as zod from 'zod';
 import { isZodErrorLike } from './isZodErrorLike.ts';
 
 class CustomZodError extends Error {

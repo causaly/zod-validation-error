@@ -7,7 +7,7 @@ import {
   type MessageBuilder,
 } from './MessageBuilder.ts';
 import { ValidationError } from './ValidationError.ts';
-import type * as zod from 'zod/v3';
+import type * as zod from 'zod';
 
 export type ZodError = zod.ZodError;
 

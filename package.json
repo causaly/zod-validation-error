@@ -1,6 +1,6 @@
 {
   "name": "zod-validation-error",
-  "version": "4.0.2",
+  "version": "3.5.3",
   "description": "Wrap zod validation errors in user-friendly readable messages",
   "keywords": [
     "zod",
@@ -33,24 +33,14 @@
       "url": "https://github.com/nikoskalogridis"
     }
   ],
-  "main": "./v4/index.js",
-  "module": "./v4/index.mjs",
-  "types": "./v4/index.d.ts",
+  "main": "./v3/index.js",
+  "module": "./v3/index.mjs",
+  "types": "./v3/index.d.ts",
   "exports": {
     ".": {
-      "types": "./v4/index.d.ts",
-      "require": "./v4/index.js",
-      "import": "./v4/index.mjs"
-    },
-    "./v3": {
       "types": "./v3/index.d.ts",
       "require": "./v3/index.js",
       "import": "./v3/index.mjs"
-    },
-    "./v4": {
-      "types": "./v4/index.d.ts",
-      "require": "./v4/index.js",
-      "import": "./v4/index.mjs"
     }
   },
   "files": [
@@ -100,9 +90,9 @@
     "tsup": "^8.0.2",
     "typescript": "^5.1.6",
     "vitest": "^3.1.2",
-    "zod": "^4.0.2"
+    "zod": "^3.24.4"
   },
   "peerDependencies": {
-    "zod": "^3.25.0 || ^4.0.0"
+    "zod": "^3.24.4"
   }
 }

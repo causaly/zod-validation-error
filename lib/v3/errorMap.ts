@@ -1,5 +1,5 @@
 import { fromZodIssue } from './fromZodIssue.ts';
-import type * as zod from 'zod/v3';
+import type * as zod from 'zod';
 
 export const errorMap: zod.ZodErrorMap = (issue, ctx) => {
   const error = fromZodIssue({
