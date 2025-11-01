@@ -1,14 +1,36 @@
-import type { AbstractSyntaxTree } from './types.ts';
+import { isPrimitive } from '../../utils/isPrimitive.ts';
+import { stringify } from '../../utils/stringify.ts';
+import type { AbstractSyntaxTree, ErrorMapOptions } from './types.ts';
 import type * as zod from 'zod/v4/core';
 
 export function parseInvalidTypeIssue(
-  issue: zod.$ZodRawIssue<zod.$ZodIssueInvalidType>
+  issue: zod.$ZodRawIssue<zod.$ZodIssueInvalidType>,
+  options: Pick<
+    ErrorMapOptions,
+    'reportInput' | 'numberLocalization' | 'dateLocalization'
+  >
 ): AbstractSyntaxTree {
   let message = `expected ${issue.expected}`;
 
   // note: it's possible that issue.input is not defined
-  if ('input' in issue) {
-    message += `, received ${getTypeName(issue.input)}`;
+  if ('input' in issue && options.reportInput !== false) {
+    const value = issue.input;
+    message += `, received ${getTypeName(value)}`;
+
+    if (options.reportInput === 'typeAndValue') {
+      if (isPrimitive(value)) {
+        const valueStr = stringify(value, {
+          wrapStringValueInQuote: true,
+          localization: options.numberLocalization,
+        });
+        message += ` (${valueStr})`;
+      } else if (value instanceof Date) {
+        const valueStr = stringify(value, {
+          localization: options.dateLocalization,
+        });
+        message += ` (${valueStr})`;
+      }
+    }
   }
 
   return {

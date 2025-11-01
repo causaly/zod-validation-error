@@ -38,6 +38,7 @@ const issueParsers: IssueParsers = {
 };
 
 export const defaultErrorMapOptions = {
+  reportInput: 'type',
   displayInvalidFormatDetails: false,
   allowedValuesSeparator: ', ',
   allowedValuesLastSeparator: ' or ',
