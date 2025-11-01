@@ -26,7 +26,7 @@ describe('errorMap', () => {
       }
 
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a date"`
+        `"expected an ISO date"`
       );
     });
 
@@ -37,7 +37,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-email' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be an email address"`
+        `"expected an email address"`
       );
     });
 
@@ -48,7 +48,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-url' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be an url"`
+        `"expected a URL"`
       );
     });
 
@@ -59,7 +59,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-emoji' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be an emoji"`
+        `"expected an emoji"`
       );
     });
 
@@ -70,7 +70,18 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-uuid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be an uuid"`
+        `"expected a UUID"`
+      );
+    });
+
+    test('uuid v7', () => {
+      const schema = zod.object({
+        input: zod.uuidv7(),
+      });
+      const result = schema.safeParse({ input: 'not-uuid-v7' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected a UUID v7"`
       );
     });
 
@@ -81,7 +92,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-guid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a guid"`
+        `"expected a GUID"`
       );
     });
 
@@ -92,7 +103,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-nanoid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a nanoid"`
+        `"expected a nanoid"`
       );
     });
 
@@ -103,7 +114,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-cuid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a cuid"`
+        `"expected a CUID"`
       );
     });
 
@@ -114,7 +125,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-cuid2' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a cuid2"`
+        `"expected a CUID2"`
       );
     });
 
@@ -125,7 +136,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-ulid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be an ulid"`
+        `"expected a ULID"`
       );
     });
 
@@ -136,7 +147,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-an-xid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a xid"`
+        `"expected a XID"`
       );
     });
 
@@ -147,7 +158,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-ksuid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a ksuid"`
+        `"expected a KSUID"`
       );
     });
 
@@ -158,7 +169,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-datetime' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a datetime"`
+        `"expected an ISO datetime"`
       );
     });
 
@@ -169,7 +180,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-time' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a time"`
+        `"expected an ISO time"`
       );
     });
 
@@ -180,7 +191,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-duration' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a duration"`
+        `"expected an ISO duration"`
       );
     });
 
@@ -191,7 +202,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-an-ipv4' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be an ipv4"`
+        `"expected an IPv4 address"`
       );
     });
 
@@ -202,7 +213,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-an-ipv6' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be an ipv6"`
+        `"expected an IPv6 address"`
       );
     });
 
@@ -213,7 +224,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-cidrv4' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a cidrv4"`
+        `"expected a CIDRv4 address range"`
       );
     });
 
@@ -224,7 +235,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-cidrv6' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a cidrv6"`
+        `"expected a CIDRv6 address range"`
       );
     });
 
@@ -235,7 +246,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-base64' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a base64"`
+        `"expected a base64 encoded string"`
       );
     });
 
@@ -246,7 +257,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-base64url' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a base64url"`
+        `"expected a base64url encoded string"`
       );
     });
 
@@ -257,7 +268,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-e164' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be an e164"`
+        `"expected an E.164 formatted phone number"`
       );
     });
 
@@ -268,7 +279,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'NOTLOWERCASE' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be in lowercase format"`
+        `"expected lowercase string"`
       );
     });
 
@@ -279,7 +290,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'notuppercase' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be in uppercase format"`
+        `"expected uppercase string"`
       );
     });
 
@@ -318,28 +329,27 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-jwt' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected string to be a jwt token"`
+        `"expected a jwt token"`
       );
     });
 
     // TODO: Open issue to fix this in zod v4
     // the type expectation for issue.alg is not correct
-    // test('jwt format with `displayInvalidFormatDetails` set to true', () => {
-    //   const schema = zod.object({
-    //     input: zod.jwt({
-    //       alg: 'HS256',
-    //       error: createErrorMap({
-    //         displayInvalidFormatDetails: true,
-    //         includePath: false,
-    //       }),
-    //     }),
-    //   });
-    //   const result = schema.safeParse({ input: 'def' });
-    //   if (result.success) throw new Error('Expected failure');
-    //   expect(result.error.issues[0].message).toMatchInlineSnapshot(
-    //     `"malformed value; expected jwt format"`
-    //   );
-    // });
+    test('jwt format with `displayInvalidFormatDetails` set to true', () => {
+      const schema = zod.object({
+        input: zod.jwt({
+          alg: 'HS256',
+          error: createErrorMap({
+            displayInvalidFormatDetails: true,
+          }),
+        }),
+      });
+      const result = schema.safeParse({ input: 'def' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected a jwt/HS256 token"`
+      );
+    });
 
     test('starts_with', () => {
       const schema = zod.object({
@@ -371,6 +381,28 @@ describe('errorMap', () => {
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
         `"expected string to include "foo""`
+      );
+    });
+
+    test('hash', () => {
+      const schema = zod.object({
+        input: zod.hash('sha256'),
+      });
+      const result = schema.safeParse({ input: 'not-a-hash' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected a SHA256 hex-encoded hash"`
+      );
+    });
+
+    test('hash with custom encoding', () => {
+      const schema = zod.object({
+        input: zod.hash('md5', { enc: 'base64url' }),
+      });
+      const result = schema.safeParse({ input: 'not-a-hash' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected a MD5 base64url-encoded hash"`
       );
     });
 
@@ -656,6 +688,27 @@ describe('errorMap', () => {
 
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
         `"expected value to be 1"`
+      );
+    });
+
+    test('stringbool', () => {
+      const schema = zod.object({
+        input: zod.stringbool(),
+      });
+      const result = schema.safeParse(
+        { input: 'foobar' },
+        {
+          error: createErrorMap({
+            reportInput: 'typeAndValue',
+          }),
+        }
+      );
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected boolean as string, received "foobar""`
       );
     });
 
