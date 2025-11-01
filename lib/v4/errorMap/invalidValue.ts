@@ -19,7 +19,9 @@ export function parseInvalidValueIssue(
 ): AbstractSyntaxTree {
   let message: string;
 
-  if (issue.values.length === 0) {
+  if (issue.expected === 'stringbool') {
+    message = 'expected boolean as string';
+  } else if (issue.values.length === 0) {
     message = 'invalid value';
   } else if (issue.values.length === 1) {
     const valueStr = stringify(issue.values[0], {
