@@ -1,4 +1,4 @@
-import type * as zod from 'zod/v3';
+import type * as zod from 'zod';
 
 export function isZodErrorLike(err: unknown): err is zod.ZodError {
   return (

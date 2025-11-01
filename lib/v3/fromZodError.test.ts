@@ -1,5 +1,5 @@
-import * as zod from 'zod/v3';
-import { ZodError } from 'zod/v3';
+import * as zod from 'zod';
+import { ZodError } from 'zod';
 
 import { fromZodError } from './fromZodError.ts';
 import { ValidationError } from './ValidationError.ts';

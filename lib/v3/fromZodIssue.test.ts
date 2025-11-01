@@ -1,4 +1,4 @@
-import * as zod from 'zod/v3';
+import * as zod from 'zod';
 
 import { fromZodIssue } from './fromZodIssue.ts';
 import { ValidationError } from './ValidationError.ts';
