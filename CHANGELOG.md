@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- 6640d99: Add zod@3.24.4 compatibility, which was inadvertently broken when we adopted the `zod/v3` import paths.
+- 6640d99: Add zod@3.24.4 compatibility, which was inadvertently broken by adopting the `zod/v3` import paths.
 
 ## 4.0.2
 
