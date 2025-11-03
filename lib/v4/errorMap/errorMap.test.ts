@@ -333,8 +333,6 @@ describe('errorMap', () => {
       );
     });
 
-    // TODO: Open issue to fix this in zod v4
-    // the type expectation for issue.alg is not correct
     test('jwt format with `displayInvalidFormatDetails` set to true', () => {
       const schema = zod.object({
         input: zod.jwt({
