@@ -1,5 +1,23 @@
 # @causaly/zod-validation-error
 
+## 5.0.0
+
+_Note: This is a major release due to the change in the error messages. Otherwise, it is 100% compatible with the previous version. If you don't really care about the exact wording of the error messages, you can safely upgrade to v.5.0.0 without any code changes._
+
+### Major Changes
+
+- 2c5a3c4: Change error messages to consistently follow the `expected <expectation>, received <realization>` format (breaking change).
+
+### Minor Changes
+
+- 2c5a3c4: Conditionally report value in error message based on `reportInput` option.
+
+## 3.5.4
+
+### Patch Changes
+
+- 6640d99: Add zod@3.24.4 compatibility, which was inadvertently broken by adopting the `zod/v3` import paths.
+
 ## 4.0.2
 
 ### Patch Changes
