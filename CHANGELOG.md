@@ -1,5 +1,12 @@
 # @causaly/zod-validation-error
 
+## 5.0.0
+
+### Major Changes
+
+- 2c5a3c4: - Conditionally report value in error message based on `reportInput` option.
+  - Error messages have changed to consistently follow the `expected <expectation>, received <realization>` format (breaking change).
+
 ## 4.0.2
 
 ### Patch Changes
