@@ -1,4 +1,4 @@
-import type { util } from 'zod/v4/core';
+import type { util } from 'zod';
 
 export function stringifySymbol(symbol: symbol): string {
   return symbol.description ?? '';

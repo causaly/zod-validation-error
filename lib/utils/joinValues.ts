@@ -1,5 +1,5 @@
 import { stringify } from './stringify.ts';
-import type { util } from 'zod/v4/core';
+import type { util } from 'zod';
 
 export type JoinValuesOptions = {
   separator: string;
