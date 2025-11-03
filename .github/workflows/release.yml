@@ -3,8 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - main
-      - stable
+      - v3
 
 permissions:
   id-token: write  # Required for OIDC
