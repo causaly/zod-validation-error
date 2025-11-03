@@ -44,8 +44,7 @@
     }
   },
   "files": [
-    "v3",
-    "v4"
+    "v3"
   ],
   "publishConfig": {
     "access": "public"
