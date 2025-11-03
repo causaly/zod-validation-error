@@ -2,52 +2,6 @@ import * as zod from 'zod/v4';
 
 import { createErrorMap } from './errorMap.ts';
 
-describe('zod', () => {
-  test('provides issue.input to errorMap', () => {
-    const schema = zod.object({
-      input: zod.string(),
-    });
-
-    const mockErrorMap = vi.fn(() => 'Mock error message');
-
-    const result = schema.safeParse(
-      { input: 123 },
-      {
-        error: mockErrorMap,
-      }
-    );
-    if (result.success) {
-      throw new Error('Expected failure');
-    }
-
-    expect(result.error.issues[0].input).toBeUndefined();
-    expect(result.error.issues[0].message).toBe('Mock error message');
-    expect(mockErrorMap).toHaveBeenCalledExactlyOnceWith(
-      expect.objectContaining({
-        code: 'invalid_type',
-        input: 123,
-      })
-    );
-  });
-
-  test('does NOT provide issue.input on error', () => {
-    const schema = zod.object({
-      input: zod.string(),
-    });
-
-    const result = schema.safeParse({ input: 123 });
-    if (result.success) {
-      throw new Error('Expected failure');
-    }
-
-    expect(result.error.issues[0].input).toBeUndefined();
-  });
-
-  test('exposes globalConfig object with errorMap set to undefined by default', () => {
-    expect(zod.core.globalConfig.customError).toBeUndefined();
-  });
-});
-
 describe('errorMap', () => {
   beforeAll(() => {
     zod.config({
@@ -72,7 +26,7 @@ describe('errorMap', () => {
       }
 
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid date"`
+        `"expected an ISO date"`
       );
     });
 
@@ -83,7 +37,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-email' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid email"`
+        `"expected an email address"`
       );
     });
 
@@ -94,7 +48,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-url' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid url"`
+        `"expected a URL"`
       );
     });
 
@@ -105,7 +59,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-emoji' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid emoji"`
+        `"expected an emoji"`
       );
     });
 
@@ -116,7 +70,18 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-uuid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid uuid"`
+        `"expected a UUID"`
+      );
+    });
+
+    test('uuid v7', () => {
+      const schema = zod.object({
+        input: zod.uuidv7(),
+      });
+      const result = schema.safeParse({ input: 'not-uuid-v7' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected a UUID v7"`
       );
     });
 
@@ -127,7 +92,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-guid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid guid"`
+        `"expected a GUID"`
       );
     });
 
@@ -138,7 +103,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-nanoid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid nanoid"`
+        `"expected a nanoid"`
       );
     });
 
@@ -149,7 +114,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-cuid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid cuid"`
+        `"expected a CUID"`
       );
     });
 
@@ -160,7 +125,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-cuid2' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid cuid2"`
+        `"expected a CUID2"`
       );
     });
 
@@ -171,7 +136,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-ulid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid ulid"`
+        `"expected a ULID"`
       );
     });
 
@@ -182,7 +147,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-an-xid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid xid"`
+        `"expected a XID"`
       );
     });
 
@@ -193,7 +158,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-ksuid' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid ksuid"`
+        `"expected a KSUID"`
       );
     });
 
@@ -204,7 +169,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-datetime' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid datetime"`
+        `"expected an ISO datetime"`
       );
     });
 
@@ -215,7 +180,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-time' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid time"`
+        `"expected an ISO time"`
       );
     });
 
@@ -226,7 +191,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-duration' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid duration"`
+        `"expected an ISO duration"`
       );
     });
 
@@ -237,7 +202,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-an-ipv4' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid ipv4"`
+        `"expected an IPv4 address"`
       );
     });
 
@@ -248,7 +213,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-an-ipv6' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid ipv6"`
+        `"expected an IPv6 address"`
       );
     });
 
@@ -259,7 +224,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-cidrv4' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid cidrv4"`
+        `"expected a CIDRv4 address range"`
       );
     });
 
@@ -270,7 +235,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-cidrv6' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid cidrv6"`
+        `"expected a CIDRv6 address range"`
       );
     });
 
@@ -281,7 +246,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-base64' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid base64"`
+        `"expected a base64 encoded string"`
       );
     });
 
@@ -292,7 +257,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-base64url' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid base64url"`
+        `"expected a base64url encoded string"`
       );
     });
 
@@ -303,7 +268,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-e164' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid e164"`
+        `"expected an E.164 formatted phone number"`
       );
     });
 
@@ -314,7 +279,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'NOTLOWERCASE' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"value must be in lowercase format"`
+        `"expected lowercase string"`
       );
     });
 
@@ -325,7 +290,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'notuppercase' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"value must be in uppercase format"`
+        `"expected uppercase string"`
       );
     });
 
@@ -336,7 +301,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'def' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"value must match pattern"`
+        `"expected string to match pattern"`
       );
     });
 
@@ -351,7 +316,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'def' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"value must match pattern "/^abc$/""`
+        `"expected string to match pattern "/^abc$/""`
       );
     });
 
@@ -364,28 +329,25 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'not-jwt' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"invalid jwt"`
+        `"expected a jwt token"`
       );
     });
 
-    // TODO: Open issue to fix this in zod v4
-    // the type expectation for issue.alg is not correct
-    // test('jwt format with `displayInvalidFormatDetails` set to true', () => {
-    //   const schema = zod.object({
-    //     input: zod.jwt({
-    //       alg: 'HS256',
-    //       error: createErrorMap({
-    //         displayInvalidFormatDetails: true,
-    //         includePath: false,
-    //       }),
-    //     }),
-    //   });
-    //   const result = schema.safeParse({ input: 'def' });
-    //   if (result.success) throw new Error('Expected failure');
-    //   expect(result.error.issues[0].message).toMatchInlineSnapshot(
-    //     `"malformed value; expected jwt format"`
-    //   );
-    // });
+    test('jwt format with `displayInvalidFormatDetails` set to true', () => {
+      const schema = zod.object({
+        input: zod.jwt({
+          alg: 'HS256',
+          error: createErrorMap({
+            displayInvalidFormatDetails: true,
+          }),
+        }),
+      });
+      const result = schema.safeParse({ input: 'def' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected a jwt/HS256 token"`
+      );
+    });
 
     test('starts_with', () => {
       const schema = zod.object({
@@ -394,7 +356,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'def' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"value must start with "abc""`
+        `"expected string to start with "abc""`
       );
     });
 
@@ -405,7 +367,7 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'abc' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"value must end with "xyz""`
+        `"expected string to end with "xyz""`
       );
     });
 
@@ -416,7 +378,47 @@ describe('errorMap', () => {
       const result = schema.safeParse({ input: 'bar' });
       if (result.success) throw new Error('Expected failure');
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"value must include "foo""`
+        `"expected string to include "foo""`
+      );
+    });
+
+    test('hash', () => {
+      const schema = zod.object({
+        input: zod.hash('sha256'),
+      });
+      const result = schema.safeParse({ input: 'not-a-hash' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected a SHA256 hex-encoded hash"`
+      );
+    });
+
+    test('hash with custom encoding', () => {
+      const schema = zod.object({
+        input: zod.hash('md5', { enc: 'base64url' }),
+      });
+      const result = schema.safeParse({ input: 'not-a-hash' });
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected a MD5 base64url-encoded hash"`
+      );
+    });
+
+    test('displays actual value when reportInput is set to "typeAndValue', () => {
+      const schema = zod.object({
+        input: zod.string().includes('foo'),
+      });
+      const result = schema.safeParse(
+        { input: 'bar' },
+        {
+          error: createErrorMap({
+            reportInput: 'typeAndValue',
+          }),
+        }
+      );
+      if (result.success) throw new Error('Expected failure');
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected string to include "foo", received "bar""`
       );
     });
   });
@@ -490,6 +492,48 @@ describe('errorMap', () => {
         `"expected string, received null"`
       );
     });
+
+    test('does NOT report input type when reportInput is set to false', () => {
+      const schema = zod.object({
+        input: zod.string(),
+      });
+      const result = schema.safeParse(
+        { input: 123 },
+        {
+          error: createErrorMap({
+            reportInput: false,
+          }),
+        }
+      );
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected string"`
+      );
+    });
+
+    test('displays input value when reportInput is set to "typeAndValue"', () => {
+      const schema = zod.object({
+        input: zod.string(),
+      });
+      const result = schema.safeParse(
+        { input: 123 },
+        {
+          error: createErrorMap({
+            reportInput: 'typeAndValue',
+          }),
+        }
+      );
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected string, received number (123)"`
+      );
+    });
   });
 
   describe('invalid literal', () => {
@@ -518,6 +562,27 @@ describe('errorMap', () => {
 
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
         `"expected value to be 123"`
+      );
+    });
+
+    test('displays the input value when reportInput is set to "typeAndValue"', () => {
+      const schema = zod.object({
+        input: zod.literal('foo'),
+      });
+      const result = schema.safeParse(
+        { input: 'bar' },
+        {
+          error: createErrorMap({
+            reportInput: 'typeAndValue',
+          }),
+        }
+      );
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected value to be "foo", received "bar""`
       );
     });
   });
@@ -583,6 +648,31 @@ describe('errorMap', () => {
       );
     });
 
+    test('mixed string/number values with reportInput set to "typeAndValue"', () => {
+      const schema = zod.object({
+        input: zod.enum({
+          one: 1,
+          two: 'two',
+          three: 3,
+        }),
+      });
+      const result = schema.safeParse(
+        { input: 'four' },
+        {
+          error: createErrorMap({
+            reportInput: 'typeAndValue',
+          }),
+        }
+      );
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected value to be one of 1, "two" or 3, received "four""`
+      );
+    });
+
     test('single value', () => {
       const schema = zod.object({
         input: zod.enum({
@@ -596,6 +686,27 @@ describe('errorMap', () => {
 
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
         `"expected value to be 1"`
+      );
+    });
+
+    test('stringbool', () => {
+      const schema = zod.object({
+        input: zod.stringbool(),
+      });
+      const result = schema.safeParse(
+        { input: 'foobar' },
+        {
+          error: createErrorMap({
+            reportInput: 'typeAndValue',
+          }),
+        }
+      );
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected boolean as string, received "foobar""`
       );
     });
 
@@ -616,6 +727,7 @@ describe('errorMap', () => {
         {
           error: createErrorMap({
             maxAllowedValuesToDisplay: 3,
+            reportInput: 'typeAndValue',
           }),
         }
       );
@@ -624,7 +736,7 @@ describe('errorMap', () => {
       }
 
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"expected value to be one of "one", "two", "three" or 4 more value(s)"`
+        `"expected value to be one of "one", "two", "three" or 4 more value(s), received "fourtytwo""`
       );
     });
   });
@@ -644,6 +756,28 @@ describe('errorMap', () => {
         `"expected multiple of 2"`
       );
     });
+
+    test('multiple of 2 with reportInput set to "typeAndValue', () => {
+      const schema = zod.object({
+        input: zod.int().multipleOf(2),
+      });
+      const result = schema.safeParse(
+        {
+          input: 3,
+        },
+        {
+          error: createErrorMap({
+            reportInput: 'typeAndValue',
+          }),
+        }
+      );
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected multiple of 2, received 3"`
+      );
+    });
   });
 
   describe('invalid max', () => {
@@ -658,7 +792,29 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"string must contain at most 3 character(s)"`
+        `"expected string to contain at most 3 character(s)"`
+      );
+    });
+
+    test('character limit with reportInput set to "typeAndValue', () => {
+      const schema = zod.object({
+        input: zod.string().max(3),
+      });
+      const result = schema.safeParse(
+        {
+          input: 'hello',
+        },
+        {
+          error: createErrorMap({
+            reportInput: 'typeAndValue',
+          }),
+        }
+      );
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected string to contain at most 3 character(s), received "hello""`
       );
     });
 
@@ -673,7 +829,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"number must be less than or equal to 10"`
+        `"expected number to be less than or equal to 10"`
       );
     });
 
@@ -688,7 +844,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"number must be less than 10"`
+        `"expected number to be less than 10"`
       );
     });
 
@@ -703,7 +859,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"array must contain at most 2 item(s)"`
+        `"expected array to contain at most 2 item(s)"`
       );
     });
 
@@ -718,7 +874,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"set must contain at most 2 item(s)"`
+        `"expected set to contain at most 2 item(s)"`
       );
     });
 
@@ -734,7 +890,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toBe(
-        `date must be prior or equal to "${maxDate.toLocaleString()}"`
+        `expected date to be prior or equal to "${maxDate.toLocaleString()}"`
       );
     });
 
@@ -749,7 +905,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"number must be less than or equal to 100"`
+        `"expected number to be less than or equal to 100"`
       );
     });
 
@@ -779,7 +935,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"string must contain at least 5 character(s)"`
+        `"expected string to contain at least 5 character(s)"`
       );
     });
 
@@ -790,7 +946,22 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"number must be greater than or equal to 10"`
+        `"expected number to be greater than or equal to 10"`
+      );
+    });
+
+    test('number with reportInput set to "typeAndValue"', () => {
+      const schema = zod.number().min(10);
+      const result = schema.safeParse(5, {
+        error: createErrorMap({
+          reportInput: 'typeAndValue',
+        }),
+      });
+      if (result.success) {
+        throw new Error('Expected failure');
+      }
+      expect(result.error.issues[0].message).toMatchInlineSnapshot(
+        `"expected number to be greater than or equal to 10, received 5"`
       );
     });
 
@@ -801,7 +972,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"number must be greater than 10"`
+        `"expected number to be greater than 10"`
       );
     });
 
@@ -812,7 +983,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"array must contain at least 3 item(s)"`
+        `"expected array to contain at least 3 item(s)"`
       );
     });
 
@@ -823,7 +994,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"set must contain at least 3 item(s)"`
+        `"expected set to contain at least 3 item(s)"`
       );
     });
 
@@ -835,7 +1006,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toBe(
-        `date must be later or equal to "${minDate.toLocaleString()}"`
+        `expected date to be later or equal to "${minDate.toLocaleString()}"`
       );
     });
 
@@ -859,7 +1030,7 @@ describe('errorMap', () => {
         throw new Error('Expected failure');
       }
       expect(result.error.issues[0].message).toMatchInlineSnapshot(
-        `"number must be greater than or equal to 100"`
+        `"expected number to be greater than or equal to 100"`
       );
     });
   });
@@ -1003,7 +1174,7 @@ describe('errorMap', () => {
         {
           "code": "too_small",
           "inclusive": true,
-          "message": "number must be greater than or equal to 1",
+          "message": "expected number to be greater than or equal to 1",
           "minimum": 1,
           "origin": "number",
           "path": [
