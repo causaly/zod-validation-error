@@ -8,7 +8,8 @@ on:
 
 permissions:
   id-token: write  # Required for OIDC
-  contents: read
+  contents: write  # Allow pushing commits
+  pull-requests: write  # Allow creating PRs
 
 jobs:
   release:
