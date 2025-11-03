@@ -40,7 +40,6 @@ jobs:
         with:
           path: |
             './v3'
-            './v4'
           key: ${{ runner.os }}-dist-${{ github.sha }}
 
       - name: Install dependencies
@@ -72,7 +71,6 @@ jobs:
         with:
           path: |
             './v3'
-            './v4'
           key: ${{ runner.os }}-dist-${{ github.sha }}
 
       - name: Run tests
@@ -99,6 +97,4 @@ jobs:
           deno-version: ${{ matrix.deno }}
       - run: deno --version
       - run: deno run ./v3/index.ts
-        working-directory: ./lib
-      - run: deno run ./v4/index.ts
         working-directory: ./lib
