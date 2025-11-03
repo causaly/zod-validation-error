@@ -1,5 +1,11 @@
 # @causaly/zod-validation-error
 
+## 3.5.4
+
+### Patch Changes
+
+- 6640d99: Add zod@3.24.4 compatibility, which was inadvertently broken when we adopted the `zod/v3` import paths.
+
 ## 4.0.2
 
 ### Patch Changes
