@@ -309,7 +309,7 @@ describe('MessageBuilder', () => {
         if (isZodErrorLike(err) && isNonEmptyArray(err.issues)) {
           const message = messageBuilder(err.issues);
           expect(message).toMatchInlineSnapshot(
-            `"Validation error: Invalid input at "type""`
+            `"Validation error: Invalid discriminator value. Expected 'a' | 'b' at "type""`
           );
         }
       }
