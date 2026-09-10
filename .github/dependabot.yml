@@ -9,9 +9,9 @@ updates:
     versioning-strategy: 'increase-if-necessary'
     ignore:
       # for all deps
-      - dependency-name: "*"
+      - dependency-name: '*'
         # ...ignore major updates
-        update-types: ["version-update:semver-major"]
+        update-types: ['version-update:semver-major']
     commit-message:
       prefix: 'chore'
     labels:
