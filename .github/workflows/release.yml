@@ -7,9 +7,9 @@ on:
       - stable
 
 permissions:
-  id-token: write  # Required for OIDC
-  contents: write  # Allow pushing commits
-  pull-requests: write  # Allow creating PRs
+  id-token: write # Required for OIDC
+  contents: write # Allow pushing commits
+  pull-requests: write # Allow creating PRs
 
 jobs:
   release:
