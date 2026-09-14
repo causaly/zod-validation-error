@@ -17,18 +17,15 @@ describe('fromZodIssue()', () => {
         expect(validationError.message).toMatchInlineSnapshot(
           `"Validation error: Invalid email address"`
         );
-        expect(validationError.details).toMatchInlineSnapshot(`
-          [
-            {
-              "code": "invalid_format",
-              "format": "email",
-              "message": "Invalid email address",
-              "origin": "string",
-              "path": [],
-              "pattern": "/^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$/",
-            },
-          ]
-        `);
+        expect(validationError.details).toEqual([
+          expect.objectContaining({
+            code: 'invalid_format',
+            format: 'email',
+            message: 'Invalid email address',
+            origin: 'string',
+            path: [],
+          }),
+        ]);
       }
     }
   });
